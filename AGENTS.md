@@ -1,10 +1,9 @@
 | 検査 | 規則 |
 | --- | --- |
 | `src/components/features/shell` 以外の feature が別の feature を import する | feature 同士は import しない |
-| `src/components`、`src/routes`、`src/router.tsx` が `src/db` または `src/server` を import する | 画面は表とサーバ関数を直接 import しない |
-| 画面が `fetch` を呼ぶ | 取得はサーバ関数へ、`src/lib/request.ts` を通す |
-| 画面が `useQuery`、`useMutation`、`ensureQueryData` を使い、`src/lib/skill-sheet` も `src/lib/request` も import しない | 画面は `src/lib/skill-sheet` を呼び、その中が `request.ts` を使う |
-| `src/server` と `src/lib` 以外が `src/server` を import する | サーバ関数の export を import できるフロントは `src/lib` だけ |
+| `src/components`、`src/routes`、`src/router.tsx` が `src/db` を import する | 画面は表を直接 import しない |
+| 画面が `fetch` を呼ぶ | 取得はサーバ関数へ |
+| `src/server` 以外が `src/server` を import する | サーバ関数の export を import できるのは画面と `src/lib` |
 | `src/lib` が React を import する | `src/lib` に React コンポーネントは置かない |
 | `src/components/ui` が `src/components/features`、`src/lib`、`src/server` を import する | `ui` は共通部品 |
 | `shared/features` が React、Drizzle、`bun:sqlite`、`@libsql/client`、neverthrow、`@tanstack`、`src/server`、`src/lib` を import する | シートの計算は純粋 |

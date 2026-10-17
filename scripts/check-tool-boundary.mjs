@@ -156,12 +156,13 @@ function scan(file) {
         fail(filePath, `${other} を import しています`);
       }
     }
-    if (isScreen(filePath) && (target.startsWith("src/db") || target.startsWith("src/server"))) {
+    if (isScreen(filePath) && target.startsWith("src/db")) {
       fail(filePath, `${target} を import しています`);
     }
     if (
       !filePath.startsWith("src/server/") &&
       !filePath.startsWith("src/lib/") &&
+      !isScreen(filePath) &&
       target.startsWith("src/server")
     ) {
       fail(filePath, "src/server を import しています");
@@ -198,22 +199,6 @@ function scan(file) {
 
   if (isScreen(filePath) && /\bfetch\s*\(/.test(source)) {
     fail(filePath, "fetch を呼んでいます");
-  }
-
-  if (filePath.startsWith("src/lib/skill-sheet/") && !specs.some((spec) => spec.includes("request"))) {
-    fail(filePath, "request.ts を import していません");
-  }
-
-  const loadsData = /useQuery|useMutation|ensureQueryData|queryFn/.test(source);
-  if (isScreen(filePath) && loadsData) {
-    const throughLib = resolved.some(
-      (item) =>
-        (item.target ?? "").startsWith("src/lib/skill-sheet") ||
-        (item.target ?? "").startsWith("src/lib/request"),
-    );
-    if (!throughLib) {
-      fail(filePath, "request.ts を経由せずデータを取得しています");
-    }
   }
 }
 

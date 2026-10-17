@@ -47,6 +47,11 @@ export default defineConfig({
           name: "screen",
           environment: "happy-dom",
           include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+          server: {
+            deps: {
+              external: ["bun:sqlite"],
+            },
+          },
         },
       },
     ],
