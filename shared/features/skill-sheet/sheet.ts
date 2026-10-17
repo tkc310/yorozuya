@@ -324,7 +324,7 @@ export function createFixtureSheet(): SheetInput {
     name: "山田",
     workStyle: "業務委託",
     education: "学士",
-    station: "京急長沢",
+    station: "相模原",
     selfPr: "設計と実装を担当。",
     skillGroups: [{ name: "言語", skills: [{ name: "Typescript" }, { name: "Go" }] }],
     careers: [

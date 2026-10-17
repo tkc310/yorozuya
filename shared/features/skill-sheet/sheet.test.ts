@@ -51,7 +51,7 @@ function sheet(careers: Career[], extra?: Partial<SheetInput>): SheetInput {
     name: "山田",
     workStyle: "業務委託",
     education: "学士",
-    station: "京急長沢",
+    station: "相模原",
     selfPr: "設計と実装を担当。",
     skillGroups: [],
     careers,
@@ -239,7 +239,7 @@ describe("スキルシート", () => {
   it("フィクスチャは氏名、短い自己PR、並行、難度、7工程を持つ", () => {
     const view = viewOf(present(createFixtureSheet(), calculatedOn));
     expect(view.name).toBe("山田");
-    expect(view.station).toBe("京急長沢");
+    expect(view.station).toBe("相模原");
     expect(view.selfPrShort).toBe(true);
     expect(view.parallelCount).toBe(1);
     expect(view.hardCount).toBe(1);
