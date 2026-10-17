@@ -12,14 +12,16 @@ if (process.env.SHEET_DEMO_STRIP !== "1" && process.features.typescript !== true
   process.exit(child.status ?? 1);
 }
 
-const { createFixtureSheet, durationToken, present } = await import(
-  "../shared/features/skill-sheet/sheet.ts"
-);
+const { createFixtureSheet, durationToken, present } =
+  await import("../shared/features/skill-sheet/sheet.ts");
 
 const calculatedOn = { year: 2026, month: 10 };
 const arg = process.argv[2];
 
-if (process.argv.length > 3 || (arg !== undefined && arg !== "--no-name" && arg !== "--zero-careers")) {
+if (
+  process.argv.length > 3 ||
+  (arg !== undefined && arg !== "--no-name" && arg !== "--zero-careers")
+) {
   console.log("error=不明な引数です");
   process.exit(1);
 }

@@ -149,7 +149,11 @@ describe("スキルシート", () => {
               environment: [" Typescript "],
             }),
           ],
-          { skillGroups: [{ name: "言語", skills: [{ name: "Typescript" }, { name: "typescript" }] }] },
+          {
+            skillGroups: [
+              { name: "言語", skills: [{ name: "Typescript" }, { name: "typescript" }] },
+            ],
+          },
         ),
         calculatedOn,
       ),
@@ -173,9 +177,7 @@ describe("スキルシート", () => {
     const fromUpdate = viewOf(
       present(sheet([openCareer], { updatedOn: { year: 2024, month: 7 } }), calculatedOn),
     );
-    const fromClock = viewOf(
-      present(sheet([openCareer]), { year: 2024, month: 7 }),
-    );
+    const fromClock = viewOf(present(sheet([openCareer]), { year: 2024, month: 7 }));
     expect(fromUpdate.engineer).toEqual({ years: 0, months: 6 });
     expect(fromClock.engineer).toEqual({ years: 0, months: 6 });
   });
