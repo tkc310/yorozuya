@@ -1,0 +1,1 @@
+ALTER TABLE `careers` ADD `detail_summary` text DEFAULT '' NOT NULL;

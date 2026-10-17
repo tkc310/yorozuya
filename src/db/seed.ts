@@ -1,5 +1,5 @@
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
-import { createFixtureSheet } from "../../shared/features/skill-sheet/sheet";
+import { createFixtureSheet, durationMonths } from "../../shared/features/skill-sheet/sheet";
 import * as schema from "./schema";
 
 type SeedDatabase = BaseSQLiteDatabase<"sync", void, typeof schema>;
@@ -16,11 +16,30 @@ export function seed(db: SeedDatabase): void {
         id: "profile",
         updatedYear: sheet.updatedOn?.year ?? null,
         updatedMonth: sheet.updatedOn?.month ?? null,
+        updatedDay: sheet.updatedOn?.day ?? null,
+        updatedAuto: sheet.updatedAuto,
         name: sheet.name,
-        workStyle: sheet.workStyle,
+        age: sheet.age,
+        gender: sheet.gender ?? "",
+        experience: sheet.experience,
+        experienceAuto: sheet.experienceAuto,
+        showAge: sheet.visibility.age,
+        showGender: sheet.visibility.gender,
+        showExperience: sheet.visibility.experience,
+        showEducation: sheet.visibility.education,
+        showStation: sheet.visibility.station,
+        showDesiredHours: sheet.visibility.desiredHours,
+        showDesiredEmployment: sheet.visibility.desiredEmployment,
+        showAffiliation: sheet.visibility.affiliation,
+        showSelfPr: sheet.visibility.selfPr,
         education: sheet.education,
         station: sheet.station,
         selfPr: sheet.selfPr,
+        desiredHours: sheet.desiredHours,
+        desiredEmployment: sheet.desiredEmployment,
+        affiliation: sheet.affiliation,
+        strongSkills: sheet.strongSkills,
+        strongWork: sheet.strongWork,
       })
       .run();
     sheet.skillGroups.forEach((group, groupIndex) => {
@@ -35,6 +54,8 @@ export function seed(db: SeedDatabase): void {
             groupId,
             name: skill.name,
             position: skillIndex,
+            experienceMonths: skill.experience ? durationMonths(skill.experience) : null,
+            experienceAuto: skill.auto ?? false,
           })
           .run();
       });
@@ -49,14 +70,13 @@ export function seed(db: SeedDatabase): void {
           endMonth: career.period.end?.month ?? null,
           projectName: career.projectName,
           summary: career.summary,
+          detailSummary: career.detailSummary,
           work: career.work,
           outcome: career.outcome,
           role: career.role,
           employment: career.employment,
-          positionName: career.position,
           team: career.team,
           methodology: career.methodology,
-          parallel: career.parallel,
           hard: career.hard,
           position: careerIndex,
         })

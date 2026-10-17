@@ -3,9 +3,19 @@ import { asc, desc, eq } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
 import {
   PHASES,
+  durationMonths,
+  fromMonths,
   type Career,
+  isGender,
+  type CalendarDate,
+  type Duration,
+  type Gender,
   type Phase,
+  type ProfileLink,
+  type ProfileTexts,
+  type ProfileVisibility,
   type SheetInput,
+  type Skill,
   type YearMonth,
 } from "@/shared/features/skill-sheet/sheet";
 import {
@@ -13,6 +23,7 @@ import {
   careerPhases,
   careerTools,
   careers,
+  profileLinks,
   profiles,
   skillGroups,
   skills,
@@ -21,15 +32,26 @@ import type { YorozuyaDatabase } from "@/src/server/lib/db";
 import { ServerFunctionError } from "@/src/error";
 
 export type ProfileWrite = {
-  updatedOn: YearMonth | null;
+  updatedOn: CalendarDate | null;
+  updatedAuto: boolean;
   name: string;
-  workStyle: string;
+  age: number | null;
+  gender: Gender | null;
+  experience: string;
+  experienceAuto: boolean;
+  visibility: ProfileVisibility;
+  links: ProfileLink[];
   education: string;
   station: string;
   selfPr: string;
-};
+} & ProfileTexts;
 
 export type CareerWrite = Omit<Career, "id">;
+
+export type SheetImport = ProfileWrite & {
+  skillGroups: { name: string; skills: Skill[] }[];
+  careers: CareerWrite[];
+};
 
 function month(year: number | null, value: number | null): YearMonth | null {
   if (year === null || value === null) {
@@ -38,8 +60,102 @@ function month(year: number | null, value: number | null): YearMonth | null {
   return { year, month: value };
 }
 
+function experienceMonths(experience: Duration | null): number | null {
+  if (!experience) {
+    return null;
+  }
+  const total = durationMonths(experience);
+  return total > 0 ? total : null;
+}
+
+function skillOf(name: string, months: number | null, auto: boolean): Skill {
+  const base: Skill = auto ? { name, auto } : { name };
+  return months === null || months <= 0 ? base : { ...base, experience: fromMonths(months) };
+}
+
+// 日が無い古い行はその月の1日として読む。
+function date(
+  year: number | null,
+  monthValue: number | null,
+  day: number | null,
+): CalendarDate | null {
+  const value = month(year, monthValue);
+  return value ? { ...value, day: day ?? 1 } : null;
+}
+
 function isPhase(value: string): value is Phase {
   return (PHASES as readonly string[]).includes(value);
+}
+
+type Transaction = Parameters<Parameters<YorozuyaDatabase["transaction"]>[0]>[0];
+
+function profileColumns(input: ProfileWrite) {
+  return {
+    updatedYear: input.updatedOn?.year ?? null,
+    updatedMonth: input.updatedOn?.month ?? null,
+    updatedDay: input.updatedOn?.day ?? null,
+    updatedAuto: input.updatedAuto,
+    name: input.name,
+    age: input.age,
+    gender: input.gender ?? "",
+    experience: input.experience,
+    experienceAuto: input.experienceAuto,
+    showAge: input.visibility.age,
+    showGender: input.visibility.gender,
+    showExperience: input.visibility.experience,
+    showEducation: input.visibility.education,
+    showStation: input.visibility.station,
+    showDesiredHours: input.visibility.desiredHours,
+    showDesiredEmployment: input.visibility.desiredEmployment,
+    showAffiliation: input.visibility.affiliation,
+    showSelfPr: input.visibility.selfPr,
+    education: input.education,
+    station: input.station,
+    selfPr: input.selfPr,
+    desiredHours: input.desiredHours,
+    desiredEmployment: input.desiredEmployment,
+    affiliation: input.affiliation,
+    strongSkills: input.strongSkills,
+    strongWork: input.strongWork,
+  };
+}
+
+function careerColumns(input: CareerWrite) {
+  return {
+    startYear: input.period.start.year,
+    startMonth: input.period.start.month,
+    endYear: input.period.end?.year ?? null,
+    endMonth: input.period.end?.month ?? null,
+    projectName: input.projectName,
+    summary: input.summary,
+    detailSummary: input.detailSummary,
+    work: input.work,
+    outcome: input.outcome,
+    role: input.role,
+    employment: input.employment,
+    team: input.team,
+    methodology: input.methodology,
+    hard: input.hard,
+  };
+}
+
+function replaceLinks(tx: Transaction, links: ProfileLink[]): void {
+  tx.delete(profileLinks).run();
+  links.forEach((link, index) => {
+    tx.insert(profileLinks).values({ position: index, label: link.label, url: link.url }).run();
+  });
+}
+
+function insertCareerDetails(tx: Transaction, careerId: string, input: CareerWrite): void {
+  input.environment.forEach((name, index) => {
+    tx.insert(careerEnvironments).values({ careerId, position: index, name }).run();
+  });
+  input.tools.forEach((name, index) => {
+    tx.insert(careerTools).values({ careerId, position: index, name }).run();
+  });
+  input.phases.forEach((phase, index) => {
+    tx.insert(careerPhases).values({ careerId, position: index, phase }).run();
+  });
 }
 
 export class SkillSheetRepository {
@@ -62,17 +178,43 @@ export class SkillSheetRepository {
       const tools = this.db.select().from(careerTools).orderBy(asc(careerTools.position)).all();
       const phases = this.db.select().from(careerPhases).orderBy(asc(careerPhases.position)).all();
       const sheet: SheetInput = {
-        updatedOn: month(profile.updatedYear, profile.updatedMonth),
+        updatedOn: date(profile.updatedYear, profile.updatedMonth, profile.updatedDay),
+        updatedAuto: profile.updatedAuto,
         name: profile.name,
-        workStyle: profile.workStyle,
+        age: profile.age,
+        gender: isGender(profile.gender) ? profile.gender : null,
+        experience: profile.experience,
+        experienceAuto: profile.experienceAuto,
+        visibility: {
+          age: profile.showAge,
+          gender: profile.showGender,
+          experience: profile.showExperience,
+          education: profile.showEducation,
+          station: profile.showStation,
+          desiredHours: profile.showDesiredHours,
+          desiredEmployment: profile.showDesiredEmployment,
+          affiliation: profile.showAffiliation,
+          selfPr: profile.showSelfPr,
+        },
         education: profile.education,
         station: profile.station,
         selfPr: profile.selfPr,
+        desiredHours: profile.desiredHours,
+        desiredEmployment: profile.desiredEmployment,
+        affiliation: profile.affiliation,
+        strongSkills: profile.strongSkills,
+        strongWork: profile.strongWork,
+        links: this.db
+          .select()
+          .from(profileLinks)
+          .orderBy(asc(profileLinks.position))
+          .all()
+          .map((link) => ({ label: link.label, url: link.url })),
         skillGroups: groups.map((group) => ({
           name: group.name,
           skills: skillRows
             .filter((skill) => skill.groupId === group.id)
-            .map((skill) => ({ name: skill.name })),
+            .map((skill) => skillOf(skill.name, skill.experienceMonths, skill.experienceAuto)),
         })),
         careers: careerRows.map((career) => {
           const item: Career = {
@@ -83,6 +225,7 @@ export class SkillSheetRepository {
             },
             projectName: career.projectName,
             summary: career.summary,
+            detailSummary: career.detailSummary,
             work: career.work,
             outcome: career.outcome,
             role: career.role,
@@ -90,7 +233,6 @@ export class SkillSheetRepository {
             environment: environments
               .filter((row) => row.careerId === career.id)
               .map((row) => row.name),
-            position: career.positionName,
             team: career.team,
             methodology: career.methodology,
             tools: tools.filter((row) => row.careerId === career.id).map((row) => row.name),
@@ -98,7 +240,6 @@ export class SkillSheetRepository {
               .filter((row) => row.careerId === career.id)
               .map((row) => row.phase)
               .filter(isPhase),
-            parallel: career.parallel,
             hard: career.hard,
           };
           return item;
@@ -118,19 +259,10 @@ export class SkillSheetRepository {
       if (!existing) {
         return err(new ServerFunctionError("シートがありません"));
       }
-      this.db
-        .update(profiles)
-        .set({
-          updatedYear: input.updatedOn?.year ?? null,
-          updatedMonth: input.updatedOn?.month ?? null,
-          name: input.name,
-          workStyle: input.workStyle,
-          education: input.education,
-          station: input.station,
-          selfPr: input.selfPr,
-        })
-        .where(eq(profiles.id, "profile"))
-        .run();
+      this.db.transaction((tx) => {
+        tx.update(profiles).set(profileColumns(input)).where(eq(profiles.id, "profile")).run();
+        replaceLinks(tx, input.links);
+      });
       return ok({ saved: true });
     } catch (error) {
       return err(
@@ -146,41 +278,90 @@ export class SkillSheetRepository {
       const position = last ? last.position + 1 : 0;
       this.db.transaction((tx) => {
         tx.insert(careers)
-          .values({
-            id,
-            startYear: input.period.start.year,
-            startMonth: input.period.start.month,
-            endYear: input.period.end?.year ?? null,
-            endMonth: input.period.end?.month ?? null,
-            projectName: input.projectName,
-            summary: input.summary,
-            work: input.work,
-            outcome: input.outcome,
-            role: input.role,
-            employment: input.employment,
-            positionName: input.position,
-            team: input.team,
-            methodology: input.methodology,
-            parallel: input.parallel,
-            hard: input.hard,
-            position,
-          })
+          .values({ id, ...careerColumns(input), position })
           .run();
-        input.environment.forEach((name, index) => {
-          tx.insert(careerEnvironments).values({ careerId: id, position: index, name }).run();
-        });
-        input.tools.forEach((name, index) => {
-          tx.insert(careerTools).values({ careerId: id, position: index, name }).run();
-        });
-        input.phases.forEach((phase, index) => {
-          tx.insert(careerPhases).values({ careerId: id, position: index, phase }).run();
-        });
+        insertCareerDetails(tx, id, input);
       });
       return ok({ saved: true });
     } catch (error) {
       return err(
         new ServerFunctionError(
           error instanceof Error ? error.message : "経歴を追加できませんでした",
+        ),
+      );
+    }
+  }
+
+  updateCareer(careerId: string, input: CareerWrite): Result<{ saved: true }, ServerFunctionError> {
+    try {
+      const found = this.db.select().from(careers).where(eq(careers.id, careerId)).all()[0];
+      if (!found) {
+        return err(new ServerFunctionError("経歴がありません"));
+      }
+      this.db.transaction((tx) => {
+        tx.update(careers).set(careerColumns(input)).where(eq(careers.id, careerId)).run();
+        tx.delete(careerEnvironments).where(eq(careerEnvironments.careerId, careerId)).run();
+        tx.delete(careerTools).where(eq(careerTools.careerId, careerId)).run();
+        tx.delete(careerPhases).where(eq(careerPhases.careerId, careerId)).run();
+        insertCareerDetails(tx, careerId, input);
+      });
+      return ok({ saved: true });
+    } catch (error) {
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "経歴を保存できませんでした",
+        ),
+      );
+    }
+  }
+
+  // JSON から読み込んだシートで、プロフィール・保有技術・職務経歴をまとめて置き換える。
+  replaceSheet(sheet: SheetImport): Result<{ saved: true }, ServerFunctionError> {
+    try {
+      const existing = this.db.select().from(profiles).where(eq(profiles.id, "profile")).all()[0];
+      if (!existing) {
+        return err(new ServerFunctionError("シートがありません"));
+      }
+      this.db.transaction((tx) => {
+        tx.update(profiles).set(profileColumns(sheet)).where(eq(profiles.id, "profile")).run();
+        replaceLinks(tx, sheet.links);
+        tx.delete(skills).run();
+        tx.delete(skillGroups).run();
+        tx.delete(careerEnvironments).run();
+        tx.delete(careerTools).run();
+        tx.delete(careerPhases).run();
+        tx.delete(careers).run();
+        sheet.skillGroups.forEach((group, groupIndex) => {
+          const groupId = randomUUID();
+          tx.insert(skillGroups)
+            .values({ id: groupId, name: group.name, position: groupIndex })
+            .run();
+          group.skills.forEach((skill, skillIndex) => {
+            tx.insert(skills)
+              .values({
+                id: randomUUID(),
+                groupId,
+                name: skill.name,
+                position: skillIndex,
+                experienceMonths: experienceMonths(skill.experience ?? null),
+                experienceAuto: skill.auto ?? false,
+              })
+              .run();
+          });
+        });
+        sheet.careers.forEach((career, careerIndex) => {
+          const id = randomUUID();
+          tx.insert(careers)
+            .values({ id, ...careerColumns(career), position: careerIndex })
+            .run();
+          insertCareerDetails(tx, id, career);
+        });
+      });
+      return ok({ saved: true });
+    } catch (error) {
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "JSON を読み込めませんでした",
         ),
       );
     }
@@ -208,12 +389,17 @@ export class SkillSheetRepository {
     }
   }
 
-  addSkill(groupName: string, skillName: string): Result<{ saved: true }, ServerFunctionError> {
+  addSkill(
+    groupName: string,
+    skillName: string,
+    experience: Duration | null = null,
+    auto = false,
+  ): Result<{ saved: true }, ServerFunctionError> {
     try {
       const name = skillName.trim();
       const group = groupName.trim();
       if (name.length === 0 || group.length === 0) {
-        return err(new ServerFunctionError("技術名を入れてください"));
+        return err(new ServerFunctionError("技術名を入力してください"));
       }
       const duplicate = this.db
         .select()
@@ -233,13 +419,56 @@ export class SkillSheetRepository {
             .run();
         }
         const position = tx.select().from(skills).where(eq(skills.groupId, groupId)).all().length;
-        tx.insert(skills).values({ id: randomUUID(), groupId, name, position }).run();
+        tx.insert(skills)
+          .values({
+            id: randomUUID(),
+            groupId,
+            name,
+            position,
+            experienceMonths: experienceMonths(experience),
+            experienceAuto: auto,
+          })
+          .run();
       });
       return ok({ saved: true });
     } catch (error) {
       return err(
         new ServerFunctionError(
           error instanceof Error ? error.message : "技術を追加できませんでした",
+        ),
+      );
+    }
+  }
+
+  updateSkillExperience(
+    skillName: string,
+    experience: Duration | null,
+    auto: boolean,
+  ): Result<{ saved: true }, ServerFunctionError> {
+    try {
+      const name = skillName.trim();
+      const matches = this.db
+        .select()
+        .from(skills)
+        .all()
+        .filter((row) => row.name.trim() === name);
+      if (matches.length === 0) {
+        return err(new ServerFunctionError("技術がありません"));
+      }
+      const months = experienceMonths(experience);
+      this.db.transaction((tx) => {
+        for (const match of matches) {
+          tx.update(skills)
+            .set({ experienceMonths: months, experienceAuto: auto })
+            .where(eq(skills.id, match.id))
+            .run();
+        }
+      });
+      return ok({ saved: true });
+    } catch (error) {
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "経験年数を保存できませんでした",
         ),
       );
     }
