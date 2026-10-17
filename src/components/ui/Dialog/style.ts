@@ -66,4 +66,38 @@ export const dialog = defineSlotRecipe({
       py: "4",
     },
   },
+  defaultVariants: {
+    placement: "center",
+  },
+  variants: {
+    placement: {
+      center: {},
+      // 左側（フォームの列）にせり出す。右のプレビューは隠さない。
+      side: {
+        backdrop: {
+          display: "none",
+        },
+        positioner: {
+          alignItems: "stretch",
+          inset: "0 auto 0 0",
+          justifyContent: "flex-start",
+          p: "0",
+          width: { base: "100vw", md: "50vw" },
+        },
+        content: {
+          animation: "slideInLeft 0.2s ease-out",
+          borderRadius: "0",
+          borderRightColor: "border",
+          borderRightStyle: "solid",
+          borderRightWidth: "1px",
+          height: "100%",
+          maxHeight: "none",
+          maxWidth: "none",
+          "@media (prefers-reduced-motion: reduce)": {
+            animation: "none",
+          },
+        },
+      },
+    },
+  },
 });

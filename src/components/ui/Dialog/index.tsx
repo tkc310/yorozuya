@@ -8,21 +8,29 @@ export function Dialog({
   open,
   title,
   footer,
+  placement = "center",
   children,
   onOpenChange,
 }: {
   open: boolean;
   title: string;
   footer?: ReactNode;
+  // side は左からせり出し、裏の画面も操作できる（プレビューを見ながら入力するため）。
+  placement?: "center" | "side";
   children: ReactNode;
   onOpenChange: (open: boolean) => void;
 }) {
-  const classes = dialog();
+  const classes = dialog({ placement });
+  const side = placement === "side";
   return (
     <ArkDialog.Root
       open={open}
       lazyMount
       unmountOnExit
+      modal={!side}
+      trapFocus
+      preventScroll={!side}
+      closeOnInteractOutside={!side}
       onOpenChange={(details) => onOpenChange(details.open)}
     >
       <Portal>
