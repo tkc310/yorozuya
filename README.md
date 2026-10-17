@@ -29,7 +29,7 @@
 ## 環境構築
 
 ```bash
-mise install
+mise install or asdf install
 pnpm install
 ```
 
