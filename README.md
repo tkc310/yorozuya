@@ -34,6 +34,10 @@ mise install
 pnpm install
 ```
 
+`pnpm install` は `prepare` を走らせる。Panda の codegen と `lefthook install`。
+
+`pnpm dev` が起動時にマイグレーションを当て、`data/` を作る。
+
 ## 開発者用のコマンド
 
 - 開発サーバ起動: `pnpm dev`
