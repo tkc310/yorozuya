@@ -9,11 +9,14 @@ const root = css({
   minWidth: "0",
 });
 
-// 補助の操作（スイッチなど）は見出しの下に並べ、欄の幅に関係なく形をそろえる。
+// 補助の操作（スイッチなど）は見出しと同じ行の右端に寄せる。入りきらないときは折り返す。
 const header = css({
-  display: "grid",
-  gap: "1",
-  justifyItems: "start",
+  alignItems: "center",
+  columnGap: "3",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  rowGap: "1",
 });
 
 const label = css({
@@ -21,8 +24,9 @@ const label = css({
   textStyle: "std-16B-170",
 });
 
+// スイッチのラベル（「表示」など）と同じ色にする。
 const requiredMark = css({
-  color: "solidGray.600",
+  color: "fg",
   ml: "2",
   textStyle: "std-14N-170",
 });

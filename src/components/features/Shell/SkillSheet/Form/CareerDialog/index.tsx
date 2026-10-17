@@ -12,15 +12,21 @@ import { ListInput } from "./ListInput/index";
 const form = css({
   display: "grid",
   gap: "6",
+  gridTemplateColumns: "minmax(0, 1fr)",
 });
 
-// 開始年月、進行中、終了年月をそれぞれ1行にする。年と月は横に並べる。
+// 開始年月、進行中、終了年月をそれぞれ1行にする。年と月は横に並べ、左に寄せる。
 const period = css({
   alignItems: "start",
   display: "grid",
   gap: "4",
-  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gridTemplateColumns: "auto auto",
+  justifyContent: "start",
 });
+
+// 西暦 4 桁と月 2 桁が入る幅（入力例も収まる幅）。
+const yearInput = css({ width: "6.5rem" });
+const monthInput = css({ width: "5rem" });
 
 const row = css({
   alignItems: "end",
@@ -420,6 +426,7 @@ function CareerForm({
             size="sm"
             inputMode="numeric"
             value={draft.startYear}
+            className={yearInput}
             onChange={(event) => update({ startYear: event.target.value })}
             onBlur={() => touch("startYear")}
           />
@@ -430,6 +437,7 @@ function CareerForm({
             size="sm"
             inputMode="numeric"
             value={draft.startMonth}
+            className={monthInput}
             onChange={(event) => update({ startMonth: event.target.value })}
             onBlur={() => touch("startMonth")}
           />
@@ -453,6 +461,7 @@ function CareerForm({
             inputMode="numeric"
             disabled={draft.ongoing}
             value={draft.ongoing ? "" : draft.endYear}
+            className={yearInput}
             onChange={(event) => update({ endYear: event.target.value })}
             onBlur={() => touch("endYear")}
           />
@@ -468,6 +477,7 @@ function CareerForm({
             inputMode="numeric"
             disabled={draft.ongoing}
             value={draft.ongoing ? "" : draft.endMonth}
+            className={monthInput}
             onChange={(event) => update({ endMonth: event.target.value })}
             onBlur={() => touch("endMonth")}
           />

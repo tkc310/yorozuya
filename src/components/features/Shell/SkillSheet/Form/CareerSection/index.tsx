@@ -7,8 +7,10 @@ import {
   type SheetInput,
 } from "@/shared/features/skill-sheet/sheet";
 import { Button } from "@/src/components/ui/Button/index";
+import { Truncate } from "@/src/components/ui/Truncate/index";
 import { CareerDialog } from "../CareerDialog/index";
-import { itemActions, itemLabel, items, listItem } from "../styles";
+import { ItemActions } from "../ItemActions/index";
+import { itemLabel, items, listItem } from "../styles";
 
 type CareerWrite = Omit<Career, "id">;
 
@@ -16,6 +18,7 @@ const careerNo = css({
   color: "fg.sub",
   display: "inline-block",
   fontVariantNumeric: "tabular-nums",
+  flexShrink: "0",
   mr: "2",
   minWidth: "1.75em",
   textAlign: "right",
@@ -69,30 +72,14 @@ export function CareerSection({
           <li key={career.id} className={listItem}>
             <span className={itemLabel}>
               <span className={careerNo}>{index + 1}.</span>
-              {career.projectName}
+              <Truncate>{career.projectName}</Truncate>
             </span>
-            <span className={itemActions}>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={pending}
-                aria-label={`${career.projectName}を編集`}
-                onClick={() => setEditing(career.id)}
-              >
-                編集
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={pending}
-                aria-label={`${career.projectName}を削除`}
-                onClick={() => onRemoveCareer(career.id)}
-              >
-                削除
-              </Button>
-            </span>
+            <ItemActions
+              name={career.projectName}
+              pending={pending}
+              onEdit={() => setEditing(career.id)}
+              onRemove={() => onRemoveCareer(career.id)}
+            />
           </li>
         ))}
       </ul>

@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { PHASES } from "@/shared/features/skill-sheet/sheet";
+import { PHASES, normalizePhase } from "@/shared/features/skill-sheet/sheet";
 
 const YearMonthSchema = v.object({
   year: v.pipe(v.number(), v.integer(), v.minValue(1)),
@@ -23,7 +23,11 @@ export const CareerSchema = v.object({
   team: v.string(),
   methodology: v.string(),
   tools: v.array(v.string()),
-  phases: v.array(v.picklist(PHASES)),
+  phases: v.pipe(
+    v.array(v.pipe(v.string(), v.transform(normalizePhase), v.picklist(PHASES))),
+    // 以前の名前を置き換えると重なることがあるので、1 つにまとめる。
+    v.transform((phases) => [...new Set(phases)]),
+  ),
   hard: v.boolean(),
 });
 
