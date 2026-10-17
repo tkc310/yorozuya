@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Input } from "./input";
+import { Input } from "./index";
 
 const meta = {
   title: "共通部品/入力",

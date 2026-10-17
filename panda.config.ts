@@ -1,9 +1,9 @@
 import { defineConfig } from "@pandacss/dev";
 import basePreset from "@pandacss/preset-base";
 import pandaPreset from "@pandacss/preset-panda";
-import { button } from "./src/theme/recipes/button";
-import { input } from "./src/theme/recipes/input";
-import { textarea } from "./src/theme/recipes/textarea";
+import { button } from "./src/components/ui/button/style";
+import { input } from "./src/components/ui/input/style";
+import { textarea } from "./src/components/ui/textarea/style";
 
 export default defineConfig({
   presets: [basePreset, pandaPreset],
