@@ -9,12 +9,13 @@ const root = css({
   minWidth: "0",
 });
 
-// 補助の操作（スイッチなど）は見出しの横に並べる。入りきらないときは折り返す。
+// 補助の操作（スイッチなど）は見出しと同じ行の右端に寄せる。入りきらないときは折り返す。
 const header = css({
   alignItems: "center",
   columnGap: "3",
   display: "flex",
   flexWrap: "wrap",
+  justifyContent: "space-between",
   rowGap: "1",
 });
 
