@@ -70,6 +70,6 @@ export const Example: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "スキルシート", level: 1 })).toBeVisible();
-    await expect(canvas.getByRole("cell", { name: "山田" })).toBeVisible();
+    await expect(canvas.getByText("山田", { selector: "dd" })).toBeVisible();
   },
 };

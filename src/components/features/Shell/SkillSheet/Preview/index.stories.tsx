@@ -29,10 +29,11 @@ export const Example: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "スキルシート" })).toBeVisible();
-    await expect(canvas.getByRole("cell", { name: "山田" })).toBeVisible();
+    await expect(canvas.getByText("山田", { selector: "dd" })).toBeVisible();
     await expect(canvas.getByText("3年6ヶ月")).toBeVisible();
     await expect(canvas.getByText("Typescript: 3年 / Go: 6ヶ月")).toBeVisible();
-    await expect(canvas.getAllByRole("row")).toHaveLength(14);
+    // 表は職務経歴の一覧だけ（見出し 1 行と 5 件）。
+    await expect(canvas.getAllByRole("row")).toHaveLength(6);
     for (const name of ["基本情報", "職務経歴の一覧", "職務経歴の詳細"]) {
       await expect(canvas.getByRole("heading", { name, level: 3 })).toBeVisible();
     }
@@ -59,9 +60,9 @@ export const WithLinks: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("rowheader", { name: "GitHub" })).toBeVisible();
+    await expect(canvas.getByText("GitHub")).toBeVisible();
     await expect(canvas.getByRole("link", { name: "https://example.com/portfolio" })).toBeVisible();
-    await expect(canvas.getByRole("rowheader", { name: "リンク" })).toBeVisible();
+    await expect(canvas.getByText("リンク", { selector: "li > span" })).toBeVisible();
   },
 };
 
