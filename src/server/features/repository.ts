@@ -17,7 +17,7 @@ import {
   skillGroups,
   skills,
 } from "../../db/schema";
-import type { SheetDatabase } from "../lib/db";
+import type { YorozuyaDatabase } from "../lib/db";
 
 export type SheetFailure = {
   message: string;
@@ -46,7 +46,7 @@ function isPhase(value: string): value is Phase {
 }
 
 export class SkillSheetRepository {
-  constructor(private readonly db: SheetDatabase) {}
+  constructor(private readonly db: YorozuyaDatabase) {}
 
   read(): Result<SheetInput, SheetFailure> {
     try {
