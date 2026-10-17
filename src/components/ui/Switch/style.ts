@@ -4,6 +4,8 @@ import { defineSlotRecipe } from "@pandacss/dev";
 // 幅 56px・高さ 36px のトラックに 24px のつまみ。オンでは青にしてチェックを出す。
 export const toggle = defineSlotRecipe({
   className: "toggle",
+  // レシピ名と部品名が違うので、<Switch size="sm"> の使い方を Panda に拾わせる。
+  jsx: ["Switch"],
   slots: ["root", "control", "track", "thumb", "icon", "label"],
   base: {
     root: {
@@ -108,6 +110,23 @@ export const toggle = defineSlotRecipe({
     label: {
       textStyle: "std-16N-170",
       "[role=switch]:disabled + &": { color: "fg.disabled" },
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+  variants: {
+    size: {
+      // DADS の標準の大きさ。
+      md: {},
+      // 項目名の横に並べる小さい版。形と色の規則は標準と同じで、寸法だけを詰める。
+      sm: {
+        root: { gap: "4px" },
+        track: { borderWidth: "2px", padding: "2px", width: "40px" },
+        thumb: { height: "16px", width: "16px" },
+        icon: { height: "16px", width: "16px" },
+        label: { textStyle: "std-14N-170" },
+      },
     },
   },
 });

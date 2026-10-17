@@ -12,13 +12,15 @@ import { Button } from "@/src/components/ui/Button/index";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Switch } from "@/src/components/ui/Switch/index";
+import { Truncate } from "@/src/components/ui/Truncate/index";
 import { alert, hint, itemActions, itemLabel, items, listItem, row } from "../styles";
 import { requiredError, sameExperience, toExperience } from "../values";
 
+// 2 桁が入る幅。
 const experienceInput = css({
   px: "2",
   textAlign: "right",
-  width: "3.5rem",
+  width: "2.75rem",
 });
 
 function SkillRow({
@@ -58,7 +60,7 @@ function SkillRow({
   return (
     <li className={listItem}>
       <span className={itemLabel}>
-        {groupName} {skill.name}
+        <Truncate>{`${groupName} ${skill.name}`}</Truncate>
       </span>
       <span className={itemActions}>
         <Input
@@ -86,6 +88,7 @@ function SkillRow({
         />
         ヶ月
         <Switch
+          size="sm"
           label="自動計算"
           aria-label={`${skill.name}の経験年数を職務経歴から自動計算`}
           title={available ? undefined : "職務経歴の環境にこの技術が無いため自動計算できません"}

@@ -7,6 +7,7 @@ import {
   type SheetInput,
 } from "@/shared/features/skill-sheet/sheet";
 import { Button } from "@/src/components/ui/Button/index";
+import { Truncate } from "@/src/components/ui/Truncate/index";
 import { CareerDialog } from "../CareerDialog/index";
 import { itemActions, itemLabel, items, listItem } from "../styles";
 
@@ -16,6 +17,7 @@ const careerNo = css({
   color: "fg.sub",
   display: "inline-block",
   fontVariantNumeric: "tabular-nums",
+  flexShrink: "0",
   mr: "2",
   minWidth: "1.75em",
   textAlign: "right",
@@ -69,7 +71,7 @@ export function CareerSection({
           <li key={career.id} className={listItem}>
             <span className={itemLabel}>
               <span className={careerNo}>{index + 1}.</span>
-              {career.projectName}
+              <Truncate>{career.projectName}</Truncate>
             </span>
             <span className={itemActions}>
               <Button

@@ -4,33 +4,19 @@ import type { ProfileLink } from "@/shared/features/skill-sheet/sheet";
 import { Button } from "@/src/components/ui/Button/index";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
+import { Truncate } from "@/src/components/ui/Truncate/index";
+import { itemActions, items, listItem } from "../styles";
 
 const root = css({
   display: "grid",
-  gap: "3",
-});
-
-const items = css({
-  display: "grid",
-  listStyle: "none",
-  margin: "0",
-  padding: "0",
-});
-
-const item = css({
-  alignItems: "center",
-  borderBottomWidth: "1px",
-  borderColor: "border.divider",
-  display: "flex",
   gap: "4",
-  justifyContent: "space-between",
-  py: "1",
+  gridTemplateColumns: "minmax(0, 1fr)",
 });
 
 const text = css({
   display: "grid",
+  flex: "1",
   minWidth: "0",
-  overflowWrap: "anywhere",
 });
 
 const url = css({
@@ -38,15 +24,34 @@ const url = css({
   textStyle: "std-14N-170",
 });
 
+// 2 つの欄は見出し・入力・エラーの 3 段を subgrid で共有し、追加ボタンを入力欄の段の中央にそろえる。
 const row = css({
+  columnGap: "3",
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 2fr) minmax(0, 3fr) auto",
+  gridTemplateRows: "auto auto auto",
+  "& > [data-part=root]": {
+    alignContent: "start",
+    gridRow: "1 / span 3",
+    gridTemplateRows: "subgrid",
+    rowGap: "2",
+  },
+});
+
+// 編集中の行。名前と URL の入力欄を横に並べる。
+const editRow = css({
   alignItems: "start",
   display: "grid",
-  gap: "3",
-  gridTemplateColumns: "minmax(0, 2fr) minmax(0, 3fr) auto",
+  flex: "1",
+  gap: "2",
+  gridTemplateColumns: "minmax(0, 2fr) minmax(0, 3fr)",
+  minWidth: "0",
 });
 
 const addButton = css({
-  mt: "8",
+  alignSelf: "center",
+  gridColumn: "3",
+  gridRow: "2",
 });
 
 function urlError(value: string): string | null {
@@ -60,7 +65,14 @@ function urlError(value: string): string | null {
   return null;
 }
 
-// 自己紹介の下に並べるリンク。追加・削除したらすぐ保存する。
+type Draft = {
+  index: number;
+  label: string;
+  url: string;
+  error: string | null;
+};
+
+// 自己紹介の下に並べるリンク。追加・編集・削除したらすぐ保存する。
 export function LinkList({
   links,
   pending,
@@ -74,6 +86,25 @@ export function LinkList({
   const [address, setAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const urlInput = useRef<HTMLInputElement>(null);
+  // 編集ボタンを押した行だけ入力欄に変える。
+  const [draft, setDraft] = useState<Draft | null>(null);
+
+  const saveDraft = () => {
+    if (!draft) {
+      return;
+    }
+    const message = urlError(draft.url);
+    if (message) {
+      setDraft({ ...draft, error: message });
+      return;
+    }
+    onChange(
+      links.map((link, index) =>
+        index === draft.index ? { label: draft.label.trim(), url: draft.url.trim() } : link,
+      ),
+    );
+    setDraft(null);
+  };
 
   const add = () => {
     const message = urlError(address);
@@ -92,21 +123,78 @@ export function LinkList({
       {links.length > 0 ? (
         <ul className={items} aria-label="リンク">
           {links.map((link, index) => (
-            <li key={`${index}-${link.url}`} className={item}>
-              <span className={text}>
-                <span>{link.label || link.url}</span>
-                {link.label ? <span className={url}>{link.url}</span> : null}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={pending}
-                aria-label={`${link.label || link.url}を削除`}
-                onClick={() => onChange(links.filter((_, current) => current !== index))}
-              >
-                削除
-              </Button>
+            <li key={`${index}-${link.url}`} className={listItem}>
+              {draft?.index === index ? (
+                <>
+                  <div className={editRow}>
+                    <Field label="リンク名">
+                      <Input
+                        size="sm"
+                        value={draft.label}
+                        onChange={(event) => setDraft({ ...draft, label: event.target.value })}
+                      />
+                    </Field>
+                    <Field label="URL" required error={draft.error}>
+                      <Input
+                        size="sm"
+                        inputMode="url"
+                        value={draft.url}
+                        onChange={(event) =>
+                          setDraft({ ...draft, url: event.target.value, error: null })
+                        }
+                      />
+                    </Field>
+                  </div>
+                  <span className={itemActions}>
+                    <Button type="button" variant="text" size="sm" onClick={() => setDraft(null)}>
+                      取り消し
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={pending}
+                      aria-label={`${link.label || link.url}を保存`}
+                      onClick={saveDraft}
+                    >
+                      保存
+                    </Button>
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className={text}>
+                    <Truncate>{link.label || link.url}</Truncate>
+                    {link.label ? <Truncate className={url}>{link.url}</Truncate> : null}
+                  </span>
+                  <span className={itemActions}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={pending}
+                      aria-label={`${link.label || link.url}を編集`}
+                      onClick={() =>
+                        setDraft({ index, label: link.label, url: link.url, error: null })
+                      }
+                    >
+                      編集
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={pending}
+                      aria-label={`${link.label || link.url}を削除`}
+                      onClick={() => {
+                        setDraft(null);
+                        onChange(links.filter((_, current) => current !== index));
+                      }}
+                    >
+                      削除
+                    </Button>
+                  </span>
+                </>
+              )}
             </li>
           ))}
         </ul>
