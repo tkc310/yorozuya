@@ -4,11 +4,18 @@ export const QUERY_KEY = {
   SKILL_SHEET: ["SKILL_SHEET"],
 } as const;
 
-export type SheetFailure = {
+export type ServerFailure = {
   message: string;
 };
 
-function isResult<T>(value: unknown): value is Result<T, SheetFailure> {
+export class ServerFunctionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ServerFunctionError";
+  }
+}
+
+function isResult<T>(value: unknown): value is Result<T, ServerFailure> {
   return (
     typeof value === "object" &&
     value !== null &&
@@ -16,12 +23,12 @@ function isResult<T>(value: unknown): value is Result<T, SheetFailure> {
   );
 }
 
-function rehydrate<T>(value: unknown): Result<T, SheetFailure> {
+function rehydrate<T>(value: unknown): Result<T, ServerFailure> {
   if (isResult<T>(value)) {
     return value;
   }
   if (typeof value === "object" && value !== null && "error" in value && !("value" in value)) {
-    const failure = (value as { error?: SheetFailure }).error;
+    const failure = (value as { error?: ServerFailure }).error;
     return err(failure ?? { message: "応答を読めませんでした" });
   }
   if (typeof value === "object" && value !== null && "value" in value) {
@@ -30,10 +37,10 @@ function rehydrate<T>(value: unknown): Result<T, SheetFailure> {
   return err({ message: "応答を読めませんでした" });
 }
 
-export async function request<T>(pending: Promise<Result<T, SheetFailure>>): Promise<T> {
+export async function request<T>(pending: Promise<Result<T, ServerFailure>>): Promise<T> {
   const result = rehydrate<T>(await pending);
   if (result.isErr()) {
-    throw new Error(result.error.message);
+    throw new ServerFunctionError(result.error.message);
   }
   return result.value;
 }

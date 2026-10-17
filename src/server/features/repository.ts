@@ -18,10 +18,7 @@ import {
   skills,
 } from "@/src/db/schema";
 import type { YorozuyaDatabase } from "@/src/server/lib/db";
-
-export type SheetFailure = {
-  message: string;
-};
+import type { ServerFailure } from "@/src/lib/request";
 
 export type ProfileWrite = {
   updatedOn: YearMonth | null;
@@ -48,7 +45,7 @@ function isPhase(value: string): value is Phase {
 export class SkillSheetRepository {
   constructor(private readonly db: YorozuyaDatabase) {}
 
-  read(): Result<SheetInput, SheetFailure> {
+  read(): Result<SheetInput, ServerFailure> {
     try {
       const profile = this.db.select().from(profiles).all()[0];
       if (!profile) {
@@ -113,7 +110,7 @@ export class SkillSheetRepository {
     }
   }
 
-  updateProfile(input: ProfileWrite): Result<{ saved: true }, SheetFailure> {
+  updateProfile(input: ProfileWrite): Result<{ saved: true }, ServerFailure> {
     try {
       const existing = this.db.select().from(profiles).where(eq(profiles.id, "profile")).all()[0];
       if (!existing) {
@@ -138,7 +135,7 @@ export class SkillSheetRepository {
     }
   }
 
-  addCareer(input: CareerWrite): Result<{ saved: true }, SheetFailure> {
+  addCareer(input: CareerWrite): Result<{ saved: true }, ServerFailure> {
     try {
       const id = randomUUID();
       const last = this.db.select().from(careers).orderBy(desc(careers.position)).all()[0];
@@ -181,7 +178,7 @@ export class SkillSheetRepository {
     }
   }
 
-  removeCareer(careerId: string): Result<{ saved: true }, SheetFailure> {
+  removeCareer(careerId: string): Result<{ saved: true }, ServerFailure> {
     try {
       const found = this.db.select().from(careers).where(eq(careers.id, careerId)).all()[0];
       if (!found) {
@@ -199,7 +196,7 @@ export class SkillSheetRepository {
     }
   }
 
-  addSkill(groupName: string, skillName: string): Result<{ saved: true }, SheetFailure> {
+  addSkill(groupName: string, skillName: string): Result<{ saved: true }, ServerFailure> {
     try {
       const name = skillName.trim();
       const group = groupName.trim();
@@ -228,7 +225,7 @@ export class SkillSheetRepository {
     }
   }
 
-  removeSkill(skillName: string): Result<{ saved: true }, SheetFailure> {
+  removeSkill(skillName: string): Result<{ saved: true }, ServerFailure> {
     try {
       const name = skillName.trim();
       const matches = this.db
