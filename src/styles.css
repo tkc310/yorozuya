@@ -1,0 +1,8 @@
+@layer reset, base, tokens, recipes, utilities;
+
+@media print {
+  .tool-list,
+  .sheet-form {
+    display: none !important;
+  }
+}

@@ -1,0 +1,13 @@
+node_modules
+dist
+.output
+.tanstack
+styled-system
+storybook-static
+playwright-report
+test-results
+blob-report
+data/yorozu.db
+*.log
+.env
+.env.*
