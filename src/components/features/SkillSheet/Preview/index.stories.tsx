@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 import { createFixtureSheet } from "@/shared/features/skill-sheet/sheet";
-import { SkillPreview } from "./preview";
+import { SkillPreview } from "./index";
 
 const meta = {
   title: "スキルシート/プレビュー",

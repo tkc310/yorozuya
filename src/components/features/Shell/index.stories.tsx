@@ -3,9 +3,9 @@ import { useState } from "react";
 import { expect, within } from "storybook/test";
 import { css } from "styled-system/css";
 import { createFixtureSheet, type SheetInput } from "@/shared/features/skill-sheet/sheet";
-import { sheetColumns, SkillSheetForm } from "../skill-sheet/form";
-import { SkillPreview } from "../skill-sheet/preview";
-import { Shell } from "./shell";
+import { sheetColumns, SkillSheetForm } from "../SkillSheet/Form/index";
+import { SkillPreview } from "../SkillSheet/Preview/index";
+import { Shell } from "./index";
 
 const meta = {
   title: "画面/シェル",

@@ -1,6 +1,6 @@
 import { css } from "styled-system/css";
 import { registry, type ToolRegistration } from "./registry";
-import { useToolSelection } from "./tool-selection";
+import { useToolSelection } from "./useToolSelection";
 
 const page = css({
   display: "grid",

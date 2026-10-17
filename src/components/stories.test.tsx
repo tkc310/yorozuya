@@ -5,9 +5,9 @@ import * as buttonStories from "./ui/button/index.stories";
 import * as fieldStories from "./ui/field/index.stories";
 import * as inputStories from "./ui/input/index.stories";
 import * as textareaStories from "./ui/textarea/index.stories";
-import * as formStories from "./features/skill-sheet/form.stories";
-import * as previewStories from "./features/skill-sheet/preview.stories";
-import * as shellStories from "./features/shell/shell.stories";
+import * as formStories from "./features/SkillSheet/Form/index.stories";
+import * as previewStories from "./features/SkillSheet/Preview/index.stories";
+import * as shellStories from "./features/Shell/index.stories";
 
 const groups = [
   buttonStories,

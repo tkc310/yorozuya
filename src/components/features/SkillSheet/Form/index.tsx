@@ -10,11 +10,11 @@ import {
   type YearMonth,
 } from "@/shared/features/skill-sheet/sheet";
 import { QUERY_KEY, request } from "@/src/lib/request";
-import { Button } from "../../ui/button/index";
-import { Field } from "../../ui/field/index";
-import { Input } from "../../ui/input/index";
-import { Textarea } from "../../ui/textarea/index";
-import { SkillPreview } from "./preview";
+import { Button } from "../../../ui/button/index";
+import { Field } from "../../../ui/field/index";
+import { Input } from "../../../ui/input/index";
+import { Textarea } from "../../../ui/textarea/index";
+import { SkillPreview } from "../Preview/index";
 
 function currentMonth(): YearMonth {
   const now = new Date();
@@ -537,7 +537,7 @@ export function SkillSheet() {
   const query = useQuery({
     queryKey: QUERY_KEY.SKILL_SHEET,
     queryFn: async () => {
-      const { getSheetFn } = await import("../../../server/features/skill-sheet/queries/get-sheet");
+      const { getSheetFn } = await import("@/src/server/features/skill-sheet/queries/get-sheet");
       return request(getSheetFn());
     },
     retry: false,
@@ -555,7 +555,7 @@ export function SkillSheet() {
 
   const saveProfile = useMutation({
     mutationFn: async (value: SheetInput) => {
-      const { updateProfileFn } = await import("../../../server/features/skill-sheet/commands/update-profile");
+      const { updateProfileFn } = await import("@/src/server/features/skill-sheet/commands/update-profile");
       return request(
         updateProfileFn({
           data: {
@@ -577,7 +577,7 @@ export function SkillSheet() {
   });
   const addSkillMutation = useMutation({
     mutationFn: async (input: { groupName: string; skillName: string }) => {
-      const { addSkillFn } = await import("../../../server/features/skill-sheet/commands/add-skill");
+      const { addSkillFn } = await import("@/src/server/features/skill-sheet/commands/add-skill");
       return request(addSkillFn({ data: input }));
     },
     onSuccess: async () => {
@@ -588,7 +588,7 @@ export function SkillSheet() {
   });
   const removeSkillMutation = useMutation({
     mutationFn: async (skillName: string) => {
-      const { removeSkillFn } = await import("../../../server/features/skill-sheet/commands/remove-skill");
+      const { removeSkillFn } = await import("@/src/server/features/skill-sheet/commands/remove-skill");
       return request(removeSkillFn({ data: { skillName } }));
     },
     onSuccess: async () => {
@@ -599,7 +599,7 @@ export function SkillSheet() {
   });
   const addCareerMutation = useMutation({
     mutationFn: async (career: Omit<Career, "id">) => {
-      const { addCareerFn } = await import("../../../server/features/skill-sheet/commands/add-career");
+      const { addCareerFn } = await import("@/src/server/features/skill-sheet/commands/add-career");
       return request(addCareerFn({ data: career }));
     },
     onSuccess: async () => {
@@ -610,7 +610,7 @@ export function SkillSheet() {
   });
   const removeCareerMutation = useMutation({
     mutationFn: async (careerId: string) => {
-      const { removeCareerFn } = await import("../../../server/features/skill-sheet/commands/remove-career");
+      const { removeCareerFn } = await import("@/src/server/features/skill-sheet/commands/remove-career");
       return request(removeCareerFn({ data: { careerId } }));
     },
     onSuccess: async () => {

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Shell } from "../components/features/shell/shell";
+import { Shell } from "../components/features/Shell/index";
 import { QUERY_KEY, request } from "../lib/request";
 import { getSheetFn } from "../server/features/skill-sheet/queries/get-sheet";
 
