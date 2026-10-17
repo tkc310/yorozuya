@@ -6,7 +6,7 @@ import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import { seed } from "../../db/seed";
 import * as schema from "../../db/schema";
 
-const file = "data/yorozu.db";
+const file = "data/yorozuya.db";
 const migrationsFolder = "src/db/migrations";
 
 export type YorozuyaDatabase = BunSQLiteDatabase<typeof schema>;

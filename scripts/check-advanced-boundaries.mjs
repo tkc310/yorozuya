@@ -66,9 +66,9 @@ function scan(file) {
   const source = strip(readFileSync(file, "utf8"));
   const specs = imports(source);
 
-  // data/yorozu.db を開けるのは src/server/lib/db.ts だけ
-  if (filePath !== "src/server/lib/db.ts" && source.includes("data/yorozu.db")) {
-    fail(filePath, "data/yorozu.db を開けるのは src/server/lib/db.ts だけです");
+  // data/yorozuya.db を開けるのは src/server/lib/db.ts だけ
+  if (filePath !== "src/server/lib/db.ts" && source.includes("data/yorozuya.db")) {
+    fail(filePath, "data/yorozuya.db を開けるのは src/server/lib/db.ts だけです");
   }
 
   // CREATE TABLE を書かない

@@ -21,7 +21,7 @@
 
 `scripts/check-advanced-boundaries.mjs` で以下を検証：
 
-- `data/yorozu.db` を開けるのは `src/server/lib/db.ts` だけ
+- `data/yorozuya.db` を開けるのは `src/server/lib/db.ts` だけ
 - `CREATE TABLE` は書かない（マイグレーションを使用）
 - `insert`, `update`, `delete` は `repository.ts` と `seed.ts` でのみ使用
 
@@ -43,7 +43,7 @@ pnpm lint:boundary # ESLint + 追加チェックのみ
 | `src/server/lib/db.ts` 以外が `bun:sqlite` または `drizzle-orm/bun-sqlite` を import する | 接続は `src/server/lib/db.ts` だけ | ESLint |
 | `@libsql/client`、`drizzle-orm/libsql`、`better-sqlite3`、`node:sqlite` を import する | ホストされた DB も別の SQLite パッケージも使わない | ESLint |
 | `TURSO_DATABASE_URL` を読む | 接続先の環境変数は読まない | ESLint |
-| `src/server/lib/db.ts` 以外が `data/yorozu.db` を開く | ローカルファイルは `db.ts` だけ | 追加チェック |
+| `src/server/lib/db.ts` 以外が `data/yorozuya.db` を開く | ローカルファイルは `db.ts` だけ | 追加チェック |
 | `src/server/features/repository.ts` 以外の `src/server/features` が Drizzle を import する | 読み書きは `SkillSheetRepository` だけ | ESLint |
 | `queries` と `commands` が互いに import する | query と command は分ける | ESLint |
 | query が `insert`、`update`、`delete` を呼ぶ | query は書かない | 追加チェック |
