@@ -107,9 +107,7 @@ export class SkillSheetRepository {
       return ok(sheet);
     } catch (error) {
       return err(
-        new ServerFunctionError(
-          error instanceof Error ? error.message : "読み込みに失敗しました",
-        ),
+        new ServerFunctionError(error instanceof Error ? error.message : "読み込みに失敗しました"),
       );
     }
   }
@@ -217,7 +215,11 @@ export class SkillSheetRepository {
       if (name.length === 0 || group.length === 0) {
         return err(new ServerFunctionError("技術名を入れてください"));
       }
-      const duplicate = this.db.select().from(skills).all().some((row) => row.name.trim() === name);
+      const duplicate = this.db
+        .select()
+        .from(skills)
+        .all()
+        .some((row) => row.name.trim() === name);
       if (duplicate) {
         return ok({ saved: true });
       }

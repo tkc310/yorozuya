@@ -153,14 +153,18 @@ export function Preview({
       </section>
       <section className={block}>
         <h3 className={css({ margin: "0" })}>直近の職務経歴</h3>
-        {view.recent.length === 0 ? <p className={css({ margin: "0" })}>職務経歴はありません</p> : null}
+        {view.recent.length === 0 ? (
+          <p className={css({ margin: "0" })}>職務経歴はありません</p>
+        ) : null}
         {view.recent.map((item) => (
           <RecentCareer key={item.id} item={item} />
         ))}
       </section>
       <section className={block}>
         <h3 className={css({ margin: "0" })}>それより前</h3>
-        {view.older.length === 0 ? <p className={css({ margin: "0" })}>それより前の経歴はありません</p> : null}
+        {view.older.length === 0 ? (
+          <p className={css({ margin: "0" })}>それより前の経歴はありません</p>
+        ) : null}
         <ul>
           {view.older.map((item) => (
             <li key={item.id}>

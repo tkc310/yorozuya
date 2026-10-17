@@ -37,9 +37,7 @@ export const addCareerFn = createServerFn({ method: "POST", strict: false })
   .handler((ctx) => {
     const parsed = v.safeParse(CareerSchema, ctx.data);
     if (!parsed.success) {
-      return err(
-        new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"),
-      );
+      return err(new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"));
     }
     return new SkillSheetRepository(getDb()).addCareer(parsed.output);
   });

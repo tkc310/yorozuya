@@ -20,7 +20,8 @@ function referenceIsConsumed(identifier) {
   while (current.parent) {
     const parent = current.parent;
     if (parent.type === "MemberExpression" && parent.object === current && !parent.computed) {
-      const name = parent.property && parent.property.type === "Identifier" ? parent.property.name : "";
+      const name =
+        parent.property && parent.property.type === "Identifier" ? parent.property.name : "";
       return consumers.has(name);
     }
     if (parent.type === "ReturnStatement" && parent.argument === current) {
@@ -59,7 +60,8 @@ const rule = {
   meta: {
     type: "problem",
     docs: {
-      description: "Result と ResultAsync は返すか、match / unwrapOr / unwrapOrElse / isOk / isErr で使う",
+      description:
+        "Result と ResultAsync は返すか、match / unwrapOr / unwrapOrElse / isOk / isErr で使う",
     },
     schema: [],
     messages: {
@@ -80,7 +82,8 @@ const rule = {
         const variables = declaredVariables(context, node);
         const used = variables.some((variable) =>
           variable.references.some(
-            (reference) => reference.identifier !== node.id && referenceIsConsumed(reference.identifier),
+            (reference) =>
+              reference.identifier !== node.id && referenceIsConsumed(reference.identifier),
           ),
         );
         if (!used) {

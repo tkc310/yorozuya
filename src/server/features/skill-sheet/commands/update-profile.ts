@@ -24,9 +24,7 @@ export const updateProfileFn = createServerFn({ method: "POST", strict: false })
   .handler((ctx) => {
     const parsed = v.safeParse(ProfileSchema, ctx.data);
     if (!parsed.success) {
-      return err(
-        new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"),
-      );
+      return err(new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"));
     }
     return new SkillSheetRepository(getDb()).updateProfile(parsed.output);
   });

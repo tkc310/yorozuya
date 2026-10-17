@@ -43,3 +43,4 @@ pnpm install
 - 型検査: `pnpm typecheck`
 - 静的検査: `pnpm lint`
 - 境界検査: `pnpm lint:boundary`
+- フォーマット: `pnpm fmt`

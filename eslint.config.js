@@ -103,7 +103,8 @@ export default [
             },
             {
               name: "drizzle-orm/libsql",
-              message: "ホストされた DB は使用できません。drizzle-orm/bun-sqlite を使用してください",
+              message:
+                "ホストされた DB は使用できません。drizzle-orm/bun-sqlite を使用してください",
             },
             {
               name: "better-sqlite3",

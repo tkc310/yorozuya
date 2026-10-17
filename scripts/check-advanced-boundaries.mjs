@@ -78,7 +78,9 @@ function scan(file) {
 
   // insert, update, delete の呼び出しチェック
   const writes = /\.(insert|update|delete)\s*\(/.test(source);
-  const usesDrizzle = specs.some((spec) => spec === "drizzle-orm" || spec.startsWith("drizzle-orm/"));
+  const usesDrizzle = specs.some(
+    (spec) => spec === "drizzle-orm" || spec.startsWith("drizzle-orm/"),
+  );
   const writesInPlace =
     filePath === "src/server/features/repository.ts" || filePath === "src/db/seed.ts";
 

@@ -20,6 +20,7 @@ export default defineConfig({
   },
   plugins: testing ? [react()] : [tanstackStart(), react()],
   fmt: {
+    ignorePatterns: ["src/routeTree.gen.ts"],
     semi: true,
     singleQuote: false,
   },

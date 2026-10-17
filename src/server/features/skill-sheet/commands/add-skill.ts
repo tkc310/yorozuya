@@ -15,9 +15,10 @@ export const addSkillFn = createServerFn({ method: "POST", strict: false })
   .handler((ctx) => {
     const parsed = v.safeParse(AddSkillSchema, ctx.data);
     if (!parsed.success) {
-      return err(
-        new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"),
-      );
+      return err(new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"));
     }
-    return new SkillSheetRepository(getDb()).addSkill(parsed.output.groupName, parsed.output.skillName);
+    return new SkillSheetRepository(getDb()).addSkill(
+      parsed.output.groupName,
+      parsed.output.skillName,
+    );
   });

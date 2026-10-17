@@ -62,17 +62,13 @@ export function seed(db: SeedDatabase): void {
         })
         .run();
       career.environment.forEach((name, position) => {
-        tx.insert(schema.careerEnvironments)
-          .values({ careerId: career.id, position, name })
-          .run();
+        tx.insert(schema.careerEnvironments).values({ careerId: career.id, position, name }).run();
       });
       career.tools.forEach((name, position) => {
         tx.insert(schema.careerTools).values({ careerId: career.id, position, name }).run();
       });
       career.phases.forEach((phase, position) => {
-        tx.insert(schema.careerPhases)
-          .values({ careerId: career.id, position, phase })
-          .run();
+        tx.insert(schema.careerPhases).values({ careerId: career.id, position, phase }).run();
       });
     });
   });

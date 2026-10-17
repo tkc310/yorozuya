@@ -1,0 +1,9 @@
+pre-push:
+  parallel: true
+  commands:
+    typecheck:
+      run: pnpm typecheck
+    lint:
+      run: pnpm lint
+    fmt:
+      run: pnpm fmt
