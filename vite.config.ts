@@ -25,6 +25,7 @@ export default defineConfig({
     singleQuote: false,
   },
   lint: {
+    ignorePatterns: ["src/routeTree.gen.ts"],
     plugins: ["typescript", "react", "oxc"],
     jsPlugins: ["./oxlint-plugins/must-use-result.js", "./oxlint-plugins/no-create-table.js"],
     rules: {
