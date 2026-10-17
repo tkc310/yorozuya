@@ -3,7 +3,7 @@
 | `src/components/features/shell` 以外の feature が別の feature を import する | feature 同士は import しない |
 | `src/components`、`src/routes`、`src/router.tsx` が `src/db` を import する | 画面は表を直接 import しない |
 | 画面が `fetch` を呼ぶ | 取得はサーバ関数へ |
-| `src/server` 以外が `src/server` を import する | サーバ関数の export を import できるのは画面と `src/lib` |
+| 画面と `src/lib` と `src/server` 以外が `src/server` を import する | サーバ関数は画面が直接 import する |
 | `src/lib` が React を import する | `src/lib` に React コンポーネントは置かない |
 | `src/components/ui` が `src/components/features`、`src/lib`、`src/server` を import する | `ui` は共通部品 |
 | `shared/features` が React、Drizzle、`bun:sqlite`、`@libsql/client`、neverthrow、`@tanstack`、`src/server`、`src/lib` を import する | シートの計算は純粋 |
