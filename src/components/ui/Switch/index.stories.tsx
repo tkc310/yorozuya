@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Switch } from "./index";
+import { useState } from "react";
+import { expect, userEvent, within } from "storybook/test";
+import { Switch, type SwitchProps } from "./index";
 
 const meta = {
   title: "共通部品/スイッチ",
@@ -7,7 +9,8 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: "プレビューに出すかを切り替える。項目名の横に置く。",
+        component:
+          "デジタル庁デザインシステムのオン／オフスイッチ。プレビューに出すかや、自動計算するかを切り替える。",
       },
     },
   },
@@ -17,17 +20,33 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+function Controlled(props: SwitchProps) {
+  const [checked, setChecked] = useState(props.checked);
+  return <Switch {...props} checked={checked} onCheckedChange={setChecked} />;
+}
+
 export const Example: Story = {
-  name: "表示",
+  name: "オン",
   args: {
     label: "表示",
-    defaultChecked: true,
+    checked: true,
+    onCheckedChange: () => undefined,
+  },
+  render: (args) => <Controlled {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const control = canvas.getByRole("switch", { name: "表示" });
+    await expect(control).toBeChecked();
+    await userEvent.click(canvas.getByText("表示"));
+    await expect(control).not.toBeChecked();
   },
 };
 
 export const Unchecked: Story = {
-  name: "非表示",
+  name: "オフ",
   args: {
     label: "表示",
+    checked: false,
+    onCheckedChange: () => undefined,
   },
 };
