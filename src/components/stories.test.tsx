@@ -1,19 +1,21 @@
 import { cleanup } from "@testing-library/react";
 import { composeStories } from "@storybook/react-vite";
 import { afterEach, describe, test } from "vitest";
-import * as buttonStories from "./ui/button.stories";
-import * as fieldStories from "./ui/field.stories";
-import * as inputStories from "./ui/input.stories";
-import * as textareaStories from "./ui/textarea.stories";
-import * as formStories from "./features/skill-sheet/form.stories";
-import * as previewStories from "./features/skill-sheet/preview.stories";
-import * as shellStories from "./features/shell/shell.stories";
+import * as buttonStories from "./ui/Button/index.stories";
+import * as fieldStories from "./ui/Field/index.stories";
+import * as inputStories from "./ui/Input/index.stories";
+import * as textareaStories from "./ui/Textarea/index.stories";
+import * as skillSheetStories from "./features/Shell/SkillSheet/index.stories";
+import * as formStories from "./features/Shell/SkillSheet/Form/index.stories";
+import * as previewStories from "./features/Shell/SkillSheet/Preview/index.stories";
+import * as shellStories from "./features/Shell/index.stories";
 
 const groups = [
   buttonStories,
   fieldStories,
   inputStories,
   textareaStories,
+  skillSheetStories,
   formStories,
   previewStories,
   shellStories,

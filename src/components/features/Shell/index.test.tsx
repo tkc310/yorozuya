@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { registry } from "./registry";
-import { Shell } from "./shell";
-import { useToolSelection } from "./tool-selection";
+import { Shell } from "./index";
+import { useToolSelection } from "./useToolSelection";
 
 describe("ツール一覧", () => {
   beforeEach(() => {

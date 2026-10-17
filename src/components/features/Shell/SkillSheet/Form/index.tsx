@@ -1,5 +1,4 @@
 import { useForm, useStore } from "@tanstack/react-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { css } from "styled-system/css";
 import {
@@ -7,27 +6,11 @@ import {
   type Career,
   type Phase,
   type SheetInput,
-  type YearMonth,
-} from "../../../../shared/features/skill-sheet/sheet";
-import { sheetQueryKey } from "../../../lib/query-keys";
-import { request } from "../../../lib/request";
-import { Button } from "../../ui/button";
-import { Field } from "../../ui/field";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
-import { SkillPreview } from "./preview";
-
-function currentMonth(): YearMonth {
-  const now = new Date();
-  return { year: now.getFullYear(), month: now.getMonth() + 1 };
-}
-
-export const sheetColumns = css({
-  display: "grid",
-  gap: "6",
-  gridTemplateColumns: { base: "1fr", lg: "minmax(0, 1fr) minmax(0, 1fr)" },
-  p: "6",
-});
+} from "@/shared/features/skill-sheet/sheet";
+import { Button } from "../../../../ui/Button/index";
+import { Field } from "../../../../ui/Field/index";
+import { Input } from "../../../../ui/Input/index";
+import { Textarea } from "../../../../ui/Textarea/index";
 
 const stack = css({
   display: "grid",
@@ -157,7 +140,7 @@ function toCareer(draft: CareerDraft): Omit<Career, "id"> | string {
   };
 }
 
-export type SkillSheetFormProps = {
+export type FormProps = {
   initial: SheetInput;
   onValues: (value: SheetInput) => void;
   onSaveProfile: (value: SheetInput) => void;
@@ -169,7 +152,7 @@ export type SkillSheetFormProps = {
   pending?: boolean;
 };
 
-export function SkillSheetForm({
+export function Form({
   initial,
   onValues,
   onSaveProfile,
@@ -179,7 +162,7 @@ export function SkillSheetForm({
   onRemoveCareer,
   message,
   pending,
-}: SkillSheetFormProps) {
+}: FormProps) {
   const form = useForm({
     defaultValues: initial,
   });
@@ -529,129 +512,6 @@ export function SkillSheetForm({
           </Button>
         </div>
       </section>
-    </div>
-  );
-}
-
-export function SkillSheet() {
-  const queryClient = useQueryClient();
-  const query = useQuery({
-    queryKey: sheetQueryKey,
-    queryFn: async () => {
-      const { getSheetFn } = await import("../../../server/features/skill-sheet/queries/get-sheet");
-      return request(getSheetFn());
-    },
-    retry: false,
-  });
-  const [preview, setPreview] = useState<SheetInput | null>(null);
-  const [generation, setGeneration] = useState(0);
-  const [message, setMessage] = useState<string | null>(null);
-  const [calculatedOn] = useState(currentMonth);
-
-  const refresh = async () => {
-    await queryClient.invalidateQueries({ queryKey: sheetQueryKey });
-    setPreview(null);
-    setGeneration((current) => current + 1);
-  };
-
-  const saveProfile = useMutation({
-    mutationFn: async (value: SheetInput) => {
-      const { updateProfileFn } = await import("../../../server/features/skill-sheet/commands/update-profile");
-      return request(
-        updateProfileFn({
-          data: {
-            updatedOn: value.updatedOn,
-            name: value.name,
-            workStyle: value.workStyle,
-            education: value.education,
-            station: value.station,
-            selfPr: value.selfPr,
-          },
-        }),
-      );
-    },
-    onSuccess: async () => {
-      setMessage(null);
-      await queryClient.invalidateQueries({ queryKey: sheetQueryKey });
-    },
-    onError: (error: Error) => setMessage(error.message),
-  });
-  const addSkillMutation = useMutation({
-    mutationFn: async (input: { groupName: string; skillName: string }) => {
-      const { addSkillFn } = await import("../../../server/features/skill-sheet/commands/add-skill");
-      return request(addSkillFn({ data: input }));
-    },
-    onSuccess: async () => {
-      setMessage(null);
-      await refresh();
-    },
-    onError: (error: Error) => setMessage(error.message),
-  });
-  const removeSkillMutation = useMutation({
-    mutationFn: async (skillName: string) => {
-      const { removeSkillFn } = await import("../../../server/features/skill-sheet/commands/remove-skill");
-      return request(removeSkillFn({ data: { skillName } }));
-    },
-    onSuccess: async () => {
-      setMessage(null);
-      await refresh();
-    },
-    onError: (error: Error) => setMessage(error.message),
-  });
-  const addCareerMutation = useMutation({
-    mutationFn: async (career: Omit<Career, "id">) => {
-      const { addCareerFn } = await import("../../../server/features/skill-sheet/commands/add-career");
-      return request(addCareerFn({ data: career }));
-    },
-    onSuccess: async () => {
-      setMessage(null);
-      await refresh();
-    },
-    onError: (error: Error) => setMessage(error.message),
-  });
-  const removeCareerMutation = useMutation({
-    mutationFn: async (careerId: string) => {
-      const { removeCareerFn } = await import("../../../server/features/skill-sheet/commands/remove-career");
-      return request(removeCareerFn({ data: { careerId } }));
-    },
-    onSuccess: async () => {
-      setMessage(null);
-      await refresh();
-    },
-    onError: (error: Error) => setMessage(error.message),
-  });
-  const pending =
-    saveProfile.isPending ||
-    addSkillMutation.isPending ||
-    removeSkillMutation.isPending ||
-    addCareerMutation.isPending ||
-    removeCareerMutation.isPending;
-
-  if (query.isPending) {
-    return <p>シートを読み込んでいます</p>;
-  }
-  if (query.isError) {
-    return <p role="alert">{query.error.message}</p>;
-  }
-
-  const shown = preview ?? query.data;
-  return (
-    <div className={sheetColumns}>
-      <div className="sheet-form">
-        <SkillSheetForm
-          key={generation}
-          initial={query.data}
-          onValues={setPreview}
-          onSaveProfile={(value) => saveProfile.mutate(value)}
-          onAddSkill={(groupName, skillName) => addSkillMutation.mutate({ groupName, skillName })}
-          onRemoveSkill={(skillName) => removeSkillMutation.mutate(skillName)}
-          onAddCareer={(career) => addCareerMutation.mutate(career)}
-          onRemoveCareer={(careerId) => removeCareerMutation.mutate(careerId)}
-          message={message}
-          pending={pending}
-        />
-      </div>
-      <SkillPreview sheet={shown} calculatedOn={calculatedOn} />
     </div>
   );
 }

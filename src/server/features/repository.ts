@@ -7,7 +7,7 @@ import {
   type Phase,
   type SheetInput,
   type YearMonth,
-} from "../../../shared/features/skill-sheet/sheet";
+} from "@/shared/features/skill-sheet/sheet";
 import {
   careerEnvironments,
   careerPhases,
@@ -16,12 +16,9 @@ import {
   profiles,
   skillGroups,
   skills,
-} from "../../db/schema";
-import type { SheetDatabase } from "../lib/db";
-
-export type SheetFailure = {
-  message: string;
-};
+} from "@/src/db/schema";
+import type { YorozuyaDatabase } from "@/src/server/lib/db";
+import { ServerFunctionError } from "@/src/error";
 
 export type ProfileWrite = {
   updatedOn: YearMonth | null;
@@ -46,13 +43,13 @@ function isPhase(value: string): value is Phase {
 }
 
 export class SkillSheetRepository {
-  constructor(private readonly db: SheetDatabase) {}
+  constructor(private readonly db: YorozuyaDatabase) {}
 
-  read(): Result<SheetInput, SheetFailure> {
+  read(): Result<SheetInput, ServerFunctionError> {
     try {
       const profile = this.db.select().from(profiles).all()[0];
       if (!profile) {
-        return err({ message: "シートがありません" });
+        return err(new ServerFunctionError("シートがありません"));
       }
       const groups = this.db.select().from(skillGroups).orderBy(asc(skillGroups.position)).all();
       const skillRows = this.db.select().from(skills).orderBy(asc(skills.position)).all();
@@ -109,15 +106,19 @@ export class SkillSheetRepository {
       };
       return ok(sheet);
     } catch (error) {
-      return err({ message: error instanceof Error ? error.message : "読み込みに失敗しました" });
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "読み込みに失敗しました",
+        ),
+      );
     }
   }
 
-  updateProfile(input: ProfileWrite): Result<{ saved: true }, SheetFailure> {
+  updateProfile(input: ProfileWrite): Result<{ saved: true }, ServerFunctionError> {
     try {
       const existing = this.db.select().from(profiles).where(eq(profiles.id, "profile")).all()[0];
       if (!existing) {
-        return err({ message: "シートがありません" });
+        return err(new ServerFunctionError("シートがありません"));
       }
       this.db
         .update(profiles)
@@ -134,11 +135,13 @@ export class SkillSheetRepository {
         .run();
       return ok({ saved: true });
     } catch (error) {
-      return err({ message: error instanceof Error ? error.message : "保存に失敗しました" });
+      return err(
+        new ServerFunctionError(error instanceof Error ? error.message : "保存に失敗しました"),
+      );
     }
   }
 
-  addCareer(input: CareerWrite): Result<{ saved: true }, SheetFailure> {
+  addCareer(input: CareerWrite): Result<{ saved: true }, ServerFunctionError> {
     try {
       const id = randomUUID();
       const last = this.db.select().from(careers).orderBy(desc(careers.position)).all()[0];
@@ -177,15 +180,19 @@ export class SkillSheetRepository {
       });
       return ok({ saved: true });
     } catch (error) {
-      return err({ message: error instanceof Error ? error.message : "経歴を追加できませんでした" });
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "経歴を追加できませんでした",
+        ),
+      );
     }
   }
 
-  removeCareer(careerId: string): Result<{ saved: true }, SheetFailure> {
+  removeCareer(careerId: string): Result<{ saved: true }, ServerFunctionError> {
     try {
       const found = this.db.select().from(careers).where(eq(careers.id, careerId)).all()[0];
       if (!found) {
-        return err({ message: "経歴がありません" });
+        return err(new ServerFunctionError("経歴がありません"));
       }
       this.db.transaction((tx) => {
         tx.delete(careerEnvironments).where(eq(careerEnvironments.careerId, careerId)).run();
@@ -195,16 +202,20 @@ export class SkillSheetRepository {
       });
       return ok({ saved: true });
     } catch (error) {
-      return err({ message: error instanceof Error ? error.message : "経歴を削除できませんでした" });
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "経歴を削除できませんでした",
+        ),
+      );
     }
   }
 
-  addSkill(groupName: string, skillName: string): Result<{ saved: true }, SheetFailure> {
+  addSkill(groupName: string, skillName: string): Result<{ saved: true }, ServerFunctionError> {
     try {
       const name = skillName.trim();
       const group = groupName.trim();
       if (name.length === 0 || group.length === 0) {
-        return err({ message: "技術名を入れてください" });
+        return err(new ServerFunctionError("技術名を入れてください"));
       }
       const duplicate = this.db.select().from(skills).all().some((row) => row.name.trim() === name);
       if (duplicate) {
@@ -224,11 +235,15 @@ export class SkillSheetRepository {
       });
       return ok({ saved: true });
     } catch (error) {
-      return err({ message: error instanceof Error ? error.message : "技術を追加できませんでした" });
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "技術を追加できませんでした",
+        ),
+      );
     }
   }
 
-  removeSkill(skillName: string): Result<{ saved: true }, SheetFailure> {
+  removeSkill(skillName: string): Result<{ saved: true }, ServerFunctionError> {
     try {
       const name = skillName.trim();
       const matches = this.db
@@ -237,7 +252,7 @@ export class SkillSheetRepository {
         .all()
         .filter((row) => row.name.trim() === name);
       if (matches.length === 0) {
-        return err({ message: "技術がありません" });
+        return err(new ServerFunctionError("技術がありません"));
       }
       this.db.transaction((tx) => {
         for (const match of matches) {
@@ -250,7 +265,11 @@ export class SkillSheetRepository {
       });
       return ok({ saved: true });
     } catch (error) {
-      return err({ message: error instanceof Error ? error.message : "技術を削除できませんでした" });
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "技術を削除できませんでした",
+        ),
+      );
     }
   }
 }

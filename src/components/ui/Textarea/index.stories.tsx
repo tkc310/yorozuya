@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Textarea } from "./textarea";
+import { Textarea } from "./index";
 
 const meta = {
   title: "共通部品/複数行入力",

@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { err } from "neverthrow";
 import * as v from "valibot";
-import { getDb } from "../../../lib/db";
+import { ServerFunctionError } from "@/src/error";
+import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../../repository";
 
 const RemoveSkillSchema = v.object({
@@ -13,7 +14,9 @@ export const removeSkillFn = createServerFn({ method: "POST", strict: false })
   .handler((ctx) => {
     const parsed = v.safeParse(RemoveSkillSchema, ctx.data);
     if (!parsed.success) {
-      return err({ message: parsed.issues[0]?.message ?? "入力が不正です" });
+      return err(
+        new ServerFunctionError(parsed.issues[0]?.message ?? "入力が不正です"),
+      );
     }
     return new SkillSheetRepository(getDb()).removeSkill(parsed.output.skillName);
   });

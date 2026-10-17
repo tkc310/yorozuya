@@ -6,14 +6,14 @@ import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import { seed } from "../../db/seed";
 import * as schema from "../../db/schema";
 
-const file = "data/yorozu.db";
+const file = "data/yorozuya.db";
 const migrationsFolder = "src/db/migrations";
 
-export type SheetDatabase = BunSQLiteDatabase<typeof schema>;
+export type YorozuyaDatabase = BunSQLiteDatabase<typeof schema>;
 
-let cached: SheetDatabase | undefined;
+let cached: YorozuyaDatabase | undefined;
 
-export function getDb(): SheetDatabase {
+export function getDb(): YorozuyaDatabase {
   if (cached) {
     return cached;
   }
