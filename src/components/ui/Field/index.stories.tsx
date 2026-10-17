@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Field } from "./index";
-import { Input } from "../input";
+import { Input } from "../Input/index";
 
 const meta = {
   title: "共通部品/フィールド",

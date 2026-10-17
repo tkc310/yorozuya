@@ -10,10 +10,10 @@ import {
   type YearMonth,
 } from "@/shared/features/skill-sheet/sheet";
 import { QUERY_KEY, request } from "@/src/lib/request";
-import { Button } from "../../../ui/button/index";
-import { Field } from "../../../ui/field/index";
-import { Input } from "../../../ui/input/index";
-import { Textarea } from "../../../ui/textarea/index";
+import { Button } from "../../../ui/Button/index";
+import { Field } from "../../../ui/Field/index";
+import { Input } from "../../../ui/Input/index";
+import { Textarea } from "../../../ui/Textarea/index";
 import { SkillPreview } from "../Preview/index";
 
 function currentMonth(): YearMonth {
