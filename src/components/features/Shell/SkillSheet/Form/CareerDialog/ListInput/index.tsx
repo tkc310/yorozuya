@@ -1,7 +1,35 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { css } from "styled-system/css";
 import { Button } from "@/src/components/ui/Button/index";
 import { Input } from "@/src/components/ui/Input/index";
+
+const group = css({
+  border: "none",
+  display: "grid",
+  gap: "2",
+  margin: "0",
+  minWidth: "0",
+  padding: "0",
+});
+
+const legend = css({
+  color: "fg",
+  padding: "0",
+  textStyle: "std-16B-170",
+});
+
+const requiredMark = css({
+  color: "solidGray.600",
+  fontWeight: "normal",
+  ml: "2",
+  textStyle: "std-14N-170",
+});
+
+const errorText = css({
+  color: "error",
+  fontWeight: "bold",
+  textStyle: "std-14N-170",
+});
 
 const items = css({
   display: "grid",
@@ -29,16 +57,21 @@ const row = css({
 // 1つずつ足して並べる入力。保有技術の一覧と同じ操作にする。
 export function ListInput({
   label,
+  required,
+  error,
   placeholder,
   values,
   onChange,
 }: {
   label: string;
+  required?: boolean;
+  error?: string | null;
   placeholder?: string;
   values: string[];
   onChange: (values: string[]) => void;
 }) {
   const [text, setText] = useState("");
+  const errorId = useId();
   const add = () => {
     const name = text.trim();
     if (name.length === 0) {
@@ -50,7 +83,15 @@ export function ListInput({
     setText("");
   };
   return (
-    <>
+    <fieldset className={group}>
+      <legend className={legend}>
+        {label}
+        {required ? (
+          <span className={requiredMark} aria-hidden="true">
+            (必須)
+          </span>
+        ) : null}
+      </legend>
       {values.length > 0 ? (
         <ul className={items} aria-label={label}>
           {values.map((name) => (
@@ -73,6 +114,9 @@ export function ListInput({
         <Input
           size="sm"
           aria-label={`追加する${label}`}
+          aria-required={required}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           placeholder={placeholder}
           value={text}
           onChange={(event) => setText(event.target.value)}
@@ -93,6 +137,11 @@ export function ListInput({
           追加
         </Button>
       </div>
-    </>
+      {error ? (
+        <span id={errorId} className={errorText}>
+          {error}
+        </span>
+      ) : null}
+    </fieldset>
   );
 }

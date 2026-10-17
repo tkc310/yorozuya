@@ -9,13 +9,11 @@ const root = css({
   minWidth: "0",
 });
 
+// 補助の操作（スイッチなど）は見出しの下に並べ、欄の幅に関係なく形をそろえる。
 const header = css({
-  alignItems: "center",
-  columnGap: "1",
-  display: "flex",
-  flexWrap: "wrap",
-  rowGap: "2",
-  justifyContent: "space-between",
+  display: "grid",
+  gap: "1",
+  justifyItems: "start",
 });
 
 const label = css({

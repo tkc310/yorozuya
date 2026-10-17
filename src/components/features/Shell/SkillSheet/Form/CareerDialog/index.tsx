@@ -113,7 +113,18 @@ export const emptyCareer: CareerDraft = {
 };
 
 // 検証する欄。並び順はフォーカスする順。
-const CHECKED_FIELDS = ["projectName", "startYear", "startMonth", "endYear", "endMonth"] as const;
+const CHECKED_FIELDS = [
+  "projectName",
+  "startYear",
+  "startMonth",
+  "endYear",
+  "endMonth",
+  "role",
+  "environment",
+  "team",
+  "methodology",
+  "tools",
+] as const;
 
 type CheckedField = (typeof CHECKED_FIELDS)[number];
 
@@ -126,6 +137,11 @@ const REQUIRED_DETAIL: Record<CheckedField, string> = {
   startMonth: "入力してください",
   endYear: "入力するか、進行中を選択してください",
   endMonth: "入力するか、進行中を選択してください",
+  role: "入力してください",
+  environment: "1つ以上追加してください",
+  team: "入力してください",
+  methodology: "入力してください",
+  tools: "1つ以上追加してください",
 };
 
 const FIELD_LABELS: Record<CheckedField, string> = {
@@ -134,6 +150,11 @@ const FIELD_LABELS: Record<CheckedField, string> = {
   startMonth: "開始月",
   endYear: "終了年",
   endMonth: "終了月",
+  role: "担当職種",
+  environment: "技術・環境",
+  team: "チーム構成",
+  methodology: "開発手法",
+  tools: "ツール",
 };
 
 export type CareerErrors = Partial<Record<CheckedField, string>>;
@@ -181,6 +202,16 @@ export function validateCareer(draft: CareerDraft): CareerErrors {
     }
     if (numberOf("month", draft.endMonth) === null) {
       errors.endMonth = typingError("month", draft.endMonth) ?? REQUIRED;
+    }
+  }
+  for (const field of ["role", "team", "methodology"] as const) {
+    if (draft[field].trim().length === 0) {
+      errors[field] = REQUIRED;
+    }
+  }
+  for (const field of ["environment", "tools"] as const) {
+    if (draft[field].length === 0) {
+      errors[field] = "1つ以上追加してください";
     }
   }
   return errors;
@@ -261,7 +292,12 @@ export function CareerDialog({
   onDraftChange,
 }: CareerDialogProps) {
   return (
-    <Dialog open={open} title={career ? "経歴を編集" : "経歴を追加"} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      placement="side"
+      title={career ? "経歴を編集" : "経歴を追加"}
+      onOpenChange={onOpenChange}
+    >
       {open ? (
         <CareerForm
           key={career?.id ?? "new"}
@@ -468,12 +504,13 @@ function CareerForm({
           onChange={(event) => update({ outcome: event.target.value })}
         />
       </Field>
-      <Field label="担当職種">
+      <Field label="担当職種" required error={errorOf("role")}>
         <Input
           placeholder="例: バックエンドエンジニア"
           size="sm"
           value={draft.role}
           onChange={(event) => update({ role: event.target.value })}
+          onBlur={() => touch("role")}
         />
       </Field>
       <Field label="雇用形態">
@@ -484,40 +521,40 @@ function CareerForm({
           onChange={(event) => update({ employment: event.target.value })}
         />
       </Field>
-      <fieldset className={group}>
-        <legend className={groupLabel}>技術・環境</legend>
-        <ListInput
-          label="技術・環境"
-          placeholder="例: TypeScript"
-          values={draft.environment}
-          onChange={(environment) => update({ environment })}
-        />
-      </fieldset>
-      <Field label="チーム構成">
+      <ListInput
+        label="技術・環境"
+        required
+        error={errorOf("environment")}
+        placeholder="例: TypeScript"
+        values={draft.environment}
+        onChange={(environment) => update({ environment })}
+      />
+      <Field label="チーム構成" required error={errorOf("team")}>
         <Input
           placeholder="例: 5名（PM 1名、エンジニア 4名）"
           size="sm"
           value={draft.team}
           onChange={(event) => update({ team: event.target.value })}
+          onBlur={() => touch("team")}
         />
       </Field>
-      <Field label="開発手法">
+      <Field label="開発手法" required error={errorOf("methodology")}>
         <Input
           placeholder="例: スクラム"
           size="sm"
           value={draft.methodology}
           onChange={(event) => update({ methodology: event.target.value })}
+          onBlur={() => touch("methodology")}
         />
       </Field>
-      <fieldset className={group}>
-        <legend className={groupLabel}>ツール</legend>
-        <ListInput
-          label="ツール"
-          placeholder="例: GitHub"
-          values={draft.tools}
-          onChange={(tools) => update({ tools })}
-        />
-      </fieldset>
+      <ListInput
+        label="ツール"
+        required
+        error={errorOf("tools")}
+        placeholder="例: GitHub"
+        values={draft.tools}
+        onChange={(tools) => update({ tools })}
+      />
       <fieldset className={group}>
         <legend className={groupLabel}>担当工程</legend>
         <div className={checks}>
