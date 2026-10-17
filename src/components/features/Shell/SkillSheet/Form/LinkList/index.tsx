@@ -5,7 +5,8 @@ import { Button } from "@/src/components/ui/Button/index";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Truncate } from "@/src/components/ui/Truncate/index";
-import { itemActions, items, listItem } from "../styles";
+import { ItemActions } from "../ItemActions/index";
+import { items, listItem } from "../styles";
 
 const root = css({
   display: "grid",
@@ -125,76 +126,43 @@ export function LinkList({
           {links.map((link, index) => (
             <li key={`${index}-${link.url}`} className={listItem}>
               {draft?.index === index ? (
-                <>
-                  <div className={editRow}>
-                    <Field label="リンク名">
-                      <Input
-                        size="sm"
-                        value={draft.label}
-                        onChange={(event) => setDraft({ ...draft, label: event.target.value })}
-                      />
-                    </Field>
-                    <Field label="URL" required error={draft.error}>
-                      <Input
-                        size="sm"
-                        inputMode="url"
-                        value={draft.url}
-                        onChange={(event) =>
-                          setDraft({ ...draft, url: event.target.value, error: null })
-                        }
-                      />
-                    </Field>
-                  </div>
-                  <span className={itemActions}>
-                    <Button type="button" variant="text" size="sm" onClick={() => setDraft(null)}>
-                      取り消し
-                    </Button>
-                    <Button
-                      type="button"
+                <div className={editRow}>
+                  <Field label="リンク名">
+                    <Input
                       size="sm"
-                      disabled={pending}
-                      aria-label={`${link.label || link.url}を保存`}
-                      onClick={saveDraft}
-                    >
-                      保存
-                    </Button>
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className={text}>
-                    <Truncate>{link.label || link.url}</Truncate>
-                    {link.label ? <Truncate className={url}>{link.url}</Truncate> : null}
-                  </span>
-                  <span className={itemActions}>
-                    <Button
-                      type="button"
-                      variant="outline"
+                      value={draft.label}
+                      onChange={(event) => setDraft({ ...draft, label: event.target.value })}
+                    />
+                  </Field>
+                  <Field label="URL" required error={draft.error}>
+                    <Input
                       size="sm"
-                      disabled={pending}
-                      aria-label={`${link.label || link.url}を編集`}
-                      onClick={() =>
-                        setDraft({ index, label: link.label, url: link.url, error: null })
+                      inputMode="url"
+                      value={draft.url}
+                      onChange={(event) =>
+                        setDraft({ ...draft, url: event.target.value, error: null })
                       }
-                    >
-                      編集
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={pending}
-                      aria-label={`${link.label || link.url}を削除`}
-                      onClick={() => {
-                        setDraft(null);
-                        onChange(links.filter((_, current) => current !== index));
-                      }}
-                    >
-                      削除
-                    </Button>
-                  </span>
-                </>
+                    />
+                  </Field>
+                </div>
+              ) : (
+                <span className={text}>
+                  <Truncate>{link.label || link.url}</Truncate>
+                  {link.label ? <Truncate className={url}>{link.url}</Truncate> : null}
+                </span>
               )}
+              <ItemActions
+                name={link.label || link.url}
+                pending={pending}
+                editing={draft?.index === index}
+                onEdit={() => setDraft({ index, label: link.label, url: link.url, error: null })}
+                onRemove={() => {
+                  setDraft(null);
+                  onChange(links.filter((_, current) => current !== index));
+                }}
+                onSave={saveDraft}
+                onCancel={() => setDraft(null)}
+              />
             </li>
           ))}
         </ul>

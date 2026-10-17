@@ -3,7 +3,8 @@ import { css } from "styled-system/css";
 import { Button } from "@/src/components/ui/Button/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Truncate } from "@/src/components/ui/Truncate/index";
-import { itemActions, itemLabel, items, listItem } from "../../styles";
+import { ItemActions } from "../../ItemActions/index";
+import { itemLabel, items, listItem } from "../../styles";
 
 const group = css({
   border: "none",
@@ -112,69 +113,40 @@ export function ListInput({
           {values.map((name) => (
             <li key={name} className={listItem}>
               {draft?.name === name ? (
-                <>
-                  <span className={editInput}>
-                    <Input
-                      size="sm"
-                      aria-label={`${name}の新しい名前`}
-                      aria-invalid={draft.error ? true : undefined}
-                      value={draft.text}
-                      onChange={(event) =>
-                        setDraft({ ...draft, text: event.target.value, error: null })
+                <span className={editInput}>
+                  <Input
+                    size="sm"
+                    aria-label={`${name}の新しい名前`}
+                    aria-invalid={draft.error ? true : undefined}
+                    value={draft.text}
+                    onChange={(event) =>
+                      setDraft({ ...draft, text: event.target.value, error: null })
+                    }
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                        event.preventDefault();
+                        saveDraft();
                       }
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" && !event.nativeEvent.isComposing) {
-                          event.preventDefault();
-                          saveDraft();
-                        }
-                      }}
-                    />
-                    {draft.error ? <span className={errorText}>{draft.error}</span> : null}
-                  </span>
-                  <span className={itemActions}>
-                    <Button type="button" variant="text" size="sm" onClick={() => setDraft(null)}>
-                      取り消し
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      aria-label={`${name}を保存`}
-                      onClick={saveDraft}
-                    >
-                      保存
-                    </Button>
-                  </span>
-                </>
+                    }}
+                  />
+                  {draft.error ? <span className={errorText}>{draft.error}</span> : null}
+                </span>
               ) : (
-                <>
-                  <span className={itemLabel}>
-                    <Truncate>{name}</Truncate>
-                  </span>
-                  <span className={itemActions}>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      aria-label={`${name}を編集`}
-                      onClick={() => setDraft({ name, text: name, error: null })}
-                    >
-                      編集
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      aria-label={`${name}を削除`}
-                      onClick={() => {
-                        setDraft(null);
-                        onChange(values.filter((value) => value !== name));
-                      }}
-                    >
-                      削除
-                    </Button>
-                  </span>
-                </>
+                <span className={itemLabel}>
+                  <Truncate>{name}</Truncate>
+                </span>
               )}
+              <ItemActions
+                name={name}
+                editing={draft?.name === name}
+                onEdit={() => setDraft({ name, text: name, error: null })}
+                onRemove={() => {
+                  setDraft(null);
+                  onChange(values.filter((value) => value !== name));
+                }}
+                onSave={saveDraft}
+                onCancel={() => setDraft(null)}
+              />
             </li>
           ))}
         </ul>

@@ -6,20 +6,13 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { css, cx } from "styled-system/css";
+import { css } from "styled-system/css";
 import {
-  PHASES,
-  detailSummaryOf,
   formatDate,
-  formatDuration,
   present,
-  type Career,
-  type Duration,
-  type Period,
   type SheetInput,
   type SheetView,
   type CalculatedOn,
-  type YearMonth,
 } from "@/shared/features/skill-sheet/sheet";
 import {
   MM_TO_PX,
@@ -28,12 +21,11 @@ import {
   paginate,
   samePages,
 } from "./pagination";
+import { CareerList } from "./CareerList/index";
+import { DetailCareer } from "./DetailCareer/index";
+import { Skills } from "./Skills/index";
+import { part, prose, sectionTitle, subTitle, hairline, rule } from "./styles";
 import { usePaperZoom } from "./usePaperZoom";
-
-// 用紙は印刷物なので、画面の文字の大きさの規則（14px 以上）ではなく pt で組む。
-// 罫線で囲む表組みは一覧だけにし、ほかは見出し・余白・細い線で区切って読みやすくする。
-const hairline = "0.5pt solid #b3b3b3";
-const rule = "0.75pt solid black";
 
 const frame = css({
   width: "100%",
@@ -121,32 +113,6 @@ const updated = css({
   margin: "0",
 });
 
-// 大分類（基本情報・職務経歴の一覧・職務経歴の詳細）の見出し。左寄せで、左に縦線を付ける。
-const sectionTitle = css({
-  borderLeft: "1.2mm solid black",
-  fontSize: "11pt",
-  fontWeight: "bold",
-  lineHeight: "1.3",
-  margin: "0",
-  mb: "3mm",
-  pl: "2mm",
-});
-
-// 小見出し（保有技術・自己紹介など）。
-const subTitle = css({
-  borderBottom: hairline,
-  color: "black",
-  fontSize: "9pt",
-  fontWeight: "bold",
-  margin: "0",
-  mb: "1.5mm",
-  pb: "0.5mm",
-});
-
-const part = css({
-  mb: "6mm",
-});
-
 // 基本情報は 3 列の項目名と値。項目名は小さく灰色にして、値を目立たせる。
 const facts = css({
   borderTop: hairline,
@@ -176,48 +142,11 @@ const factValue = css({
   minHeight: "1.4em",
 });
 
-// 保有技術は全体を 1 枚のカードにする。見出しの帯の下で、グループごとに細い線で区切る。
-const skillCard = css({
-  border: hairline,
-  borderRadius: "0.6mm",
-  overflow: "hidden",
-});
-
-const skillHead = css({
-  background: "#f2f2f2",
-  borderBottom: hairline,
-  fontSize: "9pt",
-  fontWeight: "bold",
-  margin: "0",
-  px: "3mm",
-  py: "1mm",
-});
-
-// グループ名は上下中央に置き、技術はタグで並べる。
-const skillRow = css({
-  alignItems: "center",
-  display: "grid",
-  gap: "3mm",
-  gridTemplateColumns: "24mm minmax(0, 1fr)",
-  px: "3mm",
-  py: "2mm",
-  "& + &": { borderTop: hairline },
-});
-
-const skillGroup = css({
-  fontWeight: "bold",
-});
-
 const strengths = css({
   display: "grid",
   gap: "4mm",
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   mb: "6mm",
-});
-
-const prose = css({
-  margin: "0",
-  whiteSpace: "pre-wrap",
 });
 
 // リンクは箇条書きにし、先頭に ● を付ける。
@@ -238,238 +167,6 @@ const linkLabel = css({
   minWidth: "30mm",
   pr: "3mm",
 });
-
-const note = css({
-  color: "#4d4d4d",
-  fontSize: "7.5pt",
-  margin: "0",
-  mb: "1mm",
-});
-
-// 一覧だけは比べやすいよう表にする。縦線や行の線は使わず、1 行おきに背景を変える。
-const listTable = css({
-  borderCollapse: "collapse",
-  mt: "1.5mm",
-  tableLayout: "fixed",
-  width: "100%",
-  "& th": {
-    borderBottom: rule,
-    borderTop: rule,
-    fontSize: "8pt",
-    fontWeight: "bold",
-    px: "1.2mm",
-    py: "1mm",
-    textAlign: "left",
-  },
-  "& td": {
-    px: "1.2mm",
-    py: "1.5mm",
-    verticalAlign: "middle",
-  },
-  "& tbody tr:nth-child(even)": { background: "#f2f2f2" },
-  "& tbody tr:last-child td": { borderBottom: rule },
-  "& th:first-child, & td:first-child": { textAlign: "center" },
-  "& tbody tr": { breakInside: "avoid" },
-});
-
-const projectCell = css({
-  fontWeight: "bold",
-});
-
-// 詳細は 1 案件を 1 枚のカードにする。左に本文、右に技術や体制をまとめる。
-const card = css({
-  border: hairline,
-  borderRadius: "0.6mm",
-  breakInside: "avoid",
-  mb: "4mm",
-  overflow: "hidden",
-});
-
-const cardHead = css({
-  alignItems: "baseline",
-  background: "#f2f2f2",
-  borderBottom: hairline,
-  display: "flex",
-  gap: "3mm",
-  px: "3mm",
-  py: "1.8mm",
-});
-
-const cardNo = css({
-  color: "#4d4d4d",
-  flexShrink: "0",
-  fontSize: "9.5pt",
-  fontWeight: "bold",
-});
-
-const cardTitle = css({
-  flex: "1",
-  fontSize: "10.5pt",
-  fontWeight: "bold",
-  lineHeight: "1.35",
-  margin: "0",
-});
-
-const cardPeriod = css({
-  color: "#333333",
-  flexShrink: "0",
-  fontSize: "8.5pt",
-  fontWeight: "bold",
-  whiteSpace: "nowrap",
-});
-
-// 担当職種などは項目名と値を横に並べる。1 行目に担当職種・雇用形態・チーム構成、2 行目に開発手法を置く。
-const cardMeta = css({
-  borderBottom: hairline,
-  display: "grid",
-  gap: "1mm 6mm",
-  // 担当職種と雇用形態は短いので中身の幅にし、残りをチーム構成に回す。
-  gridTemplateColumns: "auto auto minmax(0, 1fr)",
-  m: "0",
-  px: "3mm",
-  py: "1.5mm",
-});
-
-const metaItem = css({
-  alignItems: "baseline",
-  display: "flex",
-  gap: "1.5mm",
-  minWidth: "0",
-  "&[data-wide]": { gridColumn: "1 / -1" },
-});
-
-const metaLabel = css({
-  color: "#666666",
-  flexShrink: "0",
-  fontSize: "7.5pt",
-  whiteSpace: "nowrap",
-});
-
-const metaValue = css({
-  fontSize: "8.5pt",
-  m: "0",
-});
-
-const cardBody = css({
-  display: "grid",
-  gridTemplateColumns: "minmax(0, 1fr) 56mm",
-});
-
-// 本文は右の列より短くても間隔を広げず、上から一定の間隔で詰める。
-const cardMain = css({
-  alignContent: "start",
-  display: "grid",
-  gap: "2.5mm",
-  px: "3mm",
-  py: "2.5mm",
-});
-
-const cardSide = css({
-  borderLeft: hairline,
-  display: "grid",
-  gap: "2.5mm",
-  alignContent: "start",
-  px: "3mm",
-  py: "2.5mm",
-});
-
-const itemLabel = css({
-  color: "#4d4d4d",
-  display: "block",
-  fontSize: "7.5pt",
-  fontWeight: "bold",
-  mb: "0.5mm",
-});
-
-const tags = css({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "1mm",
-  listStyle: "none",
-  margin: "0",
-  p: "0",
-});
-
-const tag = css({
-  border: hairline,
-  borderRadius: "1mm",
-  fontSize: "7.5pt",
-  lineHeight: "1.3",
-  px: "1.2mm",
-  py: "0.3mm",
-});
-
-// 担当工程は 4 列 2 行。工程名と ● を線で区切る。工程名はすべて同じ文字の形にし、担当は ● で示す。
-const phaseGrid = css({
-  border: hairline,
-  display: "grid",
-  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-});
-
-// 工程名の段と ● の段は高さを固定し、● の有無で表が崩れないようにする。
-const phaseCell = css({
-  display: "grid",
-  gridTemplateRows: "7mm 5mm",
-  textAlign: "center",
-  "&:not(:nth-child(4n + 1))": { borderLeft: hairline },
-  "&:nth-child(n + 5)": { borderTop: hairline },
-});
-
-const phaseLabel = css({
-  alignItems: "center",
-  color: "black",
-  display: "flex",
-  fontSize: "6.5pt",
-  fontWeight: "bold",
-  justifyContent: "center",
-  lineHeight: "1.2",
-  px: "0.5mm",
-});
-
-const phaseMark = css({
-  alignItems: "center",
-  borderTop: hairline,
-  display: "flex",
-  fontSize: "8pt",
-  justifyContent: "center",
-  lineHeight: "1",
-});
-
-function formatMonth(value: YearMonth): string {
-  return `${value.year}年${value.month}月`;
-}
-
-function monthIndex(value: YearMonth): number {
-  return value.year * 12 + value.month - 1;
-}
-
-function periodDuration(period: Period, until: YearMonth): Duration {
-  const months = Math.max(0, monthIndex(period.end ?? until) - monthIndex(period.start));
-  return { years: Math.floor(months / 12), months: months % 12 };
-}
-
-// 工程名は単語で 2 行に分ける（要件/定義、ユニット/テスト）。2 文字のものは 1 行のまま。
-function phaseLines(phase: string) {
-  const split = phase.endsWith("テスト") ? phase.length - 3 : phase.length === 4 ? 2 : 0;
-  if (split === 0) {
-    return phase;
-  }
-  return (
-    <>
-      {phase.slice(0, split)}
-      <br />
-      {phase.slice(split)}
-    </>
-  );
-}
-
-function endLabel(period: Period): string {
-  return period.end ? formatMonth(period.end) : "現在";
-}
-
-function careerName(item: Career): string {
-  return item.hard ? `${item.projectName} (※)` : item.projectName;
-}
 
 type Fact = {
   label: string;
@@ -495,136 +192,6 @@ function profileFacts(view: SheetView): Fact[] {
       : []),
     ...(view.visibility.affiliation ? [{ label: "所属", value: view.texts.affiliation }] : []),
   ];
-}
-
-function Skills({ input, view }: { input: SheetInput; view: SheetView }) {
-  const durations = new Map(view.skills.map((skill) => [skill.name, skill.duration]));
-  const groups = input.skillGroups
-    .map((group) => ({
-      name: group.name,
-      skills: group.skills
-        .map((skill) => skill.name.trim())
-        .filter((skillName) => durations.has(skillName)),
-    }))
-    .filter((group) => group.skills.length > 0);
-  if (groups.length === 0) {
-    return <p className={cx(prose, skillRow)}>保有技術はありません</p>;
-  }
-  return (
-    <div>
-      {groups.map((group) => (
-        <div key={group.name} className={skillRow}>
-          <span className={skillGroup}>{group.name}</span>
-          <ul className={tags}>
-            {group.skills.map((skillName) => {
-              const duration = durations.get(skillName);
-              const years =
-                duration && (duration.years > 0 || duration.months > 0)
-                  ? formatDuration(duration)
-                  : null;
-              return (
-                <li key={skillName} className={tag}>
-                  {years ? `${skillName} | ${years}` : skillName}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function tagList(values: string[]) {
-  return (
-    <ul className={tags}>
-      {values.map((name) => (
-        <li key={name} className={tag}>
-          {name}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function DetailCareer({ no, item, until }: { no: number; item: Career; until: YearMonth }) {
-  const texts = [
-    { label: "概要", text: detailSummaryOf(item) },
-    { label: "担当業務", text: item.work },
-    { label: "注力した課題・成果", text: item.outcome },
-  ].filter((entry) => entry.text.trim().length > 0);
-  const meta = [
-    { label: "担当職種", value: item.role },
-    { label: "雇用形態", value: item.employment },
-    { label: "チーム構成", value: item.team },
-    { label: "開発手法", value: item.methodology },
-  ].filter((entry) => entry.value.trim().length > 0);
-  return (
-    <article className={card} aria-label={item.projectName}>
-      <div className={cardHead}>
-        <span className={cardNo}>No.{no}</span>
-        <h4 className={cardTitle}>{careerName(item)}</h4>
-        <span className={cardPeriod}>
-          {formatMonth(item.period.start)} 〜 {endLabel(item.period)}（
-          {formatDuration(periodDuration(item.period, until))}）
-        </span>
-      </div>
-      {meta.length > 0 ? (
-        <dl className={cardMeta}>
-          {meta.map((entry) => (
-            <div
-              key={entry.label}
-              className={metaItem}
-              data-wide={entry.label === "開発手法" ? "" : undefined}
-            >
-              <dt className={metaLabel}>{entry.label}</dt>
-              <dd className={metaValue}>{entry.value}</dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
-      <div className={cardBody}>
-        <div className={cardMain}>
-          {texts.map((entry) => (
-            <div key={entry.label}>
-              <span className={itemLabel}>{entry.label}</span>
-              <p className={prose}>{entry.text}</p>
-            </div>
-          ))}
-        </div>
-        <div className={cardSide}>
-          {item.environment.length > 0 ? (
-            <div>
-              <span className={itemLabel}>技術・環境</span>
-              {tagList(item.environment)}
-            </div>
-          ) : null}
-          {item.tools.length > 0 ? (
-            <div>
-              <span className={itemLabel}>ツール</span>
-              {tagList(item.tools)}
-            </div>
-          ) : null}
-          <div>
-            <span className={itemLabel}>担当工程</span>
-            <div className={phaseGrid}>
-              {PHASES.map((phase) => {
-                const active = item.phases.includes(phase);
-                return (
-                  <div key={phase} className={phaseCell}>
-                    <span className={phaseLabel}>{phaseLines(phase)}</span>
-                    <span className={phaseMark} aria-label={phase}>
-                      {active ? "●" : ""}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
 }
 
 type Block = {
@@ -664,10 +231,7 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
               </div>
             ))}
           </dl>
-          <section className={cx(part, skillCard)} aria-label="保有技術">
-            <h4 className={skillHead}>保有技術</h4>
-            <Skills input={input} view={view} />
-          </section>
+          <Skills input={input} view={view} />
           {view.texts.strongSkills.trim() || view.texts.strongWork.trim() ? (
             <div className={strengths}>
               <section aria-label="得意な技術">
@@ -720,65 +284,7 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
   blocks.push({
     key: "career-list",
     group: "list",
-    node: (
-      <section aria-labelledby="career-list-title">
-        <h3 id="career-list-title" className={sectionTitle}>
-          職務経歴の一覧
-        </h3>
-        {/* 期間の重なりがあるときだけ並行の注記を、高難易度の経歴があるときだけ ※ の注記を出す。 */}
-        {view.parallelCount > 0 ? (
-          <p className={note}>期間が重複しているものについては並行していた案件になります。</p>
-        ) : null}
-        {view.hardCount > 0 ? (
-          <p className={note}>
-            特に難易度が高くスキルアップできた経歴には 企業・案件名の末尾に (※) と記載しています。
-          </p>
-        ) : null}
-        <table className={listTable}>
-          <colgroup>
-            <col style={{ width: "8mm" }} />
-            {/* 期間は「2023年12月 -」が 1 行に収まる幅にして、2 行で収める。 */}
-            <col style={{ width: "24mm" }} />
-            <col style={{ width: "38mm" }} />
-            <col />
-            <col style={{ width: "22mm" }} />
-            {/* 雇用形態は「個人事業主」が 1 行に収まる幅にする。 */}
-            <col style={{ width: "21mm" }} />
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">No.</th>
-              <th scope="col">期間</th>
-              <th scope="col">企業・案件名</th>
-              <th scope="col">業務の概要</th>
-              <th scope="col">担当職種</th>
-              <th scope="col">雇用形態</th>
-            </tr>
-          </thead>
-          <tbody>
-            {careers.length === 0 ? (
-              <tr>
-                <td colSpan={6}>職務経歴はありません</td>
-              </tr>
-            ) : null}
-            {careers.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>
-                  {formatMonth(item.period.start)} -
-                  <br />
-                  {endLabel(item.period)}
-                </td>
-                <td className={projectCell}>{careerName(item)}</td>
-                <td className={prose}>{item.summary}</td>
-                <td>{item.role}</td>
-                <td>{item.employment}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-    ),
+    node: <CareerList view={view} careers={careers} />,
   });
   careers.forEach((item, index) => {
     blocks.push({

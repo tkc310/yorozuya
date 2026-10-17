@@ -79,8 +79,6 @@ export const itemActions = css({
   whiteSpace: "nowrap",
 });
 
-// 各欄は見出し・入力・注釈の 3 段を subgrid で共有する。見出しが折り返しても、
-// 同じ行の見出しは上端、入力欄は同じ高さにそろう。
 // 基本情報のように行を細い線で区切る。行ごとに profileGrid を入れる。
 export const profileRows = css({
   display: "grid",
@@ -89,6 +87,8 @@ export const profileRows = css({
   "& > * + *": { borderColor: "border.divider", borderTopWidth: "1px", pt: "4" },
 });
 
+// 各欄は見出し・入力・注釈の 3 段を subgrid で共有する。見出しが折り返しても、
+// 同じ行の見出しは上端、入力欄は同じ高さにそろう。
 export const profileGrid = css({
   columnGap: "3",
   display: "grid",
