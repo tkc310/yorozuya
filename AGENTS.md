@@ -1,6 +1,8 @@
 ## 開発者用のコマンド
 
 - 開発サーバ起動: `pnpm dev`
+- macOS アプリ作成: `pnpm build:app`
+- Storybook 起動: `pnpm storybook`
 - スタイル生成: `pnpm prepare`
 - テスト: `pnpm test`
 - エンドツーエンドテスト: `pnpm test:e2e`
