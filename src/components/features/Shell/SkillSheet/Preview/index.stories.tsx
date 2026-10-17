@@ -31,7 +31,9 @@ export const Example: Story = {
     await expect(canvas.getByRole("heading", { name: "スキルシート" })).toBeVisible();
     await expect(canvas.getByText("山田", { selector: "dd" })).toBeVisible();
     await expect(canvas.getByText("3年6ヶ月")).toBeVisible();
-    await expect(canvas.getByText("Typescript: 3年 / Go: 6ヶ月")).toBeVisible();
+    // 保有技術はタグで、年数は | で区切る。
+    await expect(canvas.getByText("Typescript | 3年")).toBeVisible();
+    await expect(canvas.getByText("Go | 6ヶ月")).toBeVisible();
     // 表は職務経歴の一覧だけ（見出し 1 行と 5 件）。
     await expect(canvas.getAllByRole("row")).toHaveLength(6);
     for (const name of ["基本情報", "職務経歴の一覧", "職務経歴の詳細"]) {

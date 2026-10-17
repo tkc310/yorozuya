@@ -6,7 +6,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { css } from "styled-system/css";
+import { css, cx } from "styled-system/css";
 import {
   PHASES,
   detailSummaryOf,
@@ -144,7 +144,7 @@ const subTitle = css({
 });
 
 const part = css({
-  mb: "4mm",
+  mb: "6mm",
 });
 
 // 基本情報は 3 列の項目名と値。項目名は小さく灰色にして、値を目立たせる。
@@ -153,7 +153,7 @@ const facts = css({
   display: "grid",
   gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
   margin: "0",
-  mb: "4mm",
+  mb: "6mm",
 });
 
 const fact = css({
@@ -176,11 +176,31 @@ const factValue = css({
   minHeight: "1.4em",
 });
 
+// 保有技術は全体を 1 枚のカードにする。見出しの帯の下で、グループごとに細い線で区切る。
+const skillCard = css({
+  border: hairline,
+  borderRadius: "0.6mm",
+  overflow: "hidden",
+});
+
+const skillHead = css({
+  background: "#f2f2f2",
+  borderBottom: hairline,
+  fontSize: "9pt",
+  fontWeight: "bold",
+  margin: "0",
+  px: "3mm",
+  py: "1mm",
+});
+
+// グループ名は上下中央に置き、技術はタグで並べる。
 const skillRow = css({
+  alignItems: "center",
   display: "grid",
   gap: "3mm",
   gridTemplateColumns: "24mm minmax(0, 1fr)",
-  py: "0.6mm",
+  px: "3mm",
+  py: "2mm",
   "& + &": { borderTop: hairline },
 });
 
@@ -192,7 +212,7 @@ const strengths = css({
   display: "grid",
   gap: "4mm",
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  mb: "4mm",
+  mb: "6mm",
 });
 
 const prose = css({
@@ -200,26 +220,23 @@ const prose = css({
   whiteSpace: "pre-wrap",
 });
 
-const quote = css({
-  borderLeft: "0.75mm solid #cccccc",
-  margin: "0",
-  pl: "3mm",
-  whiteSpace: "pre-wrap",
-});
-
+// リンクは箇条書きにし、先頭に ● を付ける。
 const linkList = css({
   display: "grid",
   gap: "0.8mm",
-  listStyle: "none",
+  listStyle: "disc",
   margin: "0",
-  p: "0",
+  pl: "4.5mm",
 });
 
 const linkItem = css({
-  display: "grid",
-  gap: "3mm",
-  gridTemplateColumns: "30mm minmax(0, 1fr)",
   "& a": { color: "inherit", overflowWrap: "anywhere", textDecoration: "underline" },
+});
+
+const linkLabel = css({
+  display: "inline-block",
+  minWidth: "30mm",
+  pr: "3mm",
 });
 
 const note = css({
@@ -229,7 +246,7 @@ const note = css({
   mb: "1mm",
 });
 
-// 一覧だけは比べやすいよう表にする。縦線は使わず、行を細い線で区切る。
+// 一覧だけは比べやすいよう表にする。縦線や行の線は使わず、1 行おきに背景を変える。
 const listTable = css({
   borderCollapse: "collapse",
   mt: "1.5mm",
@@ -245,11 +262,12 @@ const listTable = css({
     textAlign: "left",
   },
   "& td": {
-    borderBottom: hairline,
     px: "1.2mm",
     py: "1.5mm",
     verticalAlign: "middle",
   },
+  "& tbody tr:nth-child(even)": { background: "#f2f2f2" },
+  "& tbody tr:last-child td": { borderBottom: rule },
   "& th:first-child, & td:first-child": { textAlign: "center" },
   "& tbody tr": { breakInside: "avoid" },
 });
@@ -261,7 +279,7 @@ const projectCell = css({
 // 詳細は 1 案件を 1 枚のカードにする。左に本文、右に技術や体制をまとめる。
 const card = css({
   border: hairline,
-  borderRadius: "1.5mm",
+  borderRadius: "0.6mm",
   breakInside: "avoid",
   mb: "4mm",
   overflow: "hidden",
@@ -280,7 +298,7 @@ const cardHead = css({
 const cardNo = css({
   color: "#4d4d4d",
   flexShrink: "0",
-  fontSize: "8pt",
+  fontSize: "9.5pt",
   fontWeight: "bold",
 });
 
@@ -296,23 +314,40 @@ const cardPeriod = css({
   color: "#333333",
   flexShrink: "0",
   fontSize: "8.5pt",
+  fontWeight: "bold",
   whiteSpace: "nowrap",
 });
 
+// 担当職種などは項目名と値を横に並べる。1 行目に担当職種・雇用形態・チーム構成、2 行目に開発手法を置く。
 const cardMeta = css({
   borderBottom: hairline,
-  color: "#333333",
-  display: "flex",
-  flexWrap: "wrap",
-  fontSize: "8pt",
-  gap: "1mm 5mm",
+  display: "grid",
+  gap: "1mm 6mm",
+  // 担当職種と雇用形態は短いので中身の幅にし、残りをチーム構成に回す。
+  gridTemplateColumns: "auto auto minmax(0, 1fr)",
+  m: "0",
   px: "3mm",
-  py: "1.2mm",
+  py: "1.5mm",
+});
+
+const metaItem = css({
+  alignItems: "baseline",
+  display: "flex",
+  gap: "1.5mm",
+  minWidth: "0",
+  "&[data-wide]": { gridColumn: "1 / -1" },
 });
 
 const metaLabel = css({
   color: "#666666",
-  mr: "1.5mm",
+  flexShrink: "0",
+  fontSize: "7.5pt",
+  whiteSpace: "nowrap",
+});
+
+const metaValue = css({
+  fontSize: "8.5pt",
+  m: "0",
 });
 
 const cardBody = css({
@@ -320,7 +355,9 @@ const cardBody = css({
   gridTemplateColumns: "minmax(0, 1fr) 56mm",
 });
 
+// 本文は右の列より短くても間隔を広げず、上から一定の間隔で詰める。
 const cardMain = css({
+  alignContent: "start",
   display: "grid",
   gap: "2.5mm",
   px: "3mm",
@@ -362,16 +399,17 @@ const tag = css({
   py: "0.3mm",
 });
 
-// 担当工程は 4 列 2 行。工程名と ● を線で区切り、担当した工程は濃く見せる。
+// 担当工程は 4 列 2 行。工程名と ● を線で区切る。工程名はすべて同じ文字の形にし、担当は ● で示す。
 const phaseGrid = css({
   border: hairline,
   display: "grid",
   gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
 });
 
+// 工程名の段と ● の段は高さを固定し、● の有無で表が崩れないようにする。
 const phaseCell = css({
   display: "grid",
-  gridTemplateRows: "auto auto",
+  gridTemplateRows: "7mm 5mm",
   textAlign: "center",
   "&:not(:nth-child(4n + 1))": { borderLeft: hairline },
   "&:nth-child(n + 5)": { borderTop: hairline },
@@ -379,20 +417,22 @@ const phaseCell = css({
 
 const phaseLabel = css({
   alignItems: "center",
-  color: "#666666",
+  color: "black",
   display: "flex",
   fontSize: "6.5pt",
+  fontWeight: "bold",
   justifyContent: "center",
   lineHeight: "1.2",
-  minHeight: "6mm",
-  py: "0.5mm",
-  "[data-active] > &": { color: "black", fontWeight: "bold" },
+  px: "0.5mm",
 });
 
 const phaseMark = css({
+  alignItems: "center",
   borderTop: hairline,
+  display: "flex",
   fontSize: "8pt",
-  lineHeight: "1.6",
+  justifyContent: "center",
+  lineHeight: "1",
 });
 
 function formatMonth(value: YearMonth): string {
@@ -408,7 +448,7 @@ function periodDuration(period: Period, until: YearMonth): Duration {
   return { years: Math.floor(months / 12), months: months % 12 };
 }
 
-// 工程名は 2 行に分ける（要件/定義、単/テスト）。2 文字のものは 1 行のまま。
+// 工程名は単語で 2 行に分ける（要件/定義、ユニット/テスト）。2 文字のものは 1 行のまま。
 function phaseLines(phase: string) {
   const split = phase.endsWith("テスト") ? phase.length - 3 : phase.length === 4 ? 2 : 0;
   if (split === 0) {
@@ -468,27 +508,42 @@ function Skills({ input, view }: { input: SheetInput; view: SheetView }) {
     }))
     .filter((group) => group.skills.length > 0);
   if (groups.length === 0) {
-    return <p className={prose}>保有技術はありません</p>;
+    return <p className={cx(prose, skillRow)}>保有技術はありません</p>;
   }
   return (
     <div>
       {groups.map((group) => (
         <div key={group.name} className={skillRow}>
           <span className={skillGroup}>{group.name}</span>
-          <span>
-            {group.skills
-              .map((skillName) => {
-                const duration = durations.get(skillName);
-                if (!duration || (duration.years === 0 && duration.months === 0)) {
-                  return skillName;
-                }
-                return `${skillName}: ${formatDuration(duration)}`;
-              })
-              .join(" / ")}
-          </span>
+          <ul className={tags}>
+            {group.skills.map((skillName) => {
+              const duration = durations.get(skillName);
+              const years =
+                duration && (duration.years > 0 || duration.months > 0)
+                  ? formatDuration(duration)
+                  : null;
+              return (
+                <li key={skillName} className={tag}>
+                  {years ? `${skillName} | ${years}` : skillName}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       ))}
     </div>
+  );
+}
+
+function tagList(values: string[]) {
+  return (
+    <ul className={tags}>
+      {values.map((name) => (
+        <li key={name} className={tag}>
+          {name}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -515,14 +570,18 @@ function DetailCareer({ no, item, until }: { no: number; item: Career; until: Ye
         </span>
       </div>
       {meta.length > 0 ? (
-        <div className={cardMeta}>
+        <dl className={cardMeta}>
           {meta.map((entry) => (
-            <span key={entry.label}>
-              <span className={metaLabel}>{entry.label}</span>
-              {entry.value}
-            </span>
+            <div
+              key={entry.label}
+              className={metaItem}
+              data-wide={entry.label === "開発手法" ? "" : undefined}
+            >
+              <dt className={metaLabel}>{entry.label}</dt>
+              <dd className={metaValue}>{entry.value}</dd>
+            </div>
           ))}
-        </div>
+        </dl>
       ) : null}
       <div className={cardBody}>
         <div className={cardMain}>
@@ -537,19 +596,13 @@ function DetailCareer({ no, item, until }: { no: number; item: Career; until: Ye
           {item.environment.length > 0 ? (
             <div>
               <span className={itemLabel}>技術・環境</span>
-              <ul className={tags}>
-                {item.environment.map((name) => (
-                  <li key={name} className={tag}>
-                    {name}
-                  </li>
-                ))}
-              </ul>
+              {tagList(item.environment)}
             </div>
           ) : null}
           {item.tools.length > 0 ? (
             <div>
               <span className={itemLabel}>ツール</span>
-              <p className={prose}>{item.tools.join(" / ")}</p>
+              {tagList(item.tools)}
             </div>
           ) : null}
           <div>
@@ -558,7 +611,7 @@ function DetailCareer({ no, item, until }: { no: number; item: Career; until: Ye
               {PHASES.map((phase) => {
                 const active = item.phases.includes(phase);
                 return (
-                  <div key={phase} className={phaseCell} data-active={active ? "" : undefined}>
+                  <div key={phase} className={phaseCell}>
                     <span className={phaseLabel}>{phaseLines(phase)}</span>
                     <span className={phaseMark} aria-label={phase}>
                       {active ? "●" : ""}
@@ -611,8 +664,8 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
               </div>
             ))}
           </dl>
-          <section className={part} aria-label="保有技術">
-            <h4 className={subTitle}>保有技術</h4>
+          <section className={cx(part, skillCard)} aria-label="保有技術">
+            <h4 className={skillHead}>保有技術</h4>
             <Skills input={input} view={view} />
           </section>
           {view.texts.strongSkills.trim() || view.texts.strongWork.trim() ? (
@@ -638,7 +691,7 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
       node: (
         <section className={part} aria-label="自己紹介">
           <h4 className={subTitle}>自己紹介</h4>
-          <p className={quote}>{view.selfPr}</p>
+          <p className={prose}>{view.selfPr}</p>
         </section>
       ),
     });
@@ -653,7 +706,7 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
           <ul className={linkList}>
             {view.links.map((link, index) => (
               <li key={`${index}-${link.url}`} className={linkItem}>
-                <span>{link.label || "リンク"}</span>
+                <span className={linkLabel}>{link.label || "リンク"}</span>
                 <a href={link.url} target="_blank" rel="noreferrer">
                   {link.url}
                 </a>
@@ -689,7 +742,8 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
             <col style={{ width: "38mm" }} />
             <col />
             <col style={{ width: "22mm" }} />
-            <col style={{ width: "18mm" }} />
+            {/* 雇用形態は「個人事業主」が 1 行に収まる幅にする。 */}
+            <col style={{ width: "21mm" }} />
           </colgroup>
           <thead>
             <tr>
