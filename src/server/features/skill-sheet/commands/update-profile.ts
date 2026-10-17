@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { err } from "neverthrow";
 import * as v from "valibot";
-import { writeProfile } from "../../../lib/skill-sheet/update-profile";
+import { getDb } from "../../../lib/db";
+import { SkillSheetRepository } from "../../repository";
 
 const YearMonthSchema = v.object({
   year: v.pipe(v.number(), v.integer(), v.minValue(1)),
@@ -24,5 +25,5 @@ export const updateProfileFn = createServerFn({ method: "POST", strict: false })
     if (!parsed.success) {
       return err({ message: parsed.issues[0]?.message ?? "入力が不正です" });
     }
-    return writeProfile(parsed.output);
+    return new SkillSheetRepository(getDb()).updateProfile(parsed.output);
   });

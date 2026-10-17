@@ -9,10 +9,10 @@
 | `src/components/ui` が `src/components/features`、`src/lib`、`src/server` を import する | `ui` は共通部品 |
 | `shared/features` が React、Drizzle、`bun:sqlite`、`@libsql/client`、neverthrow、`@tanstack`、`src/server`、`src/lib` を import する | シートの計算は純粋 |
 | `src/server/lib/db.ts` 以外が `bun:sqlite` または `drizzle-orm/bun-sqlite` を import する | 接続は `src/server/lib/db.ts` だけ |
-| `@libsql/client`、`drizzle-orm/libsql`、`better-sqlite3` を import する | ホストされた DB も別の SQLite パッケージも使わない |
+| `@libsql/client`、`drizzle-orm/libsql`、`better-sqlite3`、`node:sqlite` を import する | ホストされた DB も別の SQLite パッケージも使わない |
 | `TURSO_DATABASE_URL` を読む | 接続先の環境変数は読まない |
 | `src/server/lib/db.ts` 以外が `data/yorozu.db` を開く | ローカルファイルは `db.ts` だけ |
-| `src/server/features` が Drizzle を import する | 読み書きは `src/server/lib/skill-sheet` |
+| `src/server/features/repository.ts` 以外の `src/server/features` が Drizzle を import する | 読み書きは `SkillSheetRepository` だけ |
 | `queries` と `commands` が互いに import する | query と command は分ける |
 | query が `insert`、`update`、`delete` を呼ぶ | query は書かない |
-| `src/server/lib` 以外が `insert`、`update`、`delete` を呼ぶ | 書き込みはサーバの lib だけ |
+| `src/db/seed.ts` と `src/server/features/repository.ts` 以外が `insert`、`update`、`delete` を呼ぶ | 初期データは `seed.ts`、変更はリポジトリ |

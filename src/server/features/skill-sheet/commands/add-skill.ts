@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { err } from "neverthrow";
 import * as v from "valibot";
-import { insertSkill } from "../../../lib/skill-sheet/add-skill";
+import { getDb } from "../../../lib/db";
+import { SkillSheetRepository } from "../../repository";
 
 const AddSkillSchema = v.object({
   groupName: v.pipe(v.string(), v.trim(), v.minLength(1, "グループ名を入れてください")),
@@ -15,5 +16,5 @@ export const addSkillFn = createServerFn({ method: "POST", strict: false })
     if (!parsed.success) {
       return err({ message: parsed.issues[0]?.message ?? "入力が不正です" });
     }
-    return insertSkill(parsed.output.groupName, parsed.output.skillName);
+    return new SkillSheetRepository(getDb()).addSkill(parsed.output.groupName, parsed.output.skillName);
   });

@@ -1,4 +1,4 @@
-データベースはローカルファイル `data/yorozu.db` だけです。ホストされたデータベースは置きません。`TURSO_DATABASE_URL` は読みません。`@libsql/client` と `drizzle-orm/libsql` と `better-sqlite3` は使いません。`bun:sqlite` を import できるのは `src/server/lib/db.ts` だけです。
+データベースはローカルファイル `data/yorozu.db` だけです。ホストされたデータベースは置きません。`TURSO_DATABASE_URL` は読みません。`@libsql/client` と `drizzle-orm/libsql` と `better-sqlite3` と `node:sqlite` は使いません。`bun:sqlite` を import できるのは `src/server/lib/db.ts` だけです。
 
 公開サーバと HTTP の API は置きません。データベースが要る処理は TanStack Start のサーバ関数です。画面は `src/db` と `src/server` を import せず、`fetch` を呼びません。
 

@@ -18,6 +18,7 @@
   "include": [
     "src",
     "shared",
+    "drizzle.config.ts",
     "vite.config.ts",
     "panda.config.ts",
     "playwright.config.ts",

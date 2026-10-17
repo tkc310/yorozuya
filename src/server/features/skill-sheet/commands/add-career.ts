@@ -2,7 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { err } from "neverthrow";
 import * as v from "valibot";
 import { PHASES } from "../../../../../shared/features/skill-sheet/sheet";
-import { insertCareer } from "../../../lib/skill-sheet/add-career";
+import { getDb } from "../../../lib/db";
+import { SkillSheetRepository } from "../../repository";
 
 const YearMonthSchema = v.object({
   year: v.pipe(v.number(), v.integer(), v.minValue(1)),
@@ -37,5 +38,5 @@ export const addCareerFn = createServerFn({ method: "POST", strict: false })
     if (!parsed.success) {
       return err({ message: parsed.issues[0]?.message ?? "入力が不正です" });
     }
-    return insertCareer(parsed.output);
+    return new SkillSheetRepository(getDb()).addCareer(parsed.output);
   });

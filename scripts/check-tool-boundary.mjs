@@ -101,12 +101,23 @@ function scan(file) {
   }
   const writes = /\.(insert|update|delete)\s*\(/.test(source);
   const usesDrizzle = specs.some((spec) => spec === "drizzle-orm" || spec.startsWith("drizzle-orm/"));
-  if (writes && (filePath.includes("/queries/") || filePath.startsWith("src/server/features/") || (usesDrizzle && !filePath.startsWith("src/server/lib/")))) {
+  const writesInPlace =
+    filePath === "src/server/features/repository.ts" || filePath === "src/db/seed.ts";
+  if (/\bCREATE\s+TABLE\b/i.test(source)) {
+    fail(filePath, "CREATE TABLE を書いています");
+  }
+  if (
+    writes &&
+    !writesInPlace &&
+    (filePath.includes("/queries/") ||
+      filePath.startsWith("src/server/features/") ||
+      (usesDrizzle && !filePath.startsWith("src/server/lib/")))
+  ) {
     fail(filePath, "insert、update、delete を呼んでいます");
   }
 
   for (const spec of specs) {
-    if (spec === "bun:sqlite" || spec === "drizzle-orm/bun-sqlite") {
+    if (spec === "bun:sqlite" || spec === "drizzle-orm/bun-sqlite" || spec.startsWith("drizzle-orm/bun-sqlite/")) {
       if (filePath !== "src/server/lib/db.ts") {
         fail(filePath, `${spec} を import しています`);
       }
@@ -116,7 +127,8 @@ function scan(file) {
       spec.startsWith("@libsql/") ||
       spec === "drizzle-orm/libsql" ||
       spec.startsWith("drizzle-orm/libsql/") ||
-      spec === "better-sqlite3"
+      spec === "better-sqlite3" ||
+      spec === "node:sqlite"
     ) {
       fail(filePath, `${spec} を import しています`);
     }
@@ -128,7 +140,8 @@ function scan(file) {
     }
     if (
       (spec === "drizzle-orm" || spec.startsWith("drizzle-orm/")) &&
-      filePath.startsWith("src/server/features/")
+      filePath.startsWith("src/server/features/") &&
+      filePath !== "src/server/features/repository.ts"
     ) {
       fail(filePath, "Drizzle を import しています");
     }

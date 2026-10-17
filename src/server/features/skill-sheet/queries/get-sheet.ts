@@ -1,4 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { readSheet } from "../../../lib/skill-sheet/get-sheet";
+import { getDb } from "../../../lib/db";
+import { SkillSheetRepository } from "../../repository";
 
-export const getSheetFn = createServerFn({ method: "GET", strict: false }).handler(() => readSheet());
+export const getSheetFn = createServerFn({ method: "GET", strict: false }).handler(() =>
+  new SkillSheetRepository(getDb()).read(),
+);
