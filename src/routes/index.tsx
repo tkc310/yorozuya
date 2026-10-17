@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Shell } from "../components/features/shell/shell";
-import { getSheet, sheetQueryKey } from "../lib/skill-sheet/get-sheet";
+import { sheetQueryKey } from "../lib/query-keys";
+import { request } from "../lib/request";
+import { getSheetFn } from "../server/features/skill-sheet/queries/get-sheet";
 
 export const Route = createFileRoute("/")({
   loader: ({ context }) =>
     context.queryClient.ensureQueryData({
       queryKey: sheetQueryKey,
-      queryFn: getSheet,
+      queryFn: () => request(getSheetFn()),
     }),
   component: Index,
 });
