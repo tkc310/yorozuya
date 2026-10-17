@@ -4,11 +4,11 @@ import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../../repository";
-import { CareerSchema } from "../career";
+import { CareerInputSchema } from "../career";
 
 const UpdateCareerSchema = v.object({
   careerId: v.pipe(v.string(), v.minLength(1, "経歴がありません")),
-  career: CareerSchema,
+  career: CareerInputSchema,
 });
 
 export const updateCareerFn = createServerFn({ method: "POST", strict: false })
