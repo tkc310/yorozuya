@@ -103,9 +103,6 @@ function scan(file) {
   const usesDrizzle = specs.some((spec) => spec === "drizzle-orm" || spec.startsWith("drizzle-orm/"));
   const writesInPlace =
     filePath === "src/server/features/repository.ts" || filePath === "src/db/seed.ts";
-  if (/\bCREATE\s+TABLE\b/i.test(source)) {
-    fail(filePath, "CREATE TABLE を書いています");
-  }
   if (
     writes &&
     !writesInPlace &&

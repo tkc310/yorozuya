@@ -25,9 +25,10 @@ export default defineConfig({
   },
   lint: {
     plugins: ["typescript", "react", "oxc"],
-    jsPlugins: ["./oxlint-plugins/must-use-result.js"],
+    jsPlugins: ["./oxlint-plugins/must-use-result.js", "./oxlint-plugins/no-create-table.js"],
     rules: {
       "must-use-result/must-use-result": "error",
+      "no-create-table/no-create-table": "error",
       "typescript/no-floating-promises": "error",
     },
   },
