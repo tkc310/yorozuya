@@ -1,14 +1,12 @@
 ## 開発者用のコマンド
 
-`package.json` の `scripts` だけです。
-
-- `pnpm dev` は Bun で開発サーバを `127.0.0.1:43123` で起動します。
-- `pnpm prepare` は Panda CSS の codegen を走らせます。
-- `pnpm test` は Vitest を1回走らせます。
-- `pnpm test:e2e` は Playwright を走らせます。
-- `pnpm typecheck` は `bun check` です。
-- `pnpm lint` は Oxlint のあと `pnpm lint:boundary` を走らせます。
-- `pnpm lint:boundary` は ESLint と `scripts/check-advanced-boundaries.mjs` を走らせます。
+- 開発サーバ起動: `pnpm dev`
+- スタイル生成: `pnpm prepare`
+- テスト: `pnpm test`
+- エンドツーエンドテスト: `pnpm test:e2e`
+- 型検査: `pnpm typecheck`
+- 静的検査: `pnpm lint`
+- 境界検査: `pnpm lint:boundary`
 
 | 検査 | 規則 |
 | --- | --- |
