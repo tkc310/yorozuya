@@ -1,0 +1,17 @@
+{
+  "name": "yorozu-ya",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.4",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit --strict --target es2022 --module esnext --moduleResolution bundler --allowImportingTsExtensions --skipLibCheck --types node shared/features/skill-sheet/sheet.ts shared/features/skill-sheet/sheet.test.ts",
+    "lint": "oxlint shared scripts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "oxlint": "^1.88.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}
