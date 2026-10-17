@@ -4,25 +4,28 @@
 
 ## 技術スタック
 
-- パッケージ管理は pnpm です。
-- フレームワークは TanStack Start と React です。
-- 言語は TypeScript です。
-- スタイルは Panda CSS です。
-- UI は Park UI と Ark UI です。
-- フォームは TanStack Form です。
-- データ取得は TanStack Query です。
-- UI 状態は Zustand です。
-- ビルドは Vite+ です。
-- データベースは bun:sqlite と Drizzle です。
-- エラーは neverthrow です。
-- サーバ関数は TanStack Start の createServerFn です。
-- バリデーションは Valibot です。
-- リンターは Oxlint と ESLint です。
-- フォーマッターは Oxfmt です。
-- カタログは Storybook です。
-- ユニットテストと統合テストは Vitest、React Testing Library、happy-dom です。
-- e2e は Playwright です。
-- 開発サーバは Bun で起動します。
+パッケージ管理: pnpm
+フレームワーク: TanStack Start / React
+言語: TypeScript
+スタイル: Panda CSS
+UI: Park UI / Ark UI
+フォーム: TanStack Form
+データ取得: TanStack Query
+UI 状態: Zustand
+ビルド: Vite+ / Vite 8
+データベース: bun:sqlite / Drizzle
+エラー: neverthrow
+サーバ関数: TanStack Start / createServerFn
+バリデーション: Valibot
+リンター: Oxlint / ESLint / 未使用の Result
+フォーマッター: Oxfmt
+カタログ: Storybook
+ユニットテスト: Vitest
+統合テスト: Vitest + React Testing Library + happy-dom + Storybook
+VRT: Vitest browser mode / story
+e2e: Playwright / Test Agents
+配布: Bun シングルバイナリ
+起動: `pnpm dev`
 
 ## 開発者用のコマンド
 
