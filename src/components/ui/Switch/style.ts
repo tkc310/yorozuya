@@ -6,6 +6,8 @@ export const toggle = defineSlotRecipe({
   className: "toggle",
   // レシピ名と部品名が違うので、<Switch size="sm"> の使い方を Panda に拾わせる。
   jsx: ["Switch"],
+  // 開発サーバでは使い方を拾い損ねて小さい版が出ないことがあるので、大きさはすべて常に出力する。
+  staticCss: [{ size: ["*"] }],
   slots: ["root", "control", "track", "thumb", "icon", "label"],
   base: {
     root: {
