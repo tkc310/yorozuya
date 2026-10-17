@@ -10,6 +10,7 @@ import {
   detailSummaryOf,
   formatDate,
   formatDuration,
+  normalizePhase,
   present,
   removeCareer,
   removeSkill,
@@ -363,6 +364,15 @@ describe("スキルシート", () => {
       period: { start: { year: 2024, month: 9 }, end: { year: 2024, month: 12 } },
     });
     expect(viewOf(present(sheet([first, second, third]), calculatedOn)).parallelCount).toBe(2);
+  });
+
+  it("以前の工程名を今の名前に置き換える", () => {
+    expect(normalizePhase("単テスト")).toBe("ユニットテスト");
+    expect(normalizePhase("結テスト")).toBe("結合テスト");
+    expect(normalizePhase("総テスト")).toBe("E2Eテスト");
+    expect(normalizePhase("e2eテスト")).toBe("E2Eテスト");
+    expect(normalizePhase("保守")).toBe("保守運用");
+    expect(normalizePhase("実装")).toBe("実装");
   });
 
   it("シートの実装は禁止されたモジュールを import しない", () => {

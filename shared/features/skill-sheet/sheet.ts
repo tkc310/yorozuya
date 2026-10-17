@@ -3,13 +3,28 @@ export const PHASES = [
   "基本設計",
   "詳細設計",
   "実装",
-  "単テスト",
-  "結テスト",
-  "総テスト",
+  "ユニットテスト",
+  "結合テスト",
+  "E2Eテスト",
   "保守運用",
 ] as const;
 
 export type Phase = (typeof PHASES)[number];
+
+// 以前の工程名。書き出した JSON を読み込むときに今の名前へ置き換える。
+const LEGACY_PHASES: Record<string, Phase> = {
+  単テスト: "ユニットテスト",
+  結テスト: "結合テスト",
+  総テスト: "E2Eテスト",
+  e2eテスト: "E2Eテスト",
+  テスト: "ユニットテスト",
+  運用: "保守運用",
+  保守: "保守運用",
+};
+
+export function normalizePhase(value: string): string {
+  return LEGACY_PHASES[value] ?? value;
+}
 
 // 書き出す JSON の目印と版。読み込むときに確かめる。
 export const SHEET_FILE_KIND = "yorozuya-skill-sheet";
