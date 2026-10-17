@@ -1,5 +1,9 @@
 import { err, ok, type Result } from "neverthrow";
 
+export const QUERY_KEY = {
+  SKILL_SHEET: ["SKILL_SHEET"],
+} as const;
+
 export type SheetFailure = {
   message: string;
 };

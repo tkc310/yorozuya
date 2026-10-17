@@ -9,8 +9,7 @@ import {
   type SheetInput,
   type YearMonth,
 } from "../../../../shared/features/skill-sheet/sheet";
-import { sheetQueryKey } from "../../../lib/query-keys";
-import { request } from "../../../lib/request";
+import { QUERY_KEY, request } from "../../../lib/request";
 import { Button } from "../../ui/button";
 import { Field } from "../../ui/field";
 import { Input } from "../../ui/input";
@@ -536,7 +535,7 @@ export function SkillSheetForm({
 export function SkillSheet() {
   const queryClient = useQueryClient();
   const query = useQuery({
-    queryKey: sheetQueryKey,
+    queryKey: QUERY_KEY.SKILL_SHEET,
     queryFn: async () => {
       const { getSheetFn } = await import("../../../server/features/skill-sheet/queries/get-sheet");
       return request(getSheetFn());
@@ -549,7 +548,7 @@ export function SkillSheet() {
   const [calculatedOn] = useState(currentMonth);
 
   const refresh = async () => {
-    await queryClient.invalidateQueries({ queryKey: sheetQueryKey });
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEY.SKILL_SHEET });
     setPreview(null);
     setGeneration((current) => current + 1);
   };
@@ -572,7 +571,7 @@ export function SkillSheet() {
     },
     onSuccess: async () => {
       setMessage(null);
-      await queryClient.invalidateQueries({ queryKey: sheetQueryKey });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEY.SKILL_SHEET });
     },
     onError: (error: Error) => setMessage(error.message),
   });
