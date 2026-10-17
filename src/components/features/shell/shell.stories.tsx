@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, within } from "storybook/test";
 import { css } from "styled-system/css";
-import { createFixtureSheet, type SheetInput } from "../../../../shared/features/skill-sheet/sheet";
+import { createFixtureSheet, type SheetInput } from "@/shared/features/skill-sheet/sheet";
 import { sheetColumns, SkillSheetForm } from "../skill-sheet/form";
 import { SkillPreview } from "../skill-sheet/preview";
 import { Shell } from "./shell";

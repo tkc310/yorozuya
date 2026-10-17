@@ -1,8 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { err } from "neverthrow";
 import * as v from "valibot";
-import { PHASES } from "../../../../../shared/features/skill-sheet/sheet";
-import { getDb } from "../../../lib/db";
+import { PHASES } from "@/shared/features/skill-sheet/sheet";
+import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../../repository";
 
 const YearMonthSchema = v.object({

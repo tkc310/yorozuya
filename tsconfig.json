@@ -12,6 +12,7 @@
     "types": ["bun", "vite/client"],
     "isolatedModules": true,
     "paths": {
+      "@/*": ["./*"],
       "styled-system/*": ["./styled-system/*"]
     }
   },

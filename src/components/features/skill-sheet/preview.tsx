@@ -6,7 +6,7 @@ import {
   type Period,
   type SheetInput,
   type YearMonth,
-} from "../../../../shared/features/skill-sheet/sheet";
+} from "@/shared/features/skill-sheet/sheet";
 
 const sheet = css({
   background: "#fffdf9",

@@ -8,8 +8,8 @@ import {
   type Phase,
   type SheetInput,
   type YearMonth,
-} from "../../../../shared/features/skill-sheet/sheet";
-import { QUERY_KEY, request } from "../../../lib/request";
+} from "@/shared/features/skill-sheet/sheet";
+import { QUERY_KEY, request } from "@/src/lib/request";
 import { Button } from "../../ui/button";
 import { Field } from "../../ui/field";
 import { Input } from "../../ui/input";

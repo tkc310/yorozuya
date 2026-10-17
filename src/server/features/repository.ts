@@ -7,7 +7,7 @@ import {
   type Phase,
   type SheetInput,
   type YearMonth,
-} from "../../../shared/features/skill-sheet/sheet";
+} from "@/shared/features/skill-sheet/sheet";
 import {
   careerEnvironments,
   careerPhases,
@@ -16,8 +16,8 @@ import {
   profiles,
   skillGroups,
   skills,
-} from "../../db/schema";
-import type { YorozuyaDatabase } from "../lib/db";
+} from "@/src/db/schema";
+import type { YorozuyaDatabase } from "@/src/server/lib/db";
 
 export type SheetFailure = {
   message: string;
