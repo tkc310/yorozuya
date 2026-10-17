@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun --bun vp dev --host 127.0.0.1 --port 43123",
+    "build:app": "bun scripts/app/build.ts",
+    "storybook": "storybook dev --host 127.0.0.1 --port 6006 --no-open",
     "prepare": "panda codegen && lefthook install",
     "test": "vp test --run",
     "test:e2e": "playwright test",
@@ -28,7 +30,6 @@
   "devDependencies": {
     "@pandacss/dev": "^2.2.0",
     "@pandacss/preset-base": "2.2.0",
-    "@pandacss/preset-panda": "2.2.0",
     "@playwright/test": "^1.64.1",
     "@storybook/react-vite": "^10.6.2",
     "@testing-library/jest-dom": "^7.0.1",
