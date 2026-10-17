@@ -3,8 +3,9 @@ import { useState } from "react";
 import { expect, within } from "storybook/test";
 import { css } from "styled-system/css";
 import { createFixtureSheet, type SheetInput } from "@/shared/features/skill-sheet/sheet";
-import { sheetColumns, SkillSheetForm } from "../SkillSheet/Form/index";
-import { SkillPreview } from "../SkillSheet/Preview/index";
+import { sheetColumns } from "./SkillSheet/index";
+import { Form } from "./SkillSheet/Form/index";
+import { Preview } from "./SkillSheet/Preview/index";
 import { Shell } from "./index";
 
 const meta = {
@@ -28,7 +29,7 @@ function FixturePanel() {
   return (
     <div className={sheetColumns}>
       <div className="sheet-form">
-        <SkillSheetForm
+        <Form
           initial={value}
           onValues={setValue}
           onSaveProfile={() => undefined}
@@ -38,7 +39,7 @@ function FixturePanel() {
           onRemoveCareer={() => undefined}
         />
       </div>
-      <SkillPreview sheet={value} calculatedOn={{ year: 2026, month: 10 }} />
+      <Preview sheet={value} calculatedOn={{ year: 2026, month: 10 }} />
     </div>
   );
 }

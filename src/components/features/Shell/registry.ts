@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { SkillSheet } from "../SkillSheet/Form/index";
+import { SkillSheet } from "./SkillSheet/index";
 
 export type ToolRegistration = {
   id: string;

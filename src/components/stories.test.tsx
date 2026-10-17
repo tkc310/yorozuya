@@ -5,8 +5,9 @@ import * as buttonStories from "./ui/Button/index.stories";
 import * as fieldStories from "./ui/Field/index.stories";
 import * as inputStories from "./ui/Input/index.stories";
 import * as textareaStories from "./ui/Textarea/index.stories";
-import * as formStories from "./features/SkillSheet/Form/index.stories";
-import * as previewStories from "./features/SkillSheet/Preview/index.stories";
+import * as skillSheetStories from "./features/Shell/SkillSheet/index.stories";
+import * as formStories from "./features/Shell/SkillSheet/Form/index.stories";
+import * as previewStories from "./features/Shell/SkillSheet/Preview/index.stories";
 import * as shellStories from "./features/Shell/index.stories";
 
 const groups = [
@@ -14,6 +15,7 @@ const groups = [
   fieldStories,
   inputStories,
   textareaStories,
+  skillSheetStories,
   formStories,
   previewStories,
   shellStories,

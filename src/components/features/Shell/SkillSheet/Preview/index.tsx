@@ -104,7 +104,7 @@ function RecentCareer({ item }: { item: Career }) {
   );
 }
 
-export function SkillPreview({
+export function Preview({
   sheet: input,
   calculatedOn,
 }: {

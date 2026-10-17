@@ -56,17 +56,27 @@ src/components/features/Shell/
 └── registry.ts         # ツール登録の設定
 ```
 
-### 実例: SkillSheet コンポーネント（複数のサブコンポーネント）
+### 実例: SkillSheet コンポーネント（親子関係の例）
 
 ```
-src/components/features/SkillSheet/
-├── Form/
-│   ├── index.tsx
-│   └── index.stories.tsx
-└── Preview/
-    ├── index.tsx
-    └── index.stories.tsx
+src/components/features/Shell/
+├── index.tsx
+├── index.stories.tsx
+├── registry.ts
+└── SkillSheet/         # Shell の子コンポーネント
+    ├── index.tsx       # SkillSheet コンテナ
+    ├── index.stories.tsx
+    ├── Form/           # SkillSheet の子コンポーネント
+    │   ├── index.tsx
+    │   └── index.stories.tsx
+    └── Preview/        # SkillSheet の子コンポーネント
+        ├── index.tsx
+        └── index.stories.tsx
 ```
+
+この構造により：
+- **SkillSheet** が **Shell** の子コンポーネントであることが明確
+- **Form** と **Preview** が **SkillSheet** 専用の子コンポーネントであることが明確
 
 ### 親子関係の表現
 

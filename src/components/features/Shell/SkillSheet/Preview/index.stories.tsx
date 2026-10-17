@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 import { createFixtureSheet } from "@/shared/features/skill-sheet/sheet";
-import { SkillPreview } from "./index";
+import { Preview } from "./index";
 
 const meta = {
   title: "スキルシート/プレビュー",
-  component: SkillPreview,
+  component: Preview,
   parameters: {
     docs: {
       description: {
@@ -13,7 +13,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof SkillPreview>;
+} satisfies Meta<typeof Preview>;
 
 export default meta;
 
