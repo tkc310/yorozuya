@@ -73,7 +73,7 @@ function scan(file) {
 
   // CREATE TABLE を書かない
   if (/\bCREATE\s+TABLE\b/i.test(source)) {
-    fail(filePath, "CREATE TABLE は書けません。マイグレーションを使用してください");
+    fail(filePath, "表を作る SQL は書けません。マイグレーションを使用してください");
   }
 
   // insert, update, delete の呼び出しチェック
