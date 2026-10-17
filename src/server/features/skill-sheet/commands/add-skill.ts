@@ -4,10 +4,12 @@ import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../../repository";
+import { ExperienceSchema } from "../experience";
 
 const AddSkillSchema = v.object({
-  groupName: v.pipe(v.string(), v.trim(), v.minLength(1, "グループ名を入れてください")),
-  skillName: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名を入れてください")),
+  groupName: v.pipe(v.string(), v.trim(), v.minLength(1, "グループ名を入力してください")),
+  skillName: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名を入力してください")),
+  experience: v.optional(v.nullable(ExperienceSchema), null),
 });
 
 export const addSkillFn = createServerFn({ method: "POST", strict: false })
@@ -20,5 +22,6 @@ export const addSkillFn = createServerFn({ method: "POST", strict: false })
     return new SkillSheetRepository(getDb()).addSkill(
       parsed.output.groupName,
       parsed.output.skillName,
+      parsed.output.experience,
     );
   });

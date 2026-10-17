@@ -36,6 +36,7 @@ pnpm install
 ## 開発者用のコマンド
 
 - 開発サーバ起動: `pnpm dev`
+- macOS アプリ作成: `pnpm build:app`（`dist/Yorozuya.app` を作る。データは `~/Library/Application Support/Yorozuya/data/yorozuya.db`）
 - スタイル生成(Panda): `pnpm prepare`
 - テスト: `pnpm test`
 - エンドツーエンドテスト: `pnpm test:e2e`

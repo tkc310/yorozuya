@@ -1,14 +1,20 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
+  ALL_VISIBLE,
+  EMPTY_PROFILE_TEXTS,
   PHASES,
   addCareer,
   addSkill,
   createFixtureSheet,
+  detailSummaryOf,
+  formatDate,
   formatDuration,
   present,
   removeCareer,
   removeSkill,
+  skillInCareers,
+  updateSkillExperience,
   type Career,
   type SheetInput,
   type SheetResult,
@@ -29,17 +35,16 @@ function career(input: Pick<Career, "id" | "period"> & Partial<Career>): Career 
   return {
     projectName: "案件",
     summary: "月次処理の流れを整理した。",
+    detailSummary: "",
     work: "画面とAPIを実装し、結合テストまで担当した。",
     outcome: "手作業の転記を自動化した。",
     role: "エンジニア",
     employment: "業務委託",
     environment: [],
-    position: "メンバー",
     team: "4名",
     methodology: "スクラム",
     tools: ["Git"],
     phases: [],
-    parallel: false,
     hard: false,
     ...input,
   };
@@ -48,11 +53,18 @@ function career(input: Pick<Career, "id" | "period"> & Partial<Career>): Career 
 function sheet(careers: Career[], extra?: Partial<SheetInput>): SheetInput {
   return {
     updatedOn: null,
+    updatedAuto: false,
     name: "山田",
-    workStyle: "業務委託",
+    age: null,
+    gender: null,
+    experience: "",
+    experienceAuto: true,
+    visibility: { ...ALL_VISIBLE },
+    links: [],
     education: "学士",
     station: "相模原",
     selfPr: "設計と実装を担当。",
+    ...EMPTY_PROFILE_TEXTS,
     skillGroups: [],
     careers,
     ...extra,
@@ -151,7 +163,13 @@ describe("スキルシート", () => {
           ],
           {
             skillGroups: [
-              { name: "言語", skills: [{ name: "Typescript" }, { name: "typescript" }] },
+              {
+                name: "言語",
+                skills: [
+                  { name: "Typescript", auto: true },
+                  { name: "typescript", auto: true },
+                ],
+              },
             ],
           },
         ),
@@ -175,7 +193,7 @@ describe("スキルシート", () => {
       period: { start: { year: 2024, month: 1 }, end: null },
     });
     const fromUpdate = viewOf(
-      present(sheet([openCareer], { updatedOn: { year: 2024, month: 7 } }), calculatedOn),
+      present(sheet([openCareer], { updatedOn: { year: 2024, month: 7, day: 1 } }), calculatedOn),
     );
     const fromClock = viewOf(present(sheet([openCareer]), { year: 2024, month: 7 }));
     expect(fromUpdate.engineer).toEqual({ years: 0, months: 6 });
@@ -236,15 +254,15 @@ describe("スキルシート", () => {
     });
   });
 
-  it("フィクスチャは氏名、短い自己PR、並行、難度、7工程を持つ", () => {
+  it("フィクスチャは氏名、短い自己紹介、並行する期間、難度、7工程を持つ", () => {
     const view = viewOf(present(createFixtureSheet(), calculatedOn));
     expect(view.name).toBe("山田");
     expect(view.station).toBe("相模原");
     expect(view.selfPrShort).toBe(true);
-    expect(view.parallelCount).toBe(1);
+    expect(view.parallelCount).toBe(4);
     expect(view.hardCount).toBe(1);
     expect(view.phaseCount).toBe(PHASES.length);
-    expect(PHASES).toHaveLength(7);
+    expect(PHASES).toHaveLength(8);
   });
 
   it("技術を消しても経歴の環境は残る", () => {
@@ -259,6 +277,92 @@ describe("スキルシート", () => {
       years: 0,
       months: 0,
     });
+  });
+
+  it("経験年数を入れた技術はその年数を使い、入れない技術は経歴から数える", () => {
+    const added = addSkill(createFixtureSheet(), "言語", "Node.js", { years: 5, months: 3 });
+    const view = viewOf(present(added, calculatedOn));
+    expect(view.skills.find((item) => item.name === "Node.js")?.duration).toEqual({
+      years: 5,
+      months: 3,
+    });
+    expect(view.skills.find((item) => item.name === "Go")?.duration).toEqual({
+      years: 0,
+      months: 6,
+    });
+  });
+
+  it("自動計算を切ると手入力の年数を使い、入れると職務経歴から数える", () => {
+    const base = createFixtureSheet();
+    const goOf = (sheet: SheetInput) =>
+      viewOf(present(sheet, calculatedOn)).skills.find((item) => item.name === "Go")?.duration;
+    const manual = updateSkillExperience(base, "Go", { years: 2, months: 0 }, false);
+    expect(goOf(manual)).toEqual({ years: 2, months: 0 });
+    const auto = updateSkillExperience(manual, "Go", { years: 2, months: 0 }, true);
+    expect(goOf(auto)).toEqual({ years: 0, months: 6 });
+    const empty = updateSkillExperience(base, "Go", null, false);
+    expect(goOf(empty)).toEqual({ years: 0, months: 0 });
+    const zero = updateSkillExperience(manual, "Go", { years: 0, months: 0 }, false);
+    expect(zero.skillGroups[0]?.skills.find((item) => item.name === "Go")?.experience).toBe(
+      undefined,
+    );
+  });
+
+  it("経歴の環境に無い技術は自動計算できない", () => {
+    const base = createFixtureSheet();
+    expect(skillInCareers(base.careers, "Go")).toBe(true);
+    expect(skillInCareers(base.careers, "Node.js")).toBe(false);
+  });
+
+  it("経験年数は自動計算なら職務経歴から数え、切れば自由入力を使う", () => {
+    const base = { ...createFixtureSheet(), experience: "10年以上" };
+    expect(viewOf(present(base, calculatedOn)).experience).toBe("3年6ヶ月");
+    const manual = { ...base, experienceAuto: false };
+    expect(viewOf(present(manual, calculatedOn)).experience).toBe("10年以上");
+    expect(viewOf(present(manual, calculatedOn)).engineer).toEqual({ years: 3, months: 6 });
+  });
+
+  it("年齢と性別を表示用に渡す", () => {
+    const view = viewOf(present(createFixtureSheet(), calculatedOn));
+    expect(view.age).toBe(35);
+    expect(view.gender).toBe("男性");
+    expect(view.visibility).toEqual(ALL_VISIBLE);
+  });
+
+  it("更新日を自動にすると基準日を更新日にし、切れば入力した日を使う", () => {
+    const base = createFixtureSheet();
+    const today = { year: 2026, month: 11, day: 17 };
+    expect(viewOf(present(base, today)).updatedOn).toEqual({ year: 2026, month: 10, day: 1 });
+    const auto = { ...base, updatedAuto: true };
+    expect(viewOf(present(auto, today)).updatedOn).toEqual(today);
+    expect(viewOf(present(auto, { year: 2026, month: 11 })).updatedOn).toEqual({
+      year: 2026,
+      month: 11,
+      day: 1,
+    });
+    expect(formatDate(today)).toBe("2026年11月17日");
+  });
+
+  it("詳細用の概要が空なら一覧用の概要を使う", () => {
+    const base = career({ id: "c", period: { start: { year: 2024, month: 1 }, end: null } });
+    expect(detailSummaryOf(base)).toBe(base.summary);
+    expect(detailSummaryOf({ ...base, detailSummary: "詳しい説明" })).toBe("詳しい説明");
+  });
+
+  it("期間が重なる経歴を並行として数える", () => {
+    const first = career({
+      id: "a",
+      period: { start: { year: 2024, month: 1 }, end: { year: 2024, month: 6 } },
+    });
+    const second = career({
+      id: "b",
+      period: { start: { year: 2024, month: 3 }, end: { year: 2024, month: 9 } },
+    });
+    const third = career({
+      id: "c",
+      period: { start: { year: 2024, month: 9 }, end: { year: 2024, month: 12 } },
+    });
+    expect(viewOf(present(sheet([first, second, third]), calculatedOn)).parallelCount).toBe(2);
   });
 
   it("シートの実装は禁止されたモジュールを import しない", () => {

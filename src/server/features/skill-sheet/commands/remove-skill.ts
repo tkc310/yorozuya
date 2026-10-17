@@ -6,7 +6,7 @@ import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../../repository";
 
 const RemoveSkillSchema = v.object({
-  skillName: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名を入れてください")),
+  skillName: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名を入力してください")),
 });
 
 export const removeSkillFn = createServerFn({ method: "POST", strict: false })

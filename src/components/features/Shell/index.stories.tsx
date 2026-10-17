@@ -33,10 +33,15 @@ function FixturePanel() {
           initial={value}
           onValues={setValue}
           onSaveProfile={() => undefined}
+          autoExperience="3年6ヶ月"
+          today={{ year: 2026, month: 10, day: 17 }}
           onAddSkill={() => undefined}
+          onUpdateSkillExperience={() => undefined}
           onRemoveSkill={() => undefined}
           onAddCareer={() => undefined}
+          onUpdateCareer={() => undefined}
           onRemoveCareer={() => undefined}
+          onImport={() => undefined}
         />
       </div>
       <Preview sheet={value} calculatedOn={{ year: 2026, month: 10 }} />
@@ -64,7 +69,7 @@ export const Example: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("heading", { name: "スキルシート" })).toBeVisible();
-    await expect(canvas.getByRole("heading", { name: "山田" })).toBeVisible();
+    await expect(canvas.getByRole("heading", { name: "スキルシート", level: 1 })).toBeVisible();
+    await expect(canvas.getByRole("cell", { name: "山田" })).toBeVisible();
   },
 };

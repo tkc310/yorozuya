@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: "ラベルと入力を組にする。経験年数の欄は作らない。",
+        component: "ラベルと入力を組にする。",
       },
     },
   },

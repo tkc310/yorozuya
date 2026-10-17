@@ -1,56 +1,52 @@
 import { css } from "styled-system/css";
+import logo from "@/src/assets/images/logo.webp";
 import { registry, type ToolRegistration } from "./registry";
 import { useToolSelection } from "./useToolSelection";
 
+// md 以上では画面の高さに固定し、スクロールは main の中に任せる。
 const page = css({
   display: "grid",
-  minHeight: "100vh",
+  gridTemplateRows: "auto minmax(0, 1fr)",
+  height: { md: "100dvh" },
+  minHeight: "100dvh",
+  _print: { display: "block", height: "auto", minHeight: "0" },
 });
 
-const toolList = css({
-  alignItems: "center",
+const content = css({
+  minHeight: "0",
+  overflow: { md: "hidden" },
+  _print: { overflow: "visible" },
+});
+
+const header = css({
+  alignItems: "stretch",
+  background: "bg.canvas",
   borderBottomWidth: "1px",
-  borderColor: "#e4dccd",
+  borderColor: "border.divider",
+  columnGap: { base: "6", md: "8" },
   display: "flex",
-  gap: "4",
-  margin: "0",
-  px: "6",
-  py: "4",
+  flexWrap: "wrap",
+  px: { base: "4", md: "8" },
 });
 
-const toolButton = css({
-  background: "transparent",
-  border: "none",
-  color: "inherit",
-  cursor: "pointer",
-  font: "inherit",
-  fontWeight: "semibold",
-  padding: "0",
+const logoImage = css({
+  alignSelf: "center",
+  display: "block",
+  height: { base: "32px", md: "40px" },
+  my: "2",
+  width: "auto",
 });
 
 export function Shell({ tools = registry }: { tools?: ToolRegistration[] }) {
   const toolId = useToolSelection((state) => state.toolId);
-  const selectTool = useToolSelection((state) => state.selectTool);
   const selected = tools.find((tool) => tool.id === toolId) ?? tools[0];
   const Panel = selected?.Panel;
   return (
     <div className={page}>
-      <nav className={`${toolList} tool-list`} aria-label="ツール">
-        {tools.length === 0 ? <p>ツールがありません</p> : null}
-        {tools.map((tool) => (
-          <h2 key={tool.id} className={css({ margin: "0", fontSize: "lg" })}>
-            <button
-              type="button"
-              className={toolButton}
-              aria-current={tool.id === selected?.id ? "page" : undefined}
-              onClick={() => selectTool(tool.id)}
-            >
-              {tool.name}
-            </button>
-          </h2>
-        ))}
-      </nav>
-      <main>{Panel ? <Panel /> : null}</main>
+      <header className={`${header} tool-list`}>
+        <img src={logo} alt="よろずや" width={1137} height={256} className={logoImage} />
+      </header>
+      <main className={content}>{Panel ? <Panel /> : <p>ツールがありません</p>}</main>
     </div>
   );
 }

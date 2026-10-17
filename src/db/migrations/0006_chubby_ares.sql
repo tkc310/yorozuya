@@ -1,0 +1,1 @@
+ALTER TABLE `profiles` ADD `experience_auto` integer DEFAULT true NOT NULL;

@@ -11,3 +11,5 @@ data/yorozuya.db
 *.log
 .env
 .env.*
+.DS_Store
+sample

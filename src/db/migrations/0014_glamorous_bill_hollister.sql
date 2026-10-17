@@ -1,0 +1,1 @@
+ALTER TABLE `careers` DROP COLUMN `position_name`;

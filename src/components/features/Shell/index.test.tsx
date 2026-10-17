@@ -9,19 +9,19 @@ describe("ツール一覧", () => {
     useToolSelection.setState({ toolId: "skill-sheet" });
   });
 
-  it("登録を2件にすると見出しを2つ返す", () => {
+  it("選んだツールのパネルだけを表示し、ヘッダーにツール名を出さない", () => {
     expect(registry.map((tool) => tool.name)).toEqual(["スキルシート"]);
     render(
       <Shell
         tools={[
-          { id: "skill-sheet", name: "スキルシート", Panel: () => null },
-          { id: "estimate", name: "見積", Panel: () => null },
+          { id: "skill-sheet", name: "スキルシート", Panel: () => <h1>スキルシート</h1> },
+          { id: "estimate", name: "見積", Panel: () => <h1>見積</h1> },
         ]}
       />,
     );
     expect(screen.getAllByRole("heading").map((heading) => heading.textContent)).toEqual([
       "スキルシート",
-      "見積",
     ]);
+    expect(screen.getByRole("banner").textContent).toBe("");
   });
 });

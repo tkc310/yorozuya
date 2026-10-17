@@ -1,0 +1,1 @@
+ALTER TABLE `profiles` ADD `show_self_pr` integer DEFAULT true NOT NULL;
