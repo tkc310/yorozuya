@@ -68,6 +68,35 @@ src/components/features/SkillSheet/
     └── index.stories.tsx
 ```
 
+### 親子関係の表現
+
+コンポーネント間の親子関係は、ディレクトリの入れ子で表現します。
+
+```
+ParentComponent/
+├── index.tsx           # 親コンポーネント
+├── index.stories.tsx
+└── ChildComponent/     # 子コンポーネント
+    ├── index.tsx
+    └── index.stories.tsx
+```
+
+**例**: Shell コンポーネントが ToolBar という子コンポーネントを持つ場合
+
+```
+src/components/features/Shell/
+├── index.tsx
+├── index.test.tsx
+├── index.stories.tsx
+├── useToolSelection.ts
+├── registry.ts
+└── ToolBar/            # Shell の子コンポーネント
+    ├── index.tsx
+    └── index.test.tsx
+```
+
+この構造により、`ToolBar` が `Shell` に属する専用のコンポーネントであることが明確になります。
+
 ## Import 規則
 
 ### コロケーションされたコンポーネント

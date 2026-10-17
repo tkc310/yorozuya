@@ -33,7 +33,7 @@ function rehydrate<T>(value: unknown): Result<T, ServerFunctionError> {
   return err(new ServerFunctionError("応答を読めませんでした"));
 }
 
-export async function request<T>(
+export async function callServerFunction<T>(
   pending: Promise<Result<T, ServerFunctionError>>,
 ): Promise<T> {
   const result = rehydrate<T>(await pending);

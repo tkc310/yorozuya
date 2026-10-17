@@ -9,7 +9,7 @@ import {
   type SheetInput,
   type YearMonth,
 } from "@/shared/features/skill-sheet/sheet";
-import { QUERY_KEY, request } from "@/src/lib/request";
+import { QUERY_KEY, callServerFunction } from "@/src/lib/request";
 import { Button } from "../../../ui/Button/index";
 import { Field } from "../../../ui/Field/index";
 import { Input } from "../../../ui/Input/index";
@@ -538,7 +538,7 @@ export function SkillSheet() {
     queryKey: QUERY_KEY.SKILL_SHEET,
     queryFn: async () => {
       const { getSheetFn } = await import("@/src/server/features/skill-sheet/queries/get-sheet");
-      return request(getSheetFn());
+      return callServerFunction(getSheetFn());
     },
     retry: false,
   });
@@ -556,7 +556,7 @@ export function SkillSheet() {
   const saveProfile = useMutation({
     mutationFn: async (value: SheetInput) => {
       const { updateProfileFn } = await import("@/src/server/features/skill-sheet/commands/update-profile");
-      return request(
+      return callServerFunction(
         updateProfileFn({
           data: {
             updatedOn: value.updatedOn,
@@ -578,7 +578,7 @@ export function SkillSheet() {
   const addSkillMutation = useMutation({
     mutationFn: async (input: { groupName: string; skillName: string }) => {
       const { addSkillFn } = await import("@/src/server/features/skill-sheet/commands/add-skill");
-      return request(addSkillFn({ data: input }));
+      return callServerFunction(addSkillFn({ data: input }));
     },
     onSuccess: async () => {
       setMessage(null);
@@ -589,7 +589,7 @@ export function SkillSheet() {
   const removeSkillMutation = useMutation({
     mutationFn: async (skillName: string) => {
       const { removeSkillFn } = await import("@/src/server/features/skill-sheet/commands/remove-skill");
-      return request(removeSkillFn({ data: { skillName } }));
+      return callServerFunction(removeSkillFn({ data: { skillName } }));
     },
     onSuccess: async () => {
       setMessage(null);
@@ -600,7 +600,7 @@ export function SkillSheet() {
   const addCareerMutation = useMutation({
     mutationFn: async (career: Omit<Career, "id">) => {
       const { addCareerFn } = await import("@/src/server/features/skill-sheet/commands/add-career");
-      return request(addCareerFn({ data: career }));
+      return callServerFunction(addCareerFn({ data: career }));
     },
     onSuccess: async () => {
       setMessage(null);
@@ -611,7 +611,7 @@ export function SkillSheet() {
   const removeCareerMutation = useMutation({
     mutationFn: async (careerId: string) => {
       const { removeCareerFn } = await import("@/src/server/features/skill-sheet/commands/remove-career");
-      return request(removeCareerFn({ data: { careerId } }));
+      return callServerFunction(removeCareerFn({ data: { careerId } }));
     },
     onSuccess: async () => {
       setMessage(null);
