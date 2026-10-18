@@ -85,3 +85,13 @@ export const Example: Story = {
     await userEvent.click(body.getByRole("button", { name: "取り消し" }));
   },
 };
+
+export const Saving: Story = {
+  name: "保存中",
+  args: { ...Example.args, pending: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("status")).toHaveTextContent("保存しています");
+    await expect(canvas.getByRole("button", { name: "JSONを読み込む" })).toBeDisabled();
+  },
+};
