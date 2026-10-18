@@ -32,6 +32,17 @@
 
 起動するとトップページ（`/`）が開き、そこから各機能に移動できます。
 
+## ダウンロード
+
+[Releases](https://github.com/tkc310/yorozuya/releases) から、お使いの Mac に合う zip をダウンロードします。
+
+| Mac                       | ファイル                          |
+| ------------------------- | --------------------------------- |
+| Apple シリコン（M1 以降） | `Yorozuya-vX.Y.Z-macos-arm64.zip` |
+| Intel                     | `Yorozuya-vX.Y.Z-macos-x64.zip`   |
+
+展開した `Yorozuya.app` をアプリケーションフォルダに移して起動します。アプリは公証していないため、初回は Finder で右クリックして「開く」を選んでください。
+
 ## はじめかた
 
 ### 必要なもの
@@ -48,7 +59,7 @@
 mise install   # または asdf install
 ```
 
-### 開発サーバで動かす
+### ソースから動かす
 
 ```bash
 git clone https://github.com/tkc310/yorozuya.git
@@ -59,7 +70,7 @@ pnpm dev
 
 <http://127.0.0.1:43123> を開きます。初回起動時に `data/yorozuya.db` が作られ、見本のデータが入ります。
 
-### macOS アプリとして使う
+### macOS アプリを自分で作る
 
 ```bash
 pnpm build:app
@@ -146,14 +157,7 @@ pnpm build:app
 
 ## コントリビュート
 
-Issue や Pull Request を歓迎します。
-
-1. ブランチを切って変更する
-2. `pnpm typecheck`、`pnpm lint`、`pnpm fmt`、`pnpm test` が通ることを確かめる
-3. コミットメッセージは [Conventional Commits](https://www.conventionalcommits.org/ja/)（例: `feat(skill-sheet): ...`）で書く
-4. Pull Request を作る
-
-見本 PDF の本文や、実在する個人の経歴をリポジトリに含めないでください。
+Issue や Pull Request を歓迎します。開発の流れ、テスト、リリースの手順は [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。
 
 ## ライセンス
 
