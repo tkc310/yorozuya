@@ -39,7 +39,7 @@ TanStack Router のファイルベースルーティングでは、ルート定�
 | `layouts/`   | 全画面に共通する枠（ヘッダー、パンくずリスト）。ルーターに依存してよい                           |
 | `features/`  | 1 ページ分の機能。ルートファイルから直接描く。ほかの機能を import しない（`pnpm lint:boundary`） |
 
-機能を足すときは、`features/` に機能のディレクトリを作り、`src/routes/` にルートファイルを作る。ルートの `staticData.crumb` に書いた名前がパンくずリストに出る。トップページ（`features/Home`）の機能一覧にも 1 件足す。
+機能を足すときは、`features/` に機能のディレクトリを作り、`src/routes/` にルートファイルを作る。ルートの `staticData.crumb` に書いた名前が `layouts/PageBreadcrumb` に出る。パンくずリストの置き場所はページごとに決め、ルートファイルから機能に渡す（機能はルーターに依存させない）。トップページ（`features/Home`）の機能一覧にも 1 件足す。
 
 ## ディレクトリ構造（コロケーション）
 

@@ -6,14 +6,13 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { AppLayout } from "./index";
 
 function renderAt(path: string) {
   const root = createRootRoute({
-    staticData: { crumb: "トップ" },
     component: () => (
       <AppLayout>
         <Outlet />
@@ -28,7 +27,6 @@ function renderAt(path: string) {
   const sheet = createRoute({
     getParentRoute: () => root,
     path: "/skill-sheet",
-    staticData: { crumb: "スキルシート" },
     component: () => <h1>スキルシート</h1>,
   });
   const router = createRouter({
@@ -43,20 +41,6 @@ afterEach(() => {
 });
 
 describe("画面の枠", () => {
-  it("トップではパンくずリストを出さない", async () => {
-    renderAt("/");
-    await screen.findByRole("heading", { name: "トップ" });
-    expect(screen.queryByRole("navigation", { name: "パンくずリスト" })).toBeNull();
-  });
-
-  it("パンくずリストからトップに戻れる", async () => {
-    renderAt("/skill-sheet");
-    const nav = await screen.findByRole("navigation", { name: "パンくずリスト" });
-    expect(within(nav).getByText("スキルシート").getAttribute("aria-current")).toBe("page");
-    await userEvent.click(within(nav).getByRole("link", { name: "トップ" }));
-    expect(await screen.findByRole("heading", { name: "トップ" })).toBeTruthy();
-  });
-
   it("ロゴからトップに戻れる", async () => {
     renderAt("/skill-sheet");
     await screen.findByRole("heading", { name: "スキルシート" });

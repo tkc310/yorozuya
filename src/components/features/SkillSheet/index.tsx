@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { css } from "styled-system/css";
 import {
   formatDuration,
@@ -34,6 +34,11 @@ const formColumn = css({
   _print: { display: "none" },
 });
 
+// パンくずリストはフォームと一緒にスクロールさせる。
+const crumbs = css({
+  mb: { base: "4", md: "6" },
+});
+
 const previewColumn = css({
   background: { md: "bg.subtle" },
   _print: { background: "transparent" },
@@ -49,7 +54,8 @@ function today(): CalendarDate {
   return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
 }
 
-export function SkillSheet() {
+// breadcrumb はルートから渡す。ここではルーターに依存しない。
+export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
   const query = useQuery({
     queryKey: QUERY_KEY.SKILL_SHEET,
     queryFn: async () => {
@@ -85,6 +91,7 @@ export function SkillSheet() {
   return (
     <div className={sheetColumns}>
       <div className={`${column} ${formColumn}`}>
+        {breadcrumb ? <div className={crumbs}>{breadcrumb}</div> : null}
         <Form
           key={generation}
           initial={query.data}

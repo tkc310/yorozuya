@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SkillSheet } from "../components/features/SkillSheet/index";
+import { PageBreadcrumb } from "../components/layouts/PageBreadcrumb/index";
 import { QUERY_KEY, callServerFunction } from "../lib/request";
 import { getSheetFn } from "../server/features/skill-sheet/queries/get-sheet";
 
@@ -11,5 +12,9 @@ export const Route = createFileRoute("/skill-sheet")({
       queryKey: QUERY_KEY.SKILL_SHEET,
       queryFn: () => callServerFunction(getSheetFn()),
     }),
-  component: SkillSheet,
+  component: SkillSheetPage,
 });
+
+function SkillSheetPage() {
+  return <SkillSheet breadcrumb={<PageBreadcrumb />} />;
+}
