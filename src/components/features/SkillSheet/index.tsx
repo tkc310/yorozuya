@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useDeferredValue, useState, type ReactNode } from "react";
 import { css } from "styled-system/css";
 import {
   formatDuration,
@@ -74,6 +74,9 @@ export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
     },
   });
 
+  // プレビューは描くのも測るのも重いので後回しにし、フォームを先に出す。入力中も同じ。
+  const deferred = useDeferredValue(preview ?? query.data ?? null, null);
+
   if (query.isPending) {
     return <p className={status}>シートを読み込んでいます</p>;
   }
@@ -115,7 +118,11 @@ export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
         />
       </div>
       <div className={`${column} ${previewColumn}`}>
-        <Preview sheet={shown} calculatedOn={calculatedOn} />
+        {deferred ? (
+          <Preview sheet={deferred} calculatedOn={calculatedOn} />
+        ) : (
+          <p className={status}>プレビューを準備しています</p>
+        )}
       </div>
     </div>
   );
