@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { css } from "styled-system/css";
 import { button } from "styled-system/recipes";
+import logo from "@/src/assets/images/logo.svg";
 
 const page = css({
   display: "grid",
@@ -18,7 +19,12 @@ const hero = css({
 
 const title = css({
   margin: "0",
-  textStyle: { base: "std-28B-150", md: "std-45B-140" },
+});
+
+const titleLogo = css({
+  display: "block",
+  height: { base: "48px", md: "72px" },
+  width: "auto",
 });
 
 const lead = css({
@@ -108,7 +114,7 @@ export function Home() {
     <div className={page}>
       <section className={hero} aria-labelledby="home-title">
         <h1 id="home-title" className={title}>
-          よろずや
+          <img src={logo} alt="よろずや" width={1083} height={256} className={titleLogo} />
         </h1>
         <p className={lead}>
           フリーランスとして働く人のための、小さな道具をひとつにまとめたアプリです。書類づくりなど、仕事のまわりの細かな手間を手元で片づけられます。

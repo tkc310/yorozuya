@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { css } from "styled-system/css";
-import logo from "@/src/assets/images/logo.svg";
+import logo from "@/src/assets/images/logo.webp";
 import { focusRing } from "@/src/styles/foundation";
 
 // md 以上では画面の高さに固定し、スクロールは main の中に任せる。
@@ -47,7 +47,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className={page}>
       <header className={header}>
         <Link to="/" className={logoLink} aria-label="よろずや トップへ">
-          <img src={logo} alt="よろずや" width={1083} height={256} className={logoImage} />
+          <img src={logo} alt="よろずや" width={1137} height={256} className={logoImage} />
         </Link>
       </header>
       <main className={content}>{children}</main>
