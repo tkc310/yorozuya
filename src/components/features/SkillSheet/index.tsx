@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useDeferredValue, useState, type ReactNode } from "react";
 import { css } from "styled-system/css";
 import {
   formatDuration,
@@ -13,7 +13,7 @@ import { Preview } from "./Preview/index";
 import { useSheetCommands } from "./useSheetCommands";
 
 // md 以上ではフォームとプレビューを左右に並べ、それぞれを別々にスクロールする。
-export const sheetColumns = css({
+const sheetColumns = css({
   display: "grid",
   gridTemplateColumns: { base: "1fr", md: "minmax(0, 1fr) minmax(0, 1fr)" },
   height: { md: "100%" },
@@ -27,9 +27,16 @@ const column = css({
   _print: { overflow: "visible", p: "0" },
 });
 
+// 印刷ではプレビューだけを出す。
 const formColumn = css({
   borderColor: "border.divider",
   borderRightWidth: { md: "1px" },
+  _print: { display: "none" },
+});
+
+// パンくずリストはフォームと一緒にスクロールさせる。
+const crumbs = css({
+  mb: { base: "4", md: "6" },
 });
 
 const previewColumn = css({
@@ -47,7 +54,8 @@ function today(): CalendarDate {
   return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
 }
 
-export function SkillSheet() {
+// breadcrumb はルートから渡す。ここではルーターに依存しない。
+export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
   const query = useQuery({
     queryKey: QUERY_KEY.SKILL_SHEET,
     queryFn: async () => {
@@ -66,6 +74,9 @@ export function SkillSheet() {
     },
   });
 
+  // プレビューは描くのも測るのも重いので後回しにし、フォームを先に出す。入力中も同じ。
+  const deferred = useDeferredValue(preview ?? query.data ?? null, null);
+
   if (query.isPending) {
     return <p className={status}>シートを読み込んでいます</p>;
   }
@@ -82,7 +93,8 @@ export function SkillSheet() {
   const autoExperience = presented.ok ? formatDuration(presented.view.engineer) : "";
   return (
     <div className={sheetColumns}>
-      <div className={`${column} ${formColumn} sheet-form`}>
+      <div className={`${column} ${formColumn}`}>
+        {breadcrumb ? <div className={crumbs}>{breadcrumb}</div> : null}
         <Form
           key={generation}
           initial={query.data}
@@ -106,7 +118,11 @@ export function SkillSheet() {
         />
       </div>
       <div className={`${column} ${previewColumn}`}>
-        <Preview sheet={shown} calculatedOn={calculatedOn} />
+        {deferred ? (
+          <Preview sheet={deferred} calculatedOn={calculatedOn} />
+        ) : (
+          <p className={status}>プレビューを準備しています</p>
+        )}
       </div>
     </div>
   );

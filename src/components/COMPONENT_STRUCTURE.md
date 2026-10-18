@@ -12,14 +12,14 @@ React コンポーネントのファイル名とディレクトリ構造。コ�
 
 #### ✅ 正しい例
 
-- `src/components/features/Shell/`
 - `src/components/features/SkillSheet/`
+- `src/components/layouts/AppLayout/`
 - `src/components/ui/Button/`
 
 #### ❌ 避けるべき例
 
-- `src/components/features/shell/`（小文字）
 - `src/components/features/skill-sheet/`（ケバブケース）
+- `src/components/layouts/app-layout/`（ケバブケース）
 - `src/components/ui/button/`（小文字）
 
 ### 例外: ルーティング
@@ -28,8 +28,18 @@ TanStack Router のファイルベースルーティングでは、ルート定�
 
 #### 例外ケース
 
-- `src/routes/index.tsx` - ルートファイル
-- `src/routes/skill-sheet.tsx` - 動的ルート（フレームワークの要求）
+- `src/routes/index.tsx` - トップページ
+- `src/routes/skill-sheet.tsx` - スキルシートページ
+
+## 置き場所
+
+| ディレクトリ | 置くもの                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------ |
+| `ui/`        | どの画面でも使う共通部品。`features`、`lib`、`server` を import しない                           |
+| `layouts/`   | 全画面に共通する枠（ヘッダー、パンくずリスト）。ルーターに依存してよい                           |
+| `features/`  | 1 ページ分の機能。ルートファイルから直接描く。ほかの機能を import しない（`pnpm lint:boundary`） |
+
+機能を足すときは、`features/` に機能のディレクトリを作り、`src/routes/` にルートファイルを作る。ルートの `staticData.crumb` に書いた名前が `layouts/PageBreadcrumb` に出る。パンくずリストの置き場所はページごとに決め、ルートファイルから機能に渡す（機能はルーターに依存させない）。トップページ（`features/Home`）の機能一覧にも 1 件足す。
 
 ## ディレクトリ構造（コロケーション）
 
@@ -45,39 +55,28 @@ ComponentName/
 └── useHookName.ts      # カスタムフック（必要に応じて）
 ```
 
-### 実例: Shell コンポーネント
-
-```
-src/components/features/Shell/
-├── index.tsx           # Shell コンポーネント本体
-├── index.test.tsx      # Shell のテスト
-├── index.stories.tsx   # Shell の Storybook
-├── useToolSelection.ts # ツール選択用カスタムフック
-└── registry.ts         # ツール登録の設定
-```
-
 ### 実例: SkillSheet コンポーネント（親子関係の例）
 
 ```
-src/components/features/Shell/
-├── index.tsx
+src/components/features/SkillSheet/
+├── index.tsx           # SkillSheet ページ（クエリとミューテーションを持つ）
 ├── index.stories.tsx
-├── registry.ts
-└── SkillSheet/         # Shell の子コンポーネント
-    ├── index.tsx       # SkillSheet コンテナ
-    ├── index.stories.tsx
-    ├── Form/           # SkillSheet の子コンポーネント
-    │   ├── index.tsx
-    │   └── index.stories.tsx
-    └── Preview/        # SkillSheet の子コンポーネント
-        ├── index.tsx
-        └── index.stories.tsx
+├── useSheetCommands.ts # 変更系のサーバ関数をまとめたフック
+├── Form/               # SkillSheet の子コンポーネント
+│   ├── index.tsx
+│   ├── index.stories.tsx
+│   └── CareerDialog/   # Form の子コンポーネント
+│       └── index.tsx
+└── Preview/            # SkillSheet の子コンポーネント
+    ├── index.tsx
+    └── index.stories.tsx
 ```
 
 この構造での関係:
 
-- **SkillSheet** は **Shell** の子コンポーネント
+- **SkillSheet** は `/skill-sheet` のルートが描くページ
 - **Form** と **Preview** は **SkillSheet** 専用の子コンポーネント
+- **CareerDialog** は **Form** 専用の子コンポーネント
 
 ### 親子関係の表現
 
@@ -92,21 +91,7 @@ ParentComponent/
     └── index.stories.tsx
 ```
 
-**例**: Shell コンポーネントが ToolBar という子コンポーネントを持つ場合
-
-```
-src/components/features/Shell/
-├── index.tsx
-├── index.test.tsx
-├── index.stories.tsx
-├── useToolSelection.ts
-├── registry.ts
-└── ToolBar/            # Shell の子コンポーネント
-    ├── index.tsx
-    └── index.test.tsx
-```
-
-`ToolBar` は `Shell` に属する専用のコンポーネント。
+子が親以外からも使われるようになったら、共通の祖先まで引き上げる。どの機能からも使うなら `ui/` に移す。
 
 ## Import 規則
 
@@ -115,9 +100,9 @@ src/components/features/Shell/
 同じディレクトリまたはその配下にあるファイルは、相対パスで import する。
 
 ```typescript
-// Shell/index.tsx から同じディレクトリのファイルを import
-import { useToolSelection } from "./useToolSelection";
-import { registry } from "./registry";
+// SkillSheet/index.tsx から同じディレクトリのファイルを import
+import { Form } from "./Form/index";
+import { useSheetCommands } from "./useSheetCommands";
 ```
 
 ### 3階層以上離れたファイル
@@ -125,7 +110,7 @@ import { registry } from "./registry";
 3階層以上離れたファイルは、パスエイリアス（`@/*`）の絶対パスで import する。
 
 ```typescript
-// Shell/index.tsx から深い階層のファイルを import
+// SkillSheet/Form/index.tsx から深い階層のファイルを import
 import { Button } from "@/src/components/ui/Button/index";
 import { getSheetFn } from "@/src/server/features/skill-sheet/queries/get-sheet";
 ```
@@ -135,13 +120,13 @@ import { getSheetFn } from "@/src/server/features/skill-sheet/queries/get-sheet"
 `index.tsx` からコンポーネントを再エクスポートし、外部からの import を単純にする。
 
 ```typescript
-// Shell/index.tsx
-export function Shell({ tools }: ShellProps) {
+// SkillSheet/index.tsx
+export function SkillSheet() {
   // ...
 }
 
 // 別のファイルから
-import { Shell } from "../Shell/index";
+import { SkillSheet } from "../components/features/SkillSheet/index";
 ```
 
 ## チェックリスト
@@ -154,6 +139,7 @@ import { Shell } from "../Shell/index";
 - [ ] Storybook ファイルは `index.stories.tsx` になっているか
 - [ ] カスタムフックは `useXxx.ts` という名前になっているか
 - [ ] 関連ファイルが同じディレクトリに配置されているか
+- [ ] 機能が別の機能を import していないか
 - [ ] 深い相対パスではなく、パスエイリアスを使用しているか
 
 ## 参考

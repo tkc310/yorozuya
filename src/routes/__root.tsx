@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { AppLayout } from "../components/layouts/AppLayout/index";
 import favicon from "../assets/images/favicon.ico?url";
 import icon from "../assets/images/icon.png";
 import iconSvg from "../assets/images/icon.svg";
@@ -25,6 +26,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { rel: "apple-touch-icon", href: icon },
     ],
   }),
+  staticData: { crumb: "トップ" },
   component: RootComponent,
 });
 
@@ -33,7 +35,9 @@ function RootComponent() {
   return (
     <RootDocument>
       <QueryClientProvider client={queryClient}>
-        <Outlet />
+        <AppLayout>
+          <Outlet />
+        </AppLayout>
       </QueryClientProvider>
     </RootDocument>
   );

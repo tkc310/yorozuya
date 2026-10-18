@@ -1,5 +1,12 @@
+import { readdirSync } from "node:fs";
 import importPlugin from "eslint-plugin-import-x";
 import tsParser from "@typescript-eslint/parser";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
+
+// 画面の機能。機能ごとに、ほかの機能を import できない区域を作る。
+const features = readdirSync("./src/components/features", { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
 
 export default [
   {
@@ -28,6 +35,10 @@ export default [
     },
     plugins: {
       "import-x": importPlugin,
+    },
+    // 解決できない import は境界を検査できないため、tsconfig の paths と拡張子で解決する。
+    settings: {
+      "import-x/resolver-next": [createTypeScriptImportResolver()],
     },
     rules: {
       // 画面は src/db を直接 import しない
@@ -74,12 +85,13 @@ export default [
               from: "./src/lib",
               message: "シートの計算は純粋である必要があります",
             },
-            // feature 同士の import を禁止（shell は除く）
-            {
-              target: "./src/components/features/!(shell)",
-              from: "./src/components/features/!(shell)",
+            // feature 同士の import を禁止
+            ...features.map((feature) => ({
+              target: `./src/components/features/${feature}`,
+              from: "./src/components/features",
+              except: [`./${feature}`],
               message: "feature 同士は import しません",
-            },
+            })),
             // queries と commands の相互 import を禁止
             {
               target: "./**/queries",
