@@ -69,7 +69,7 @@ pnpm install
 pnpm dev
 ```
 
-<http://127.0.0.1:43123> を開きます。初回起動時に `data/yorozuya.db` が作られ、見本のデータが入ります。
+<http://127.0.0.1:4628> を開きます。初回起動時に `data/yorozuya.db` が作られ、見本のデータが入ります。
 
 ### macOS アプリを自分で作る
 
