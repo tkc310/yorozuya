@@ -2,6 +2,7 @@
   "name": "yorozu-ya",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "bun --bun vp dev --host 127.0.0.1 --port 43123",

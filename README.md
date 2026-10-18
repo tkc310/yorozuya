@@ -12,6 +12,7 @@
   <img alt="TanStack Start" src="https://img.shields.io/badge/TanStack_Start-FF4154">
   <img alt="Bun" src="https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white">
   <img alt="SQLite" src="https://img.shields.io/badge/SQLite-local-003B57?logo=sqlite&logoColor=white">
+  <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
 </p>
 
 ---
@@ -161,4 +162,6 @@ Issue や Pull Request を歓迎します。開発の流れ、テスト、リリ
 
 ## ライセンス
 
-未定です。
+[MIT](./LICENSE) © tkc310
+
+デザイントークンの値は [@digital-go-jp/design-tokens](https://github.com/digital-go-jp/design-tokens)（MIT License, Copyright (c) 2023 デジタル庁）に合わせています。
