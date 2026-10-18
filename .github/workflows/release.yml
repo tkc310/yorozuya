@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+
+jobs:
+  build:
+    name: Build (${{ matrix.arch }})
+    runs-on: macos-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        include:
+          - arch: arm64
+            target: bun-darwin-arm64
+          - arch: x64
+            target: bun-darwin-x64
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+
+      - name: Check version
+        run: |
+          version="$(node -p 'require("./package.json").version')"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::タグ $GITHUB_REF_NAME と package.json の version ($version) が違います"
+            exit 1
+          fi
+
+      - name: Build app
+        run: pnpm build:app
+        env:
+          YOROZUYA_TARGET: ${{ matrix.target }}
+
+      - name: Archive
+        run: ditto -c -k --keepParent dist/Yorozuya.app "Yorozuya-${GITHUB_REF_NAME}-macos-${{ matrix.arch }}.zip"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: app-${{ matrix.arch }}
+          path: Yorozuya-*.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: app-*
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          files: Yorozuya-*.zip
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
