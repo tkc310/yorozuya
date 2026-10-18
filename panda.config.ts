@@ -27,6 +27,17 @@ export default defineConfig({
           from: { transform: "translateX(-100%)" },
           to: { transform: "translateX(0)" },
         },
+        spin: {
+          to: { transform: "rotate(360deg)" },
+        },
+        shimmer: {
+          from: { backgroundPosition: "100% 0" },
+          to: { backgroundPosition: "-100% 0" },
+        },
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       recipes: {
         button,

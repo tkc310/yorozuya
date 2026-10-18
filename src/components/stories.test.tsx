@@ -8,6 +8,8 @@ import * as dialogStories from "./ui/Dialog/index.stories";
 import * as fieldStories from "./ui/Field/index.stories";
 import * as inputStories from "./ui/Input/index.stories";
 import * as selectStories from "./ui/Select/index.stories";
+import * as skeletonStories from "./ui/Skeleton/index.stories";
+import * as spinnerStories from "./ui/Spinner/index.stories";
 import * as switchStories from "./ui/Switch/index.stories";
 import * as textareaStories from "./ui/Textarea/index.stories";
 import * as truncateStories from "./ui/Truncate/index.stories";
@@ -25,6 +27,8 @@ const groups = [
   fieldStories,
   inputStories,
   selectStories,
+  skeletonStories,
+  spinnerStories,
   switchStories,
   textareaStories,
   truncateStories,
