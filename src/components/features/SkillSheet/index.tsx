@@ -11,12 +11,16 @@ import { QUERY_KEY, callServerFunction } from "@/src/lib/request";
 import { Form } from "./Form/index";
 import { SheetLayout } from "./Layout/index";
 import { Preview } from "./Preview/index";
+import { PreviewSkeleton } from "./Preview/Skeleton/index";
+import { SkillSheetSkeleton } from "./Skeleton/index";
 import { useSheetCommands } from "./useSheetCommands";
 
 const status = css({
   margin: "0",
   p: { base: "4", md: "8" },
 });
+
+const hidden = css({ srOnly: true });
 
 function today(): CalendarDate {
   const now = new Date();
@@ -47,7 +51,7 @@ export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
   const deferred = useDeferredValue(preview ?? query.data ?? null, null);
 
   if (query.isPending) {
-    return <p className={status}>シートを読み込んでいます</p>;
+    return <SkillSheetSkeleton breadcrumb={breadcrumb} />;
   }
   if (query.isError) {
     return (
@@ -90,7 +94,12 @@ export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
         deferred ? (
           <Preview sheet={deferred} calculatedOn={calculatedOn} />
         ) : (
-          <p className={status}>プレビューを準備しています</p>
+          <>
+            <p role="status" className={hidden}>
+              プレビューを準備しています
+            </p>
+            <PreviewSkeleton />
+          </>
         )
       }
     />

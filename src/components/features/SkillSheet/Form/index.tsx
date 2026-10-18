@@ -13,6 +13,7 @@ import {
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Select } from "@/src/components/ui/Select/index";
+import { Spinner } from "@/src/components/ui/Spinner/index";
 import { Switch } from "@/src/components/ui/Switch/index";
 import { Textarea } from "@/src/components/ui/Textarea/index";
 import { CareerSection } from "./CareerSection/index";
@@ -32,6 +33,14 @@ const stack = css({
   display: "grid",
   gap: "6",
   gridTemplateColumns: "minmax(0, 1fr)",
+});
+
+const header = css({
+  alignItems: "center",
+  columnGap: "4",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
 });
 
 const heading = css({
@@ -175,7 +184,14 @@ export function Form({
 
   return (
     <div className={stack}>
-      <h1 className={heading}>スキルシート</h1>
+      <div className={header}>
+        <h1 className={heading}>スキルシート</h1>
+        {pending ? (
+          <Spinner label="保存しています" size="sm" delay>
+            保存しています
+          </Spinner>
+        ) : null}
+      </div>
       <SheetActions sheet={values} pending={pending} onImport={onImport} />
       {message ? (
         <p role="alert" className={alert}>
