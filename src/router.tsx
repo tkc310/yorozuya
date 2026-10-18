@@ -12,6 +12,10 @@ export function getRouter() {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
+    // リンクにマウスを乗せるかフォーカスしたら、遷移先のコードとデータを先に読む。
+    // データの鮮度は TanStack Query に任せるため、ルーター側では毎回 loader を呼ぶ。
+    defaultPreload: "intent",
+    defaultPreloadStaleTime: 0,
   });
 }
 

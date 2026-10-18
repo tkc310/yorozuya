@@ -135,7 +135,8 @@ export function Home() {
                   <li key={point}>{point}</li>
                 ))}
               </ul>
-              <Link to={tool.to} className={`${button()} ${cardAction}`}>
+              {/* 機能の数は少ないので、トップを描いた時点で各機能のコードとデータを先に読んでおく。 */}
+              <Link to={tool.to} preload="render" className={`${button()} ${cardAction}`}>
                 {tool.action}
               </Link>
             </li>
