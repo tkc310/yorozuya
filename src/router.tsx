@@ -19,4 +19,9 @@ declare module "@tanstack/react-router" {
   interface Register {
     router: ReturnType<typeof getRouter>;
   }
+
+  // パンくずリストに出す名前。
+  interface StaticDataRouteOption {
+    crumb?: string;
+  }
 }

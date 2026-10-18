@@ -13,7 +13,7 @@ import { Preview } from "./Preview/index";
 import { useSheetCommands } from "./useSheetCommands";
 
 // md 以上ではフォームとプレビューを左右に並べ、それぞれを別々にスクロールする。
-export const sheetColumns = css({
+const sheetColumns = css({
   display: "grid",
   gridTemplateColumns: { base: "1fr", md: "minmax(0, 1fr) minmax(0, 1fr)" },
   height: { md: "100%" },
@@ -27,9 +27,11 @@ const column = css({
   _print: { overflow: "visible", p: "0" },
 });
 
+// 印刷ではプレビューだけを出す。
 const formColumn = css({
   borderColor: "border.divider",
   borderRightWidth: { md: "1px" },
+  _print: { display: "none" },
 });
 
 const previewColumn = css({
@@ -82,7 +84,7 @@ export function SkillSheet() {
   const autoExperience = presented.ok ? formatDuration(presented.view.engineer) : "";
   return (
     <div className={sheetColumns}>
-      <div className={`${column} ${formColumn} sheet-form`}>
+      <div className={`${column} ${formColumn}`}>
         <Form
           key={generation}
           initial={query.data}
