@@ -70,6 +70,6 @@ export const Loading: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("シートを読み込んでいます")).toBeVisible();
+    await expect(canvas.getByRole("status")).toHaveTextContent("シートを読み込んでいます");
   },
 };
