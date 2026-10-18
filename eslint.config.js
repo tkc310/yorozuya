@@ -9,13 +9,10 @@ const features = readdirSync("./src/components/features", { withFileTypes: true 
   .map((entry) => entry.name);
 
 export default [
+  // ignores だけの設定は全体に効く。生成物やビルド成果物（.app の中身を含む）は検査しない。
   {
-    ignores: ["src/routeTree.gen.ts"],
-  },
-  {
-    files: ["**/*.{ts,tsx,js,jsx,mjs}"],
     ignores: [
-      "node_modules/**",
+      "src/routeTree.gen.ts",
       "styled-system/**",
       "dist/**",
       ".output/**",
@@ -24,8 +21,12 @@ export default [
       "playwright-report/**",
       "test-results/**",
       "storybook-static/**",
-      "scripts/**",
+      "sample/**",
     ],
+  },
+  {
+    files: ["**/*.{ts,tsx,js,jsx,mjs}"],
+    ignores: ["scripts/**"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
