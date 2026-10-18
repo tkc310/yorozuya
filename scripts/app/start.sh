@@ -4,7 +4,7 @@ set -eu
 
 contents="$(cd "$(dirname "$0")/.." && pwd)"
 support="$HOME/Library/Application Support/Yorozuya"
-port=43124
+port=4628
 url="http://127.0.0.1:$port/"
 
 # 既に起動していれば開くだけにする。

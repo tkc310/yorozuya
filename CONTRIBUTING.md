@@ -35,7 +35,7 @@ mise install   # または asdf install
 git clone https://github.com/tkc310/yorozuya.git
 cd yorozuya
 pnpm install   # prepare で Panda CSS のコード生成と Git フックの導入も走る
-pnpm dev       # http://127.0.0.1:4628
+pnpm dev       # http://127.0.0.1:46280
 ```
 
 初回起動時に `data/yorozuya.db` が作られ、見本のデータが入ります。まっさらに戻したいときは、開発サーバを止めてこのファイルを消してください。

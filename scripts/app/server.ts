@@ -2,7 +2,7 @@
 import { join, normalize, sep } from "node:path";
 import handler from "../../dist/server/server.js";
 
-const port = Number(process.env.PORT ?? "43124");
+const port = Number(process.env.PORT ?? "4628");
 const clientDir = normalize(
   process.env.YOROZUYA_CLIENT_DIR ?? join(import.meta.dir, "../../dist/client"),
 );

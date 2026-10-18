@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "bun --bun vp dev --host 127.0.0.1 --port 4628",
+    "dev": "bun --bun vp dev --host 127.0.0.1 --port 46280",
     "build:app": "bun scripts/app/build.ts",
     "storybook": "storybook dev --host 127.0.0.1 --port 6006 --no-open",
     "prepare": "panda codegen && lefthook install",

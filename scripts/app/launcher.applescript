@@ -7,7 +7,7 @@ on run
 end run
 
 on reopen
-	do shell script "open http://127.0.0.1:43124/"
+	do shell script "open http://127.0.0.1:4628/"
 end reopen
 
 on idle

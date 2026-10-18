@@ -8,7 +8,7 @@ const testing = process.env.VITEST === "true";
 export default defineConfig({
   server: {
     host: "127.0.0.1",
-    port: 4628,
+    port: 46280,
   },
   resolve: {
     tsconfigPaths: true,
