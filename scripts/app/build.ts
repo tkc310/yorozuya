@@ -1,4 +1,5 @@
 // macOS 向けに よろずや.app を組み立てる。出力は dist/Yorozuya.app。
+// YOROZUYA_TARGET（bun-darwin-arm64 / bun-darwin-x64）を渡すと、その CPU 向けのサーバを作る。
 import { $ } from "bun";
 import { cp, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
@@ -10,6 +11,8 @@ const macos = join(contents, "MacOS");
 const resources = join(contents, "Resources");
 const work = join(root, "dist/app-build");
 const icon = join(root, "src/assets/images/icon.png");
+const { version } = (await Bun.file(join(root, "package.json")).json()) as { version: string };
+const target = process.env.YOROZUYA_TARGET;
 
 $.cwd(root);
 
@@ -23,7 +26,8 @@ await $`osacompile -s -o ${app} scripts/app/launcher.applescript`;
 await rm(join(resources, "Assets.car"), { force: true });
 await rm(join(resources, "applet.icns"), { force: true });
 
-await $`bun build --compile --minify scripts/app/server.ts --outfile ${join(macos, "yorozuya-server")}`;
+const targetArgs = target ? [`--target=${target}`] : [];
+await $`bun build --compile --minify ${targetArgs} scripts/app/server.ts --outfile ${join(macos, "yorozuya-server")}`;
 await cp(join(root, "scripts/app/start.sh"), join(resources, "start.sh"));
 await $`chmod +x ${join(resources, "start.sh")}`;
 
@@ -49,7 +53,7 @@ const entries: [string, string][] = [
   ["CFBundleIconFile", "AppIcon"],
   ["CFBundleIdentifier", "com.github.tkc310.yorozuya"],
   ["CFBundleName", "よろずや"],
-  ["CFBundleShortVersionString", "0.1.0"],
+  ["CFBundleShortVersionString", version],
   ["CFBundleVersion", "1"],
   ["LSMinimumSystemVersion", "11.0"],
 ];
