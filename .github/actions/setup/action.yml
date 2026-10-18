@@ -1,0 +1,26 @@
+name: Setup
+description: .tool-versions のツールを入れ、依存をインストールする
+
+runs:
+  using: composite
+  steps:
+    - name: Install tools
+      uses: jdx/mise-action@v5
+      with:
+        cache: true
+
+    - name: Get pnpm store path
+      id: pnpm-store
+      shell: bash
+      run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache pnpm store
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.pnpm-store.outputs.path }}
+        key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: pnpm-${{ runner.os }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
