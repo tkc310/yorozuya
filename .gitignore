@@ -12,4 +12,6 @@ data/yorozuya.db
 .env
 .env.*
 .DS_Store
-sample
+# 見本 PDF や個人の経歴は置かない。架空の人物のダミーだけを追跡する。
+sample/*
+!sample/dummy-skill-sheet.json
