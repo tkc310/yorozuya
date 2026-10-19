@@ -99,6 +99,40 @@ function scan(file) {
 
 walk(root);
 
+// タブのアイコンは、アプリ・LP・Storybook とも favicon.ico を使う。SVG の icon を並べるとブラウザが SVG を選び、
+// 透過した黒い紋がダークモードのタブで見えなくなったため。
+for (const [file, favicon] of [
+  ["src/routes/__root.tsx", 'favicon.ico?url"'],
+  ["site/index.html", 'rel="icon" href="images/favicon.ico"'],
+  [".storybook/main.ts", 'rel="icon" href="./images/favicon.ico"'],
+]) {
+  const source = readFileSync(path.join(root, file), "utf8");
+  if (!source.includes(favicon)) {
+    failures.push(`${file}: タブのアイコンに favicon.ico を使う`);
+  }
+  if (
+    /icon\.svg/.test(source) &&
+    /rel[=:]\s*"icon"[^\n]*svg|svg[^\n]*rel[=:]\s*"icon"/.test(source)
+  ) {
+    failures.push(`${file}: タブのアイコンに SVG を並べない（favicon.ico が使われなくなる）`);
+  }
+}
+
+// 改善ログは表 1 つ。複数の PR が同時に行を足すと、衝突の直し方しだいで表や行が重なるため。
+{
+  const log = readFileSync(path.join(root, "docs/improvement/log.md"), "utf8").split("\n");
+  if (log.filter((line) => line.startsWith("| 日付")).length !== 1) {
+    failures.push("docs/improvement/log.md: 表は 1 つにする（見出しの行が重なっている）");
+  }
+  const rows = log
+    .filter((line) => /^\| \d{4}-\d{2}-\d{2} /.test(line))
+    .map((line) => line.replace(/\s+/g, " "));
+  const duplicated = rows.filter((row, index) => rows.indexOf(row) !== index);
+  for (const row of duplicated) {
+    failures.push(`docs/improvement/log.md: 同じ行が重なっている（${row.slice(0, 60)}…）`);
+  }
+}
+
 // Git フックから呼ぶ make は ARGS= で空にする。make のコマンド行の ARGS が MAKEFLAGS を通して
 // フックにまで引き継がれ、`make release-version ARGS=minor` の push で typecheck に minor が渡ったため。
 for (const line of readFileSync(path.join(root, "lefthook.yml"), "utf8").split("\n")) {
