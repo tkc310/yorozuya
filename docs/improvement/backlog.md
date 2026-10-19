@@ -16,7 +16,6 @@
 ## サイト（GitHub Pages）
 
 - [ ] `make site-publish` 後に、公開ページの画像と動画が欠けていないかを確かめる手順をスキルに足す
-- [ ] LP の文言を変えたら `make site-build ARGS=--skip-capture` で撮影を省いて確かめられることを文書に書く
 
 ## 仕組み
 

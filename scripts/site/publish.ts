@@ -16,7 +16,7 @@ const built = await stat(join(site, "index.html"))
   .then(() => true)
   .catch(() => false);
 if (!built) {
-  console.error(".site がありません。先に pnpm site:build を実行してください");
+  console.error(".site がありません。先に make site-build を実行してください");
   process.exit(1);
 }
 
