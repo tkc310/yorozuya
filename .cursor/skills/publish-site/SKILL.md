@@ -26,7 +26,7 @@ description: 製品紹介ページ（LP）と Storybook を GitHub Pages に公�
 
 1. 準備を確かめる。
    - `pnpm install` 済みであること。
-   - Playwright の Chromium は `pnpm site:build` が撮影の前に入れる（`pnpm exec playwright install chromium`）。初回はダウンロードに時間がかかる。
+   - 撮影するブラウザ: `pnpm site:build` が撮影の前に Playwright の Chromium を入れる。Playwright が対応していない OS（macOS 13 など）では入れられないので、そのときは手元の Google Chrome（無ければ Microsoft Edge）で撮る。どちらも無ければ Google Chrome を入れておく。
    - 動画を mp4 にもしたいときは `ffmpeg` があること（無ければ webm だけで公開する）。
    - `origin`（tkc310/yorozuya）にプッシュできること。
 2. 公開したい内容のブランチ（ふつうは最新の `main`）にいることを確かめる。未コミットの変更があっても組み立てられるが、公開のコミットメッセージに「未コミットの変更」と残る。
@@ -61,7 +61,7 @@ gh api -X POST repos/tkc310/yorozuya/pages -f "source[branch]=gh-pages" -f "sour
 ## うまくいかないとき
 
 - Storybook の組み立てで `multiple entries detected` と出る: TanStack Start のマニフェストのプラグインが残っている。`.storybook/main.ts` の `viteFinal` で外している名前（`start-manifest`）が、TanStack Start の更新で変わっていないか確かめる。
-- `Executable doesn't exist`（Chromium が無い）と出る: `pnpm exec playwright install chromium` を実行してから組み立て直す。
+- 「撮影に使えるブラウザがありません」と出る: Playwright の Chromium も Google Chrome・Microsoft Edge も起動できなかった。Google Chrome を入れるか、対応している OS なら `pnpm exec playwright install chromium` を実行してから組み立て直す。
 - 撮影で要素が見つからない: 画面のラベルやボタン名が変わっている。`scripts/site/capture.mjs` を直す。
 
 ## してはいけないこと

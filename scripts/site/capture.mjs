@@ -154,10 +154,28 @@ function toMp4() {
   }
 }
 
+// Playwright の Chromium を使う。入っていない（対応していない OS など）ときは、
+// 手元の Google Chrome、Microsoft Edge の順に試す。
+async function launch() {
+  const errors = [];
+  for (const channel of [undefined, "chrome", "msedge"]) {
+    try {
+      const browser = await chromium.launch(channel ? { channel } : {});
+      console.log(`撮影に使うブラウザ: ${channel ?? "Playwright の Chromium"}`);
+      return browser;
+    } catch (error) {
+      errors.push(`${channel ?? "chromium"}: ${error.message.split("\n")[0]}`);
+    }
+  }
+  throw new Error(
+    `撮影に使えるブラウザがありません。Google Chrome を入れるか、pnpm exec playwright install chromium を実行してください。\n${errors.join("\n")}`,
+  );
+}
+
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
 const url = await demoUrl();
-const browser = await chromium.launch();
+const browser = await launch();
 try {
   await stills(browser, url);
   await video(browser, url);

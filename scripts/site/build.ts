@@ -44,8 +44,13 @@ if (keepMedia) {
   await rm(kept, { recursive: true, force: true });
 } else if (!skipCapture) {
   // 撮影に使う Chromium を入れる。入っていれば何もしない。
+  // Playwright が対応していない OS（古い macOS など）では入れられないので、
+  // そのときは手元の Google Chrome（または Microsoft Edge）で撮る（capture.mjs が選ぶ）。
   console.log("撮影に使う Chromium を確かめます");
-  await $`pnpm exec playwright install chromium`;
+  const installed = await $`pnpm exec playwright install chromium`.nothrow();
+  if (installed.exitCode !== 0) {
+    console.warn("Playwright の Chromium を入れられないため、手元の Google Chrome で撮ります");
+  }
   console.log("スクリーンショットと操作動画を撮ります");
   const server = serveStatic(storybook);
   try {
