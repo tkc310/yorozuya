@@ -1,10 +1,11 @@
-import type { Career, Duration, Period, YearMonth } from "@/shared/features/skill-sheet/sheet";
+import {
+  formatYearMonth,
+  type Duration,
+  type Period,
+  type YearMonth,
+} from "@/shared/features/skill-sheet/sheet";
 
-// 一覧と詳細で共通に使う、期間や案件名の書き方。
-
-export function formatMonth(value: YearMonth): string {
-  return `${value.year}年${value.month}月`;
-}
+// 一覧と詳細で共通に使う、期間の書き方。
 
 function monthIndex(value: YearMonth): number {
   return value.year * 12 + value.month - 1;
@@ -16,9 +17,9 @@ export function periodDuration(period: Period, until: YearMonth): Duration {
 }
 
 export function endLabel(period: Period): string {
-  return period.end ? formatMonth(period.end) : "現在";
+  return period.end ? formatYearMonth(period.end) : "現在";
 }
 
-export function careerName(item: Career): string {
-  return item.hard ? `${item.projectName} (※)` : item.projectName;
+export function startLabel(period: Period): string {
+  return formatYearMonth(period.start);
 }

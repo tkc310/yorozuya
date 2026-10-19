@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState } from "react";
 import { css } from "styled-system/css";
 import {
+  MAX_FEATURED_SKILLS,
+  featuredCount,
   present,
   skillInCareers,
   type CalendarDate,
@@ -9,6 +11,7 @@ import {
   type Skill,
 } from "@/shared/features/skill-sheet/sheet";
 import { Button } from "@/src/components/ui/Button/index";
+import { Checkbox } from "@/src/components/ui/Checkbox/index";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Switch } from "@/src/components/ui/Switch/index";
@@ -29,7 +32,9 @@ function SkillRow({
   available,
   computed,
   pending,
+  featuredFull,
   onUpdateExperience,
+  onUpdateFeatured,
   onRemove,
   onError,
 }: {
@@ -39,7 +44,10 @@ function SkillRow({
   available: boolean;
   computed: Duration | null;
   pending?: boolean;
+  // 主要スキルが上限まで選ばれているか。選ばれていない行は主要にできない。
+  featuredFull: boolean;
   onUpdateExperience: (experience: Duration | null, auto: boolean) => void;
+  onUpdateFeatured: (featured: boolean) => void;
   onRemove: () => void;
   onError: (message: string | null) => void;
 }) {
@@ -96,6 +104,19 @@ function SkillRow({
           disabled={!available || pending}
           onCheckedChange={save}
         />
+        <Checkbox
+          aria-label={`${skill.name}を主要スキルにする`}
+          title={
+            featuredFull && !skill.featured
+              ? `主要スキルは${MAX_FEATURED_SKILLS}件まで選べます`
+              : undefined
+          }
+          checked={Boolean(skill.featured)}
+          disabled={pending || (featuredFull && !skill.featured)}
+          onChange={(event) => onUpdateFeatured(event.target.checked)}
+        >
+          主要
+        </Checkbox>
         <Button type="button" variant="outline" size="sm" disabled={pending} onClick={onRemove}>
           削除
         </Button>
@@ -110,6 +131,7 @@ export type SkillSectionProps = {
   pending?: boolean;
   onAddSkill: (groupName: string, skillName: string, experience: Duration | null) => void;
   onUpdateSkillExperience: (skillName: string, experience: Duration | null, auto: boolean) => void;
+  onUpdateSkillFeatured: (skillName: string, featured: boolean) => void;
   onRemoveSkill: (skillName: string) => void;
 };
 
@@ -120,8 +142,10 @@ export function SkillSection({
   pending,
   onAddSkill,
   onUpdateSkillExperience,
+  onUpdateSkillFeatured,
   onRemoveSkill,
 }: SkillSectionProps) {
+  const featuredFull = featuredCount(sheet) >= MAX_FEATURED_SKILLS;
   const [groupName, setGroupName] = useState("言語");
   const [skillName, setSkillName] = useState("");
   const [skillYears, setSkillYears] = useState("");
@@ -174,7 +198,8 @@ export function SkillSection({
   return (
     <>
       <p className={hint}>
-        経験年数は任意です。「自動計算」をオンにすると職務経歴の期間から数えます。職務経歴の環境に無い技術は自動計算できません。
+        経験年数は任意です。「自動計算」をオンにすると職務経歴の期間から数えます。職務経歴の環境に無い技術は自動計算できません。「主要」にした技術（{MAX_FEATURED_SKILLS}
+        件まで）は 1 ページ目の主要スキルに出します。選ばなければ経験年数の長い順に出します。
       </p>
       {message ? (
         <p role="alert" className={alert}>
@@ -191,7 +216,9 @@ export function SkillSection({
               pending={pending}
               available={skillInCareers(sheet.careers, skill.name)}
               computed={computed.get(skill.name.trim()) ?? null}
+              featuredFull={featuredFull}
               onUpdateExperience={(value, auto) => onUpdateSkillExperience(skill.name, value, auto)}
+              onUpdateFeatured={(featured) => onUpdateSkillFeatured(skill.name, featured)}
               onRemove={() => onRemoveSkill(skill.name)}
               onError={setMessage}
             />

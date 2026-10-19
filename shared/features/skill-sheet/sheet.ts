@@ -11,6 +11,18 @@ export const PHASES = [
 
 export type Phase = (typeof PHASES)[number];
 
+// 担当工程のチップに出す短い名前。工程を足したら型検査で漏れに気づけるよう Record にする。
+export const PHASE_SHORT: Record<Phase, string> = {
+  要件定義: "要件",
+  基本設計: "基本",
+  詳細設計: "詳細",
+  実装: "実装",
+  ユニットテスト: "単テ",
+  結合テスト: "結テ",
+  E2Eテスト: "E2E",
+  保守運用: "保守",
+};
+
 // 以前の工程名。書き出した JSON を読み込むときに今の名前へ置き換える。
 const LEGACY_PHASES: Record<string, Phase> = {
   単テスト: "ユニットテスト",
@@ -28,7 +40,9 @@ export function normalizePhase(value: string): string {
 
 // 書き出す JSON の目印と版。読み込むときに確かめる。
 export const SHEET_FILE_KIND = "yorozuya-skill-sheet";
-export const SHEET_FILE_VERSION = 1;
+export const SHEET_FILE_VERSION = 2;
+// 読み込める版。古い版は読み込むときに今の形へ直す。
+export const SHEET_FILE_VERSIONS = [1, 2] as const;
 
 export type SheetFile = {
   kind: typeof SHEET_FILE_KIND;
@@ -89,6 +103,23 @@ export const GENDERS = ["男性", "女性"] as const;
 
 export type Gender = (typeof GENDERS)[number];
 
+// 氏名の出し方。イニシャルにするとフリガナは出さない。
+export const NAME_DISPLAYS = ["full", "initials"] as const;
+
+export type NameDisplay = (typeof NAME_DISPLAYS)[number];
+
+// 勤務形態の入力候補。自由入力もできる。
+export const WORK_STYLES = ["フルリモート", "リモート中心", "ハイブリッド", "常駐可"] as const;
+
+export const MAX_HIGHLIGHTS = 3;
+// ハイライト 1 件の目安の文字数。超えても保存はできる。
+export const HIGHLIGHT_GUIDE_LENGTH = 60;
+export const MAX_FEATURED_SKILLS = 8;
+// 主要スキルを選んでいないときに、経験年数の長い順に出す件数。
+export const FALLBACK_FEATURED_SKILLS = 6;
+export const SELF_PR_GUIDE_LENGTH = 400;
+export const CAREER_SUMMARY_GUIDE_LENGTH = 40;
+
 // プレビューに出すかを切り替えられる項目。
 export const PROFILE_ITEMS = [
   "age",
@@ -96,9 +127,13 @@ export const PROFILE_ITEMS = [
   "experience",
   "education",
   "station",
+  "availableFrom",
   "desiredHours",
+  "desiredRate",
+  "workStyle",
   "desiredEmployment",
   "affiliation",
+  "highlights",
   "selfPr",
 ] as const;
 
@@ -112,27 +147,42 @@ export const ALL_VISIBLE: ProfileVisibility = {
   experience: true,
   education: true,
   station: true,
+  availableFrom: true,
   desiredHours: true,
+  desiredRate: true,
+  workStyle: true,
   desiredEmployment: true,
   affiliation: true,
+  highlights: true,
   selfPr: true,
 };
 
-// 希望条件と得意分野。どれも自由入力。
+// 新しく作るシートの表示。希望単価は出したい人だけ出す。
+export const DEFAULT_VISIBILITY: ProfileVisibility = { ...ALL_VISIBLE, desiredRate: false };
+
+// 人物と希望条件。どれも自由入力。
 export type ProfileTexts = {
+  nameKana: string;
+  nameInitials: string;
+  title: string;
+  availableFrom: string;
   desiredHours: string;
+  desiredRate: string;
+  workStyle: string;
   desiredEmployment: string;
   affiliation: string;
-  strongSkills: string;
-  strongWork: string;
 };
 
 export const EMPTY_PROFILE_TEXTS: ProfileTexts = {
+  nameKana: "",
+  nameInitials: "",
+  title: "",
+  availableFrom: "",
   desiredHours: "",
+  desiredRate: "",
+  workStyle: "",
   desiredEmployment: "",
   affiliation: "",
-  strongSkills: "",
-  strongWork: "",
 };
 
 export type Skill = {
@@ -141,6 +191,8 @@ export type Skill = {
   experience?: Duration;
   // 真なら職務経歴から数える。該当する経歴が無ければ数えない。
   auto?: boolean;
+  // 真なら主要スキルとして 1 ページ目に出す。
+  featured?: boolean;
 };
 
 export type SkillGroup = {
@@ -159,6 +211,7 @@ export type SheetInput = {
   // 真なら更新日を基準日（今日）にする。
   updatedAuto: boolean;
   name: string;
+  nameDisplay: NameDisplay;
   age: number | null;
   gender: Gender | null;
   // 自由入力の経験年数。experienceAuto が真なら使わず職務経歴から数える。
@@ -168,6 +221,9 @@ export type SheetInput = {
   station: string;
   selfPr: string;
   visibility: ProfileVisibility;
+  // 1 ページ目に出す強み。最大 MAX_HIGHLIGHTS 件。
+  highlights: string[];
+  qualifications: string[];
   links: ProfileLink[];
   skillGroups: SkillGroup[];
   careers: Career[];
@@ -181,10 +237,15 @@ export type Duration = {
 export type SkillYears = {
   name: string;
   duration: Duration;
+  featured: boolean;
 };
 
 export type SheetView = {
   name: string;
+  // 用紙に出す氏名。イニシャル表示ならイニシャル。
+  displayName: string;
+  // イニシャル表示のときは空。
+  nameKana: string;
   age: number | null;
   gender: Gender | null;
   // 表示する経験年数。自動なら計算した値、そうでなければ自由入力。
@@ -201,6 +262,10 @@ export type SheetView = {
   engineer: Duration;
   parallelCount: number;
   texts: ProfileTexts;
+  highlights: string[];
+  // 1 ページ目に出す主要スキル。選んでいなければ経験年数の長い順。
+  featuredSkills: SkillYears[];
+  qualifications: string[];
   links: ProfileLink[];
   hardCount: number;
   phaseCount: number;
@@ -281,18 +346,37 @@ function skillYears(input: SheetInput, calculatedOn: YearMonth): SkillYears[] {
         continue;
       }
       seen.add(name);
+      const featured = Boolean(skill.featured);
       if (!skill.auto) {
-        skills.push({ name, duration: skill.experience ?? { years: 0, months: 0 } });
+        skills.push({ name, duration: skill.experience ?? { years: 0, months: 0 }, featured });
         continue;
       }
       const matched = input.careers.filter((item) => careerHasSkill(item, name));
       skills.push({
         name,
         duration: toDuration(mergedMonths(careerSpans(matched, input.updatedOn, calculatedOn))),
+        featured,
       });
     }
   }
   return skills;
+}
+
+// 経験年数の長い順。同じ長さなら元の並びのまま。
+export function byDuration<T extends { duration: Duration }>(items: T[]): T[] {
+  return [...items].sort((left, right) => durationMonths(right.duration) - durationMonths(left.duration));
+}
+
+// 主要スキル。選んだものが無ければ、経験年数の長いものから決まった件数を出す。
+function featuredSkills(skills: SkillYears[]): SkillYears[] {
+  const chosen = skills.filter((skill) => skill.featured);
+  if (chosen.length > 0) {
+    return byDuration(chosen).slice(0, MAX_FEATURED_SKILLS);
+  }
+  return byDuration(skills.filter((skill) => durationMonths(skill.duration) > 0)).slice(
+    0,
+    FALLBACK_FEATURED_SKILLS,
+  );
 }
 
 function engineerYears(input: SheetInput, calculatedOn: YearMonth): Duration {
@@ -364,6 +448,23 @@ export function formatDuration(duration: Duration): string {
   return `${duration.years}年${duration.months}ヶ月`;
 }
 
+// 保有技術の年数。選考ではヶ月まで要らないので 0.5 年刻みにする。0 なら空。
+export function formatSkillYears(duration: Duration): string {
+  const months = durationMonths(duration);
+  if (months <= 0) {
+    return "";
+  }
+  if (months < 12) {
+    return "1年未満";
+  }
+  return `${Math.floor(months / 6) / 2}年`;
+}
+
+// 期間の書き方（2024/01）。表で幅を取らないよう数字だけにする。
+export function formatYearMonth(value: YearMonth): string {
+  return `${value.year}/${String(value.month).padStart(2, "0")}`;
+}
+
 export function durationToken(duration: Duration): string {
   if (duration.years === 0) {
     return `${duration.months}m`;
@@ -402,8 +503,13 @@ export function fromMonths(totalMonths: number): Duration {
   return toDuration(totalMonths);
 }
 
-function skillOf(name: string, experience: Duration | null, auto: boolean): Skill {
-  const base: Skill = auto ? { name, auto } : { name };
+function skillOf(
+  name: string,
+  experience: Duration | null,
+  auto: boolean,
+  featured = false,
+): Skill {
+  const base: Skill = { name, ...(auto ? { auto } : {}), ...(featured ? { featured } : {}) };
   if (!experience || durationMonths(experience) <= 0) {
     return base;
   }
@@ -453,10 +559,63 @@ export function updateSkillExperience(
     skillGroups: sheet.skillGroups.map((group) => ({
       ...group,
       skills: group.skills.map((skill) =>
-        skill.name.trim() === name ? skillOf(skill.name, experience, auto) : skill,
+        skill.name.trim() === name
+          ? skillOf(skill.name, experience, auto, Boolean(skill.featured))
+          : skill,
       ),
     })),
   };
+}
+
+export function featuredCount(sheet: SheetInput): number {
+  return sheet.skillGroups.reduce(
+    (total, group) => total + group.skills.filter((skill) => skill.featured).length,
+    0,
+  );
+}
+
+// 主要スキルにするか切り替える。上限を超えるときは変えない。
+export function setSkillFeatured(
+  sheet: SheetInput,
+  skillName: string,
+  featured: boolean,
+): SheetInput {
+  const name = skillName.trim();
+  if (featured && featuredCount(sheet) >= MAX_FEATURED_SKILLS) {
+    return sheet;
+  }
+  return {
+    ...sheet,
+    skillGroups: sheet.skillGroups.map((group) => ({
+      ...group,
+      skills: group.skills.map((skill) =>
+        skill.name.trim() === name
+          ? skillOf(skill.name, skill.experience ?? null, Boolean(skill.auto), featured)
+          : skill,
+      ),
+    })),
+  };
+}
+
+// 以前の「得意な技術」「得意な業務」をハイライトに移す。空のものは捨てる。
+export function legacyHighlights(strongSkills: string, strongWork: string): string[] {
+  return [strongSkills, strongWork]
+    .map((text) => text.trim())
+    .filter((text) => text.length > 0)
+    .slice(0, MAX_HIGHLIGHTS);
+}
+
+// 空のハイライトを除き、上限までにする。
+export function cleanHighlights(highlights: string[]): string[] {
+  return highlights
+    .map((text) => text.trim())
+    .filter((text) => text.length > 0)
+    .slice(0, MAX_HIGHLIGHTS);
+}
+
+export function displayNameOf(input: Pick<SheetInput, "name" | "nameDisplay" | "nameInitials">) {
+  const initials = input.nameInitials.trim();
+  return input.nameDisplay === "initials" && initials.length > 0 ? initials : input.name.trim();
 }
 
 export function removeSkill(sheet: SheetInput, skillName: string): SheetInput {
@@ -483,6 +642,11 @@ export function formatDate(value: CalendarDate): string {
   return `${value.year}年${value.month}月${value.day}日`;
 }
 
+// 用紙に出す日付（2026/10/18）。
+export function formatSlashDate(value: CalendarDate): string {
+  return `${formatYearMonth(value)}/${String(value.day).padStart(2, "0")}`;
+}
+
 export function present(source: SheetInput, calculatedOn: CalculatedOn): SheetResult {
   const input: SheetInput = { ...source, updatedOn: effectiveUpdatedOn(source, calculatedOn) };
   const name = input.name.trim();
@@ -490,10 +654,14 @@ export function present(source: SheetInput, calculatedOn: CalculatedOn): SheetRe
     return { ok: false, error: "氏名がありません" };
   }
   const ordered = orderCareers(input, calculatedOn);
+  const skills = skillYears(input, calculatedOn);
+  const initials = displayNameOf(input) !== name;
   return {
     ok: true,
     view: {
       name,
+      displayName: displayNameOf(input),
+      nameKana: initials ? "" : input.nameKana.trim(),
       age: input.age,
       gender: input.gender,
       experience: input.experienceAuto
@@ -506,14 +674,21 @@ export function present(source: SheetInput, calculatedOn: CalculatedOn): SheetRe
       selfPrShort: isSelfPrShort(input),
       links: input.links,
       texts: {
+        nameKana: input.nameKana,
+        nameInitials: input.nameInitials,
+        title: input.title,
+        availableFrom: input.availableFrom,
         desiredHours: input.desiredHours,
+        desiredRate: input.desiredRate,
+        workStyle: input.workStyle,
         desiredEmployment: input.desiredEmployment,
         affiliation: input.affiliation,
-        strongSkills: input.strongSkills,
-        strongWork: input.strongWork,
       },
+      highlights: cleanHighlights(input.highlights),
+      featuredSkills: featuredSkills(skills),
+      qualifications: input.qualifications.map((item) => item.trim()).filter(Boolean),
       updatedOn: input.updatedOn,
-      skills: skillYears(input, calculatedOn),
+      skills,
       recent: ordered.slice(0, RECENT_CAREER_COUNT),
       older: ordered.slice(RECENT_CAREER_COUNT),
       engineer: engineerYears(input, calculatedOn),
@@ -551,17 +726,26 @@ export function createFixtureSheet(): SheetInput {
   return {
     updatedOn: { year: 2026, month: 10, day: 1 },
     updatedAuto: false,
-    name: "山田",
+    name: "新究羅 理定",
+    nameDisplay: "full",
     age: 35,
     gender: "男性",
     experience: "",
     experienceAuto: true,
     visibility: { ...ALL_VISIBLE },
+    highlights: ["受注から在庫までの業務システムを、設計から実装まで担当"],
+    qualifications: [],
     links: [],
     education: "学士",
     station: "相模原",
     selfPr: "設計と実装を担当。",
     ...EMPTY_PROFILE_TEXTS,
+    nameKana: "シンギュラ リティ",
+    title: "Webエンジニア",
+    availableFrom: "即日",
+    desiredHours: "週5日",
+    workStyle: "リモート中心",
+    desiredEmployment: "業務委託",
     skillGroups: [
       {
         name: "言語",
@@ -606,4 +790,37 @@ export function createFixtureSheet(): SheetInput {
       }),
     ],
   };
+}
+
+// 選考で見られやすいのに空の項目。フォームの上に注意として出す。
+export function sheetWarnings(input: SheetInput): string[] {
+  const warnings: string[] = [];
+  if (input.title.trim().length === 0) {
+    warnings.push("肩書が未入力です");
+  }
+  if (input.visibility.availableFrom && input.availableFrom.trim().length === 0) {
+    warnings.push("稼働開始が未入力です");
+  }
+  if (input.visibility.highlights && cleanHighlights(input.highlights).length === 0) {
+    warnings.push("ハイライトが未入力です");
+  }
+  if (featuredCount(input) === 0) {
+    warnings.push("主要スキルが選ばれていません（経験年数の長い順に出します）");
+  }
+  const withoutOutcome = input.careers.filter((career) => career.outcome.trim().length === 0);
+  if (withoutOutcome.length > 0) {
+    warnings.push(`成果が空の案件が${withoutOutcome.length}件あります`);
+  }
+  if ([...input.selfPr.trim()].length > SELF_PR_GUIDE_LENGTH) {
+    warnings.push(`自己PRが目安の${SELF_PR_GUIDE_LENGTH}字を超えています`);
+  }
+  const longSummaries = input.careers.filter(
+    (career) => [...career.summary.trim()].length > CAREER_SUMMARY_GUIDE_LENGTH,
+  );
+  if (longSummaries.length > 0) {
+    warnings.push(
+      `一覧用の概要が目安の${CAREER_SUMMARY_GUIDE_LENGTH}字を超えている案件が${longSummaries.length}件あります`,
+    );
+  }
+  return warnings;
 }

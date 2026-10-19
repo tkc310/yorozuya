@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { css } from "styled-system/css";
-import { PHASES, type Career, type Phase } from "@/shared/features/skill-sheet/sheet";
+import {
+  CAREER_SUMMARY_GUIDE_LENGTH,
+  PHASES,
+  type Career,
+  type Phase,
+} from "@/shared/features/skill-sheet/sheet";
 import { Button } from "@/src/components/ui/Button/index";
 import { Checkbox } from "@/src/components/ui/Checkbox/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Textarea } from "@/src/components/ui/Textarea/index";
-import { ListInput } from "./ListInput/index";
+import { ListInput } from "../ListInput/index";
+import { lengthHint } from "../values";
 
 const form = css({
   display: "grid",
@@ -318,6 +324,17 @@ export function CareerDialog({
   );
 }
 
+const overGuide = css({
+  color: "error",
+  fontWeight: "bold",
+});
+
+// 一覧用の概要は、一覧で 2 行に収まる文字数を目安にする。
+function SummaryLength({ text }: { text: string }) {
+  const result = lengthHint(text, CAREER_SUMMARY_GUIDE_LENGTH);
+  return <span className={result.over ? overGuide : undefined}>{result.text}</span>;
+}
+
 function CareerForm({
   career,
   pending,
@@ -483,7 +500,10 @@ function CareerForm({
           />
         </Field>
       </div>
-      <Field label="職務経歴の一覧用の概要">
+      <Field
+        label="職務経歴の一覧用の概要"
+        hint={<SummaryLength text={draft.summary} />}
+      >
         <Textarea
           placeholder="例: 会員管理システムのクラウド移行"
           value={draft.summary}
@@ -507,7 +527,7 @@ function CareerForm({
           onChange={(event) => update({ work: event.target.value })}
         />
       </Field>
-      <Field label="注力した課題・成果">
+      <Field label="成果" hint="数値で示せる実績があると、書類選考で伝わりやすくなります。">
         <Textarea
           placeholder="例: 手作業の転記を自動化し、月20時間の作業を削減した。"
           value={draft.outcome}
@@ -591,7 +611,7 @@ function CareerForm({
             checked={draft.hard}
             onChange={(event) => update({ hard: event.target.checked })}
           >
-            高難易度
+            特にスキルアップできた案件（ピックアップ タグを付ける）
           </Checkbox>
         </div>
       </fieldset>

@@ -74,3 +74,22 @@ export function sameExperience(left: Duration | null, right: Duration | undefine
   }
   return left.years === right.years && left.months === right.months;
 }
+
+// 文字数の目安。超えたら注意を出すが、保存はできる。
+export function lengthHint(text: string, guide: number): { text: string; over: boolean } {
+  const length = [...text.trim()].length;
+  const over = length > guide;
+  return {
+    text: over
+      ? `${length} / ${guide}字（目安を超えています）`
+      : `${length} / ${guide}字`,
+    over,
+  };
+}
+
+// 印刷・PDF 保存の既定のファイル名（ブラウザは document.title を使う）。
+export function printTitle(name: string, today: CalendarDate): string {
+  const date = `${today.year}${String(today.month).padStart(2, "0")}${String(today.day).padStart(2, "0")}`;
+  const person = name.trim();
+  return person ? `スキルシート_${person}_${date}` : `スキルシート_${date}`;
+}

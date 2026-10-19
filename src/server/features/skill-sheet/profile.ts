@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { GENDERS } from "@/shared/features/skill-sheet/sheet";
+import { GENDERS, MAX_HIGHLIGHTS, NAME_DISPLAYS } from "@/shared/features/skill-sheet/sheet";
 
 const DateSchema = v.pipe(
   v.object({
@@ -23,11 +23,24 @@ const LinkSchema = v.object({
   ),
 });
 
+const text = (label: string, max: number) =>
+  v.pipe(v.string(), v.trim(), v.maxLength(max, `${label}は${max}文字以内で入力してください`));
+
+// 版 2 で足した項目。以前に書き出した JSON には無いので、無ければ空にする。
+const optionalText = (label: string, max: number) => v.optional(text(label, max), "");
+
 // プロフィールの保存と JSON の読み込みで使う。
 export const ProfileSchema = v.object({
   updatedOn: v.nullable(DateSchema),
   updatedAuto: v.boolean(),
   name: v.string(),
+  nameKana: optionalText("フリガナ", 100),
+  nameInitials: optionalText("イニシャル", 20),
+  nameDisplay: v.optional(v.picklist(NAME_DISPLAYS), "full"),
+  title: optionalText("肩書", 100),
+  availableFrom: optionalText("稼働開始", 100),
+  desiredRate: optionalText("希望単価", 100),
+  workStyle: optionalText("勤務形態", 100),
   age: v.nullable(
     v.pipe(
       v.number(),
@@ -49,9 +62,13 @@ export const ProfileSchema = v.object({
     experience: v.boolean(),
     education: v.boolean(),
     station: v.boolean(),
+    availableFrom: v.optional(v.boolean(), true),
     desiredHours: v.boolean(),
+    desiredRate: v.optional(v.boolean(), false),
+    workStyle: v.optional(v.boolean(), true),
     desiredEmployment: v.boolean(),
     affiliation: v.boolean(),
+    highlights: v.optional(v.boolean(), true),
     selfPr: v.boolean(),
   }),
   education: v.string(),
@@ -63,8 +80,14 @@ export const ProfileSchema = v.object({
     v.maxLength(100, "希望雇用形態は100文字以内で入力してください"),
   ),
   affiliation: v.pipe(v.string(), v.maxLength(100, "所属は100文字以内で入力してください")),
-  strongSkills: v.string(),
-  strongWork: v.string(),
+  highlights: v.optional(
+    v.pipe(
+      v.array(text("ハイライト", 200)),
+      v.maxLength(MAX_HIGHLIGHTS, `ハイライトは${MAX_HIGHLIGHTS}件までです`),
+    ),
+    [],
+  ),
+  qualifications: v.optional(v.array(text("資格・語学", 100)), []),
   // 以前に書き出した JSON には無いので、無ければ空にする。
   links: v.optional(v.array(LinkSchema), []),
 });

@@ -51,6 +51,14 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     },
     true,
   );
+  const updateSkillFeatured = useCommand(
+    async (input: { skillName: string; featured: boolean }) => {
+      const { updateSkillFeaturedFn } =
+        await import("@/src/server/features/skill-sheet/commands/update-skill-featured");
+      return callServerFunction(updateSkillFeaturedFn({ data: input }));
+    },
+    true,
+  );
   const removeSkill = useCommand(async (skillName: string) => {
     const { removeSkillFn } =
       await import("@/src/server/features/skill-sheet/commands/remove-skill");
@@ -80,6 +88,7 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     saveProfile,
     addSkill,
     updateSkillExperience,
+    updateSkillFeatured,
     removeSkill,
     addCareer,
     updateCareer,
@@ -92,6 +101,7 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     saveProfile: saveProfile.mutate,
     addSkill: addSkill.mutate,
     updateSkillExperience: updateSkillExperience.mutate,
+    updateSkillFeatured: updateSkillFeatured.mutate,
     removeSkill: removeSkill.mutate,
     addCareer: addCareer.mutate,
     updateCareer: updateCareer.mutate,

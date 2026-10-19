@@ -127,6 +127,13 @@
       "when": 1792251212554,
       "tag": "0017_rename_e2e_phase",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1792251812554,
+      "tag": "0018_skill_sheet_v2",
+      "breakpoints": true
     }
   ]
 }

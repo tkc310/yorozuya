@@ -1,104 +1,178 @@
-import { css } from "styled-system/css";
-import type { Career, SheetView } from "@/shared/features/skill-sheet/sheet";
-import { careerName, endLabel, formatMonth } from "../format";
-import { prose, rule, sectionTitle } from "../styles";
+import { css, cx } from "styled-system/css";
+import { formatDuration, type Career, type SheetView, type YearMonth } from "@/shared/features/skill-sheet/sheet";
+import { Badge, BadgeNote } from "../Badge/index";
+import { endLabel, periodDuration, startLabel } from "../format";
+import { ACCENT, SUB, sectionNote, sectionTitle } from "../styles";
 
-const note = css({
-  color: "#4d4d4d",
-  fontSize: "7.5pt",
-  margin: "0",
-  mb: "1mm",
-});
+// 職務経歴サマリー。ページをまたげるよう、見出しと各行を別のブロックにする。
+// 行は 1 行ずつの表にし、列の幅は colgroup で全行そろえる。
+// ページの先頭に来た行の上には、見出し行（CareerTableHead）を繰り返す。
 
-// 一覧だけは比べやすいよう表にする。縦線や行の線は使わず、1 行おきに背景を変える。
-const listTable = css({
+// 「主な技術」に出す技術・環境の数。
+export const CAREER_TECH_COUNT = 4;
+
+const table = css({
   borderCollapse: "collapse",
-  mt: "1.5mm",
   tableLayout: "fixed",
   width: "100%",
+});
+
+const head = css({
   "& th": {
-    borderBottom: rule,
-    borderTop: rule,
-    fontSize: "8pt",
+    background: ACCENT,
+    color: "white",
+    fontSize: "7.5pt",
     fontWeight: "bold",
-    px: "1.2mm",
+    printColorAdjust: "exact",
+    px: "1.5mm",
     py: "1mm",
     textAlign: "left",
   },
-  "& td": {
-    px: "1.2mm",
-    py: "1.5mm",
-    verticalAlign: "middle",
-  },
-  "& tbody tr:nth-child(even)": { background: "#f2f2f2" },
-  "& tbody tr:last-child td": { borderBottom: rule },
-  "& th:first-child, & td:first-child": { textAlign: "center" },
-  "& tbody tr": { breakInside: "avoid" },
 });
 
-const projectCell = css({
+const row = css({
+  "& td": {
+    borderBottom: "0.5pt solid #d0d7de",
+    fontSize: "8.3pt",
+    lineHeight: "1.45",
+    px: "1.5mm",
+    py: "1.4mm",
+    verticalAlign: "top",
+  },
+});
+
+const noCell = css({
+  color: ACCENT,
+  fontWeight: "bold",
+  textAlign: "center",
+});
+
+const muted = css({
+  color: SUB,
+});
+
+const summary = css({
+  color: "#3d4650",
+  whiteSpace: "pre-wrap",
+});
+
+const tech = css({
+  color: "#3d4650",
+  fontSize: "7.6pt",
+});
+
+const projectName = css({
   fontWeight: "bold",
 });
 
-// 職務経歴の一覧。案件を 1 行ずつ表に並べる。
-export function CareerList({ view, careers }: { view: SheetView; careers: Career[] }) {
+function Columns() {
   return (
-    <section aria-labelledby="career-list-title">
+    <colgroup>
+      <col style={{ width: "6mm" }} />
+      <col style={{ width: "19mm" }} />
+      <col />
+      <col style={{ width: "36mm" }} />
+      <col style={{ width: "40mm" }} />
+    </colgroup>
+  );
+}
+
+// 表の見出し行。見出しのブロックと、ページの先頭で繰り返すときに使う。
+export function CareerTableHead() {
+  return (
+    <table className={cx(table, head)} aria-hidden="true">
+      <Columns />
+      <thead>
+        <tr>
+          <th scope="col">No</th>
+          <th scope="col">期間</th>
+          <th scope="col">案件 / 業務概要</th>
+          <th scope="col">役割</th>
+          <th scope="col">主な技術</th>
+        </tr>
+      </thead>
+    </table>
+  );
+}
+
+export function CareerListHead({ view }: { view: SheetView }) {
+  return (
+    <>
       <h3 id="career-list-title" className={sectionTitle}>
-        職務経歴の一覧
+        職務経歴サマリー
+        <span className={sectionNote}>新しい順</span>
+        {view.parallelCount > 0 ? (
+          <span className={sectionNote}>期間の重なりは並行案件</span>
+        ) : null}
+        {view.hardCount > 0 ? (
+          <span className={sectionNote}>
+            <BadgeNote kind="pickup" />
+          </span>
+        ) : null}
       </h3>
-      {/* 期間の重なりがあるときだけ並行の注記を、高難易度の経歴があるときだけ ※ の注記を出す。 */}
-      {view.parallelCount > 0 ? (
-        <p className={note}>期間が重複しているものについては並行していた案件になります。</p>
-      ) : null}
-      {view.hardCount > 0 ? (
-        <p className={note}>
-          特に難易度が高くスキルアップできた経歴には 企業・案件名の末尾に (※) と記載しています。
-        </p>
-      ) : null}
-      <table className={listTable}>
-        <colgroup>
-          <col style={{ width: "8mm" }} />
-          {/* 期間は「2023年12月 -」が 1 行に収まる幅にして、2 行で収める。 */}
-          <col style={{ width: "24mm" }} />
-          <col style={{ width: "38mm" }} />
-          <col />
-          <col style={{ width: "22mm" }} />
-          {/* 雇用形態は「個人事業主」が 1 行に収まる幅にする。 */}
-          <col style={{ width: "21mm" }} />
-        </colgroup>
-        <thead>
-          <tr>
-            <th scope="col">No.</th>
-            <th scope="col">期間</th>
-            <th scope="col">企業・案件名</th>
-            <th scope="col">業務の概要</th>
-            <th scope="col">担当職種</th>
-            <th scope="col">雇用形態</th>
-          </tr>
-        </thead>
-        <tbody>
-          {careers.length === 0 ? (
-            <tr>
-              <td colSpan={6}>職務経歴はありません</td>
-            </tr>
-          ) : null}
-          {careers.map((item, index) => (
-            <tr key={item.id}>
-              <td>{index + 1}</td>
-              <td>
-                {formatMonth(item.period.start)} -
+      <div data-repeat-head="">
+        <CareerTableHead />
+      </div>
+    </>
+  );
+}
+
+export function CareerRow({
+  no,
+  item,
+  until,
+}: {
+  no: number;
+  item: Career;
+  until: YearMonth;
+}) {
+  return (
+    <table className={cx(table, row)} aria-label={`職務経歴 ${no}`}>
+      <Columns />
+      <tbody>
+        <tr>
+          <td className={noCell}>{no}</td>
+          <td>
+            {startLabel(item.period)} –
+            <br />
+            {endLabel(item.period)}
+            <br />
+            <span className={muted}>{formatDuration(periodDuration(item.period, until))}</span>
+          </td>
+          <td>
+            <span className={projectName}>{item.projectName}</span>
+            {item.hard ? <Badge kind="pickup" /> : null}
+            {item.summary.trim() ? (
+              <>
                 <br />
-                {endLabel(item.period)}
-              </td>
-              <td className={projectCell}>{careerName(item)}</td>
-              <td className={prose}>{item.summary}</td>
-              <td>{item.role}</td>
-              <td>{item.employment}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
+                <span className={summary}>{item.summary}</span>
+              </>
+            ) : null}
+          </td>
+          <td>
+            {item.role}
+            {item.employment.trim() ? (
+              <>
+                <br />
+                <span className={muted}>{item.employment}</span>
+              </>
+            ) : null}
+          </td>
+          <td className={tech}>{item.environment.slice(0, CAREER_TECH_COUNT).join(" / ")}</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
+export function EmptyCareerRow() {
+  return (
+    <table className={cx(table, row)}>
+      <tbody>
+        <tr>
+          <td>職務経歴はありません</td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
