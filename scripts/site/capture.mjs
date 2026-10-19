@@ -79,15 +79,25 @@ async function stills(browser, url) {
   await ready(page);
   await page.screenshot({ path: join(out, "editor.png") });
 
-  // 用紙は 100% で撮る。
-  await page.getByRole("button", { name: "100%" }).click();
-  await page.waitForTimeout(500);
-  const pages = page.locator('[aria-label$="ページ目"]');
+  // 用紙は 100% で撮る。プレビューの列が A4（約 794px）より狭いと用紙が列の端で切れるので、
+  // 列が A4 より広く、用紙 1 枚の高さ（約 1123px）が収まる大きな画面で撮り直す。
+  const wide = await browser.newContext({
+    viewport: { width: 2000, height: 1500 },
+    deviceScaleFactor: 2,
+  });
+  const sheet = await wide.newPage();
+  sheet.errors = watch(sheet);
+  await sheet.goto(url);
+  await ready(sheet);
+  await sheet.getByRole("button", { name: "100%" }).click();
+  await sheet.waitForTimeout(500);
+  const pages = sheet.locator('[aria-label$="ページ目"]');
   await pages.first().screenshot({ path: join(out, "sheet-first.png") });
-  const details = pages.filter({ has: page.getByRole("heading", { name: "職務経歴詳細" }) });
+  const details = pages.filter({ has: sheet.getByRole("heading", { name: "職務経歴詳細" }) });
   await ((await details.count()) > 0 ? details.first() : pages.last()).screenshot({
     path: join(out, "sheet-details.png"),
   });
+  await wide.close();
 
   await page.getByRole("button", { name: "インポート用のプロンプトを作る" }).click();
   await page
