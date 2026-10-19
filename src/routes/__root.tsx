@@ -4,8 +4,7 @@ import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanst
 import type { ReactNode } from "react";
 import { AppLayout } from "../components/layouts/AppLayout/index";
 import favicon from "../assets/images/favicon.ico?url";
-import icon from "../assets/images/icon.png";
-import iconSvg from "../assets/images/icon.svg";
+import appleTouchIcon from "../assets/images/icon_apple.png";
 import "../styles/global.css";
 
 export type RouterContext = {
@@ -21,9 +20,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { name: "theme-color", content: "#ffffff" },
     ],
     links: [
-      { rel: "icon", href: favicon, sizes: "32x32" },
-      { rel: "icon", href: iconSvg, type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: icon },
+      // タブのアイコンは favicon.ico だけにする。SVG の icon を並べるとブラウザが SVG を選び、
+      // 透過した黒い紋がダークモードのタブで見えなくなる。LP と Storybook も同じ favicon.ico を使う。
+      { rel: "icon", href: favicon, sizes: "16x16 32x32 48x48 64x64", type: "image/x-icon" },
+      { rel: "apple-touch-icon", href: appleTouchIcon },
     ],
   }),
   staticData: { crumb: "トップ" },

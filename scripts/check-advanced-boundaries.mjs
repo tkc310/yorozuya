@@ -99,6 +99,25 @@ function scan(file) {
 
 walk(root);
 
+// タブのアイコンは、アプリ・LP・Storybook とも favicon.ico を使う。SVG の icon を並べるとブラウザが SVG を選び、
+// 透過した黒い紋がダークモードのタブで見えなくなったため。
+for (const [file, favicon] of [
+  ["src/routes/__root.tsx", 'favicon.ico?url"'],
+  ["site/index.html", 'rel="icon" href="images/favicon.ico"'],
+  [".storybook/main.ts", 'rel="icon" href="./images/favicon.ico"'],
+]) {
+  const source = readFileSync(path.join(root, file), "utf8");
+  if (!source.includes(favicon)) {
+    failures.push(`${file}: タブのアイコンに favicon.ico を使う`);
+  }
+  if (
+    /icon\.svg/.test(source) &&
+    /rel[=:]\s*"icon"[^\n]*svg|svg[^\n]*rel[=:]\s*"icon"/.test(source)
+  ) {
+    failures.push(`${file}: タブのアイコンに SVG を並べない（favicon.ico が使われなくなる）`);
+  }
+}
+
 // Git フックから呼ぶ make は ARGS= で空にする。make のコマンド行の ARGS が MAKEFLAGS を通して
 // フックにまで引き継がれ、`make release-version ARGS=minor` の push で typecheck に minor が渡ったため。
 for (const line of readFileSync(path.join(root, "lefthook.yml"), "utf8").split("\n")) {
