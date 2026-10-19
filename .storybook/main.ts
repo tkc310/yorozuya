@@ -19,6 +19,20 @@ async function flatten(options: PluginOption[]): Promise<Plugin[]> {
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.tsx"],
   framework: "@storybook/react-vite",
+  // アプリと LP と同じ favicon.ico を使う。画像は ./images/ で配る。
+  staticDirs: [{ from: "../src/assets/images", to: "/images" }],
+  // Storybook が既定で入れる favicon.svg を外し、favicon.ico に差し替える。
+  managerHead: (head) => `${head}
+    <link rel="icon" href="./images/favicon.ico" sizes="16x16 32x32 48x48 64x64" type="image/x-icon" />
+    <script>
+      const keepFavicon = () => {
+        for (const link of document.querySelectorAll('link[rel~="icon"]')) {
+          if (!link.getAttribute("href")?.endsWith("images/favicon.ico")) link.remove();
+        }
+      };
+      keepFavicon();
+      document.addEventListener("DOMContentLoaded", keepFavicon);
+    </script>`,
   async viteFinal(config, { configType }) {
     config.css = {
       ...config.css,

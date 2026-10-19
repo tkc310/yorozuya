@@ -79,7 +79,7 @@ if (!(await exists(join(media, "demo.webm")))) {
   console.warn("操作動画が無いため、LP から動画の欄を外しました");
 }
 await mkdir(join(out, "images"), { recursive: true });
-for (const name of ["logo.svg", "icon.svg", "icon.png"]) {
+for (const name of ["logo.svg", "favicon.ico", "icon_apple.png"]) {
   await cp(join(root, "src/assets/images", name), join(out, "images", name));
 }
 // GitHub Pages の Jekyll を通さない（_ で始まる Storybook のファイルを消されないように）。
