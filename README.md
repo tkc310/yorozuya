@@ -106,6 +106,7 @@ make build-app
 | `make prepare`       | Panda CSS のスタイルを生成し、Git フックを入れる             |
 | `make browsers`      | e2e と撮影に使う Playwright の Chromium を入れる             |
 | `make db-generate`   | スキーマの変更からマイグレーションを生成する                 |
+| `make branch-prune`  | マージ済みのブランチを一覧する（`ARGS=--apply` で消す）      |
 | `make check`         | 型検査・静的検査・フォーマット検査・テストをまとめて実行する |
 | `make test`          | ユニットテストと Storybook の play を実行する                |
 | `make test-e2e`      | Playwright で e2e テストを実行する                           |
@@ -171,7 +172,7 @@ make build-app
 
 ## コントリビュート
 
-Issue や Pull Request を歓迎します。開発の流れ、テスト、リリースの手順は [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。
+Issue や Pull Request を歓迎します。開発の流れ、テスト、リリースの手順は [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。改善の進め方（バックログ・改善ログ・設計判断の記録）は [docs/](./docs/README.md) にまとめています。
 
 ## ライセンス
 
