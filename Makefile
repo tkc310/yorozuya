@@ -70,6 +70,10 @@ lint: ## 静的検査と境界検査を実行する
 lint-boundary: ## import の境界とデータベース操作の場所を検査する
 	$(PNPM) lint:boundary $(ARGS)
 
+.PHONY: lint-commits
+lint-commits: ## コミットメッセージが Conventional Commits かを検査する（既定は origin/main..HEAD）
+	$(PNPM) lint:commits $(ARGS)
+
 .PHONY: fmt
 fmt: ## フォーマットを検査する
 	$(PNPM) fmt $(ARGS)

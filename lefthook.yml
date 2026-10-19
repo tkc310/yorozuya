@@ -10,3 +10,9 @@ pre-push:
       run: make lint ARGS=
     fmt:
       run: make fmt ARGS=
+
+# コミットメッセージを Conventional Commits の形に保つ（CONTRIBUTING.md の「コミットメッセージ」）。
+commit-msg:
+  commands:
+    conventional-commits:
+      run: bun scripts/git/check-commits.ts --file {1}
