@@ -1,9 +1,12 @@
+# make のコマンド行で渡した ARGS（例: make release-version ARGS=minor）は、
+# 環境変数 MAKEFLAGS を通して git push から呼ばれるこのフックの make にも引き継がれる。
+# 引き継いだ ARGS が typecheck などに渡らないよう、ここでは ARGS= で空にする。
 pre-push:
   parallel: true
   commands:
     typecheck:
-      run: make typecheck
+      run: make typecheck ARGS=
     lint:
-      run: make lint
+      run: make lint ARGS=
     fmt:
-      run: make fmt
+      run: make fmt ARGS=
