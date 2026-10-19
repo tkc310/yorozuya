@@ -133,6 +133,17 @@ for (const [file, favicon] of [
   }
 }
 
+// ロゴから作る画像（make brand-images）を、それぞれの場所で使っていること。
+for (const [file, reference] of [
+  ["README.md", 'src="docs/assets/banner.svg"'],
+  [".storybook/manager.ts", 'brandImage: "./images/storybook-brand.svg"'],
+  ["site/index.html", 'og:image" content="https://tkc310.github.io/yorozuya/ogp.png"'],
+]) {
+  if (!readFileSync(path.join(root, file), "utf8").includes(reference)) {
+    failures.push(`${file}: make brand-images で作った画像を参照する（${reference}）`);
+  }
+}
+
 // Git フックから呼ぶ make は ARGS= で空にする。make のコマンド行の ARGS が MAKEFLAGS を通して
 // フックにまで引き継がれ、`make release-version ARGS=minor` の push で typecheck に minor が渡ったため。
 for (const line of readFileSync(path.join(root, "lefthook.yml"), "utf8").split("\n")) {

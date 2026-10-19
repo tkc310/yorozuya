@@ -10,6 +10,7 @@
     "storybook": "storybook dev --host 127.0.0.1 --port 6006 --no-open",
     "site:build": "bun scripts/site/build.ts",
     "site:preview": "bun scripts/site/serve.ts",
+    "brand:images": "node scripts/site/brand-images.mjs",
     "site:publish": "bun scripts/site/publish.ts",
     "release:version": "bun scripts/release/version.ts",
     "release:tag": "bun scripts/release/tag.ts",

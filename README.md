@@ -12,6 +12,7 @@
   <img alt="TanStack Start" src="https://img.shields.io/badge/TanStack_Start-FF4154">
   <img alt="Bun" src="https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white">
   <img alt="SQLite" src="https://img.shields.io/badge/SQLite-local-003B57?logo=sqlite&logoColor=white">
+  <a href="https://tkc310.github.io/yorozuya/storybook/"><img alt="Storybook" src="https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white"></a>
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
 </p>
 
@@ -119,6 +120,7 @@ make build-app
 | `make fmt-fix`         | フォーマットを直す                                                 |
 | `make site-build`      | GitHub Pages の LP と Storybook を `.site/` に組み立てる           |
 | `make site-preview`    | 組み立てた `.site/` を手元で確かめる                               |
+| `make brand-images`    | ロゴから README のバナー・Storybook のロゴ・OGP 画像を作り直す     |
 | `make site-publish`    | `.site/` を GitHub Pages（`gh-pages`）に公開する                   |
 
 `git push` の前に、[lefthook](https://github.com/evilmartians/lefthook) が typecheck・lint・fmt を実行します。
