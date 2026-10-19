@@ -18,6 +18,7 @@ import * as skillSheetStories from "./features/SkillSheet/index.stories";
 import * as skillSheetSkeletonStories from "./features/SkillSheet/Skeleton/index.stories";
 import * as formStories from "./features/SkillSheet/Form/index.stories";
 import * as listInputStories from "./features/SkillSheet/Form/ListInput/index.stories";
+import * as importPromptStories from "./features/SkillSheet/Form/SheetActions/ImportPromptDialog/index.stories";
 import * as previewStories from "./features/SkillSheet/Preview/index.stories";
 
 const groups = [
@@ -38,6 +39,7 @@ const groups = [
   skillSheetSkeletonStories,
   formStories,
   listInputStories,
+  importPromptStories,
   previewStories,
 ];
 

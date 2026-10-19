@@ -9,7 +9,7 @@ import { CareerSchema } from "./career";
 import { ExperienceSchema } from "./experience";
 import { ProfileSchema } from "./profile";
 
-const SkillSchema = v.object({
+export const SkillSchema = v.object({
   name: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名が空です")),
   experience: v.optional(ExperienceSchema),
   auto: v.optional(v.boolean()),
