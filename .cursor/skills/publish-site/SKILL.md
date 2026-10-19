@@ -57,7 +57,7 @@ gh api -X POST repos/tkc310/yorozuya/pages -f "source[branch]=gh-pages" -f "sour
 
 - 撮影の手順が画面の名前（ラベル・ボタン名）に頼っているので、名前を変えたら `scripts/site/capture.mjs` も直す。撮影が失敗したときは、まずここを疑う。
 - 新しい機能を紹介するときは、`site/index.html` に節を足し、必要なら `capture.mjs` に撮影を足す。画像は `.site/media/` に出し、LP からは `media/〜` で参照する。
-- デモのデータは `sample/dummy-skill-sheet.json`。架空の人物だけを使い、個人の経歴は入れない（`rules/security.md`）。
+- デモのデータは `fixtures/dummy-skill-sheet.json`。架空の人物だけを使い、個人の経歴は入れない（`rules/security.md`）。
 
 ## うまくいかないとき
 

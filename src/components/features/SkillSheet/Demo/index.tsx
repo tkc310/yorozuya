@@ -13,7 +13,7 @@ import {
   type Career,
   type SheetInput,
 } from "@/shared/features/skill-sheet/sheet";
-import sampleText from "@/sample/dummy-skill-sheet.json?raw";
+import sampleText from "@/fixtures/dummy-skill-sheet.json?raw";
 import { Form } from "../Form/index";
 import { SheetLayout } from "../Layout/index";
 import { Preview } from "../Preview/index";

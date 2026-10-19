@@ -62,7 +62,7 @@
 - 代わりに「見出しだけがページ末尾に取り残されない」規則を入れる。`MeasuredBlock` に `keepWithNext: boolean` を追加し、真のブロックは次のブロックと同じページに置く（職務経歴サマリーの見出し、職務経歴詳細の見出し）。
 - **職務経歴サマリーは行単位のブロックに分割**し、ページをまたいだら送った先でも表のヘッダー行を繰り返す（現状は表全体が 1 ブロックのため、案件数が多いと 1 ページを超えたまま描画される）。
   - 実装案: `career-list-head`（見出し＋注記、`keepWithNext`）と `career-row-{id}` を別ブロックにし、ページの先頭に `career-row-*` が来たら `<thead>` を出す。
-- 受け入れ基準: `sample/dummy-skill-sheet.json`（8 案件）で、1 ページ目に基本情報〜資格・語学 / リンク、2 ページ目に自己 PR と職務経歴サマリー、3 ページ目以降に職務経歴詳細が並び、合計 5 ページ以内になること（`proposed.pdf` がこの割り付け）。
+- 受け入れ基準: `fixtures/dummy-skill-sheet.json`（8 案件）で、1 ページ目に基本情報〜資格・語学 / リンク、2 ページ目に自己 PR と職務経歴サマリー、3 ページ目以降に職務経歴詳細が並び、合計 5 ページ以内になること（`proposed.pdf` がこの割り付け）。
 
 ### 1-2. ランニングヘッダー / フッター
 
@@ -278,9 +278,9 @@
 
 - `src/db/schema.ts` にカラム / テーブル（`profile_highlights`、`profile_qualifications` など）を追加し、`drizzle-kit` でマイグレーションを生成する。
 - `ProfileVisibility` / `PROFILE_ITEMS` / `ALL_VISIBLE` に `availableFrom`・`workStyle`・`desiredRate`・`highlights` を追加する（`desiredRate` は初期 `false`）。
-- JSON の書き出し・読み込み: `SHEET_FILE_VERSION` を 2 に上げ、`sheet-file.ts` で **v1 も受け付けて v2 に変換する**（`strongSkills` / `strongWork` → `highlights`、新項目は空・初期値）。`sample/dummy-skill-sheet.json` も v2 に更新する。
+- JSON の書き出し・読み込み: `SHEET_FILE_VERSION` を 2 に上げ、`sheet-file.ts` で **v1 も受け付けて v2 に変換する**（`strongSkills` / `strongWork` → `highlights`、新項目は空・初期値）。`fixtures/dummy-skill-sheet.json` も v2 に更新する。
 - `src/db/seed.ts` の見本データにも新項目を入れる（`proposed.html` の値を流用してよい）。
-- 見本データ（`sample/dummy-skill-sheet.json` と `seed.ts`）の人物を次に変える: 氏名 `新究羅 理定`、フリガナ `シンギュラ リティ`、性別 `男性`、`visibility.gender` を `true`。
+- 見本データ（`fixtures/dummy-skill-sheet.json` と `seed.ts`）の人物を次に変える: 氏名 `新究羅 理定`、フリガナ `シンギュラ リティ`、性別 `男性`、`visibility.gender` を `true`。
 
 ---
 

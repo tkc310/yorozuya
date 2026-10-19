@@ -12,7 +12,7 @@ import { SheetFileSchema } from "./sheet-file";
 function sample(): unknown {
   return JSON.parse(
     // 画面のテストと同じ環境（happy-dom）で動くので、import.meta.url ではなく作業ディレクトリから読む。
-    readFileSync(join(process.cwd(), "sample/dummy-skill-sheet.json"), "utf8"),
+    readFileSync(join(process.cwd(), "fixtures/dummy-skill-sheet.json"), "utf8"),
   );
 }
 
