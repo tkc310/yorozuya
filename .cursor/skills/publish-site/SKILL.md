@@ -58,6 +58,11 @@ gh api -X POST repos/tkc310/yorozuya/pages -f "source[branch]=gh-pages" -f "sour
 - 新しい機能を紹介するときは、`site/index.html` に節を足し、必要なら `capture.mjs` に撮影を足す。画像は `.site/media/` に出し、LP からは `media/〜` で参照する。
 - デモのデータは `sample/dummy-skill-sheet.json`。架空の人物だけを使い、個人の経歴は入れない（`rules/security.md`）。
 
+## うまくいかないとき
+
+- Storybook の組み立てで `multiple entries detected` と出る: TanStack Start のマニフェストのプラグインが残っている。`.storybook/main.ts` の `viteFinal` で外している名前（`start-manifest`）が、TanStack Start の更新で変わっていないか確かめる。
+- 撮影で要素が見つからない: 画面のラベルやボタン名が変わっている。`scripts/site/capture.mjs` を直す。
+
 ## してはいけないこと
 
 - `.site/` やスクリーンショット・動画をリポジトリにコミットしない。
