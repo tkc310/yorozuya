@@ -43,6 +43,9 @@ if (keepMedia) {
   await cp(kept, media, { recursive: true });
   await rm(kept, { recursive: true, force: true });
 } else if (!skipCapture) {
+  // 撮影に使う Chromium を入れる。入っていれば何もしない。
+  console.log("撮影に使う Chromium を確かめます");
+  await $`pnpm exec playwright install chromium`;
   console.log("スクリーンショットと操作動画を撮ります");
   const server = serveStatic(storybook);
   try {
