@@ -1,7 +1,6 @@
 // ロゴ（src/assets/images/logo.svg）から、地の色と地紋を敷いたバナー類を作る。make brand-images で実行する。
 //
 //   docs/assets/banner.svg                    README の先頭（1280×400）
-//   src/assets/images/storybook-brand.svg     Storybook のサイドバーのロゴ（480×120。表示は半分の大きさ）
 //   site/ogp.png                              LP の OGP 画像（1200×630。SNS は SVG を読めないので PNG にする）
 //
 // ロゴや色を変えたら、これを実行して作り直す。手で個別に直さない。
@@ -82,18 +81,6 @@ const outputs = {
       stroke: 1.4,
     }),
   },
-  storybook: {
-    file: "src/assets/images/storybook-brand.svg",
-    svg: banner({
-      width: 480,
-      height: 120,
-      logoWidth: 360,
-      radius: 12,
-      band: 5,
-      tile: 28,
-      stroke: 1.2,
-    }),
-  },
   // OGP は SNS 側で角を丸めたり切り抜いたりするので、角丸にしない。
   ogp: {
     file: "site/ogp.png",
@@ -109,7 +96,7 @@ const outputs = {
   },
 };
 
-for (const { file, svg } of [outputs.readme, outputs.storybook]) {
+for (const { file, svg } of [outputs.readme]) {
   await mkdir(dirname(join(root, file)), { recursive: true });
   await writeFile(join(root, file), svg);
   console.log(`作りました: ${file}`);

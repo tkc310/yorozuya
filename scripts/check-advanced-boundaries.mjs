@@ -133,10 +133,10 @@ for (const [file, favicon] of [
   }
 }
 
-// ロゴから作る画像（make brand-images）を、それぞれの場所で使っていること。
+// ロゴと、ロゴから作る画像（make brand-images）を、それぞれの場所で使っていること。
 for (const [file, reference] of [
   ["README.md", 'src="docs/assets/banner.svg"'],
-  [".storybook/manager.ts", 'brandImage: "./images/storybook-brand.svg"'],
+  [".storybook/manager.ts", 'brandImage: "./images/logo.svg"'],
   ["site/index.html", 'og:image" content="https://tkc310.github.io/yorozuya/ogp.png"'],
 ]) {
   if (!readFileSync(path.join(root, file), "utf8").includes(reference)) {
