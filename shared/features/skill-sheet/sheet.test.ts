@@ -10,7 +10,14 @@ import {
   detailSummaryOf,
   formatDate,
   formatDuration,
+  formatSkillYears,
+  formatSlashDate,
+  legacyHighlights,
+  MAX_FEATURED_SKILLS,
+  PHASE_SHORT,
   normalizePhase,
+  setSkillFeatured,
+  sheetWarnings,
   present,
   removeCareer,
   removeSkill,
@@ -56,11 +63,14 @@ function sheet(careers: Career[], extra?: Partial<SheetInput>): SheetInput {
     updatedOn: null,
     updatedAuto: false,
     name: "山田",
+    nameDisplay: "full",
     age: null,
     gender: null,
     experience: "",
     experienceAuto: true,
     visibility: { ...ALL_VISIBLE },
+    highlights: [],
+    qualifications: [],
     links: [],
     education: "学士",
     station: "相模原",
@@ -257,7 +267,8 @@ describe("スキルシート", () => {
 
   it("フィクスチャは氏名、短い自己紹介、並行する期間、難度、7工程を持つ", () => {
     const view = viewOf(present(createFixtureSheet(), calculatedOn));
-    expect(view.name).toBe("山田");
+    expect(view.name).toBe("新究羅 理定");
+    expect(view.nameKana).toBe("シンギュラ リティ");
     expect(view.station).toBe("相模原");
     expect(view.selfPrShort).toBe(true);
     expect(view.parallelCount).toBe(4);
@@ -389,5 +400,102 @@ describe("スキルシート", () => {
     for (const name of banned) {
       expect(source.includes(name)).toBe(false);
     }
+  });
+
+  it("保有技術の年数は 0.5 年刻みで、1 年未満と 0 を分ける", () => {
+    expect(formatSkillYears({ years: 0, months: 0 })).toBe("");
+    expect(formatSkillYears({ years: 0, months: 6 })).toBe("1年未満");
+    expect(formatSkillYears({ years: 1, months: 0 })).toBe("1年");
+    expect(formatSkillYears({ years: 8, months: 5 })).toBe("8年");
+    expect(formatSkillYears({ years: 8, months: 7 })).toBe("8.5年");
+  });
+
+  it("用紙の日付は 2026/04/03 の形にする", () => {
+    expect(formatSlashDate({ year: 2026, month: 4, day: 3 })).toBe("2026/04/03");
+  });
+
+  it("担当工程の短い名前は全工程にあり、単テ・結テを使う", () => {
+    expect(Object.keys(PHASE_SHORT)).toEqual([...PHASES]);
+    expect(PHASE_SHORT.ユニットテスト).toBe("単テ");
+    expect(PHASE_SHORT.結合テスト).toBe("結テ");
+  });
+
+  it("主要スキルを選ばなければ経験年数の長い順に出し、選べばそれだけを出す", () => {
+    const base = createFixtureSheet();
+    expect(viewOf(present(base, calculatedOn)).featuredSkills.map((skill) => skill.name)).toEqual([
+      "Typescript",
+      "Go",
+    ]);
+    const chosen = setSkillFeatured(base, "Go", true);
+    const view = viewOf(present(chosen, calculatedOn));
+    expect(view.featuredSkills.map((skill) => skill.name)).toEqual(["Go"]);
+    expect(view.skills.find((skill) => skill.name === "Go")?.featured).toBe(true);
+  });
+
+  it("主要スキルは上限を超えて選べない", () => {
+    let sheetValue = { ...createFixtureSheet(), skillGroups: [] as SheetInput["skillGroups"] };
+    for (let index = 0; index <= MAX_FEATURED_SKILLS; index += 1) {
+      sheetValue = addSkill(sheetValue, "言語", `技術${index}`);
+      sheetValue = setSkillFeatured(sheetValue, `技術${index}`, true);
+    }
+    const featured = sheetValue.skillGroups.flatMap((group) =>
+      group.skills.filter((skill) => skill.featured),
+    );
+    expect(featured).toHaveLength(MAX_FEATURED_SKILLS);
+  });
+
+  it("経験年数を直しても主要スキルの指定は残る", () => {
+    const chosen = setSkillFeatured(createFixtureSheet(), "Go", true);
+    const updated = updateSkillExperience(chosen, "Go", { years: 2, months: 0 }, false);
+    expect(updated.skillGroups[0]?.skills.find((skill) => skill.name === "Go")?.featured).toBe(
+      true,
+    );
+  });
+
+  it("イニシャル表示ではイニシャルを出し、フリガナを出さない", () => {
+    const base = { ...createFixtureSheet(), nameInitials: "S.R" };
+    const full = viewOf(present(base, calculatedOn));
+    expect(full.displayName).toBe("新究羅 理定");
+    expect(full.nameKana).toBe("シンギュラ リティ");
+    const initials = viewOf(present({ ...base, nameDisplay: "initials" }, calculatedOn));
+    expect(initials.displayName).toBe("S.R");
+    expect(initials.nameKana).toBe("");
+    // イニシャルが空なら氏名のまま。
+    const blank = viewOf(
+      present({ ...base, nameDisplay: "initials", nameInitials: " " }, calculatedOn),
+    );
+    expect(blank.displayName).toBe("新究羅 理定");
+  });
+
+  it("以前の得意な技術・得意な業務をハイライトに移す", () => {
+    expect(legacyHighlights(" TypeScript ", "")).toEqual(["TypeScript"]);
+    expect(legacyHighlights("技術", "業務")).toEqual(["技術", "業務"]);
+    expect(legacyHighlights(" ", "")).toEqual([]);
+  });
+
+  it("空のハイライトは用紙に出さない", () => {
+    const view = viewOf(
+      present({ ...createFixtureSheet(), highlights: ["", " 強み ", ""] }, calculatedOn),
+    );
+    expect(view.highlights).toEqual(["強み"]);
+  });
+
+  it("選考で見られやすい項目の抜けを知らせる", () => {
+    const filled = setSkillFeatured(createFixtureSheet(), "Go", true);
+    expect(sheetWarnings(filled)).toEqual([]);
+    const blank = {
+      ...createFixtureSheet(),
+      title: "",
+      availableFrom: "",
+      highlights: [],
+      selfPr: "あ".repeat(401),
+    };
+    expect(sheetWarnings(blank)).toEqual([
+      "肩書が未入力です",
+      "稼働開始が未入力です",
+      "ハイライトが未入力です",
+      "主要スキルが選ばれていません（経験年数の長い順に出します）",
+      "自己PRが目安の400字を超えています",
+    ]);
   });
 });

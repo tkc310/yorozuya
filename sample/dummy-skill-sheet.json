@@ -1,6 +1,6 @@
 {
   "kind": "yorozuya-skill-sheet",
-  "version": 1,
+  "version": 2,
   "exportedAt": "2026-10-18T00:00:00.000Z",
   "sheet": {
     "updatedOn": {
@@ -9,9 +9,13 @@
       "day": 18
     },
     "updatedAuto": false,
-    "name": "柏木 遥",
+    "name": "新究羅 理定",
+    "nameKana": "シンギュラ リティ",
+    "nameInitials": "S.R",
+    "nameDisplay": "full",
+    "title": "デザインエンジニア / フロントエンドテックリード",
     "age": 36,
-    "gender": null,
+    "gender": "男性",
     "experience": "",
     "experienceAuto": true,
     "education": "美術大学 情報デザイン学科 卒業",
@@ -19,13 +23,17 @@
     "selfPr": "デザインとエンジニアリングの両方を扱うデザインエンジニアとして、10 年以上プロダクト開発に携わってきました。強みはフロントエンドで、デザインシステムの構築から大規模な画面の設計・実装まで一貫して担当できます。\n\n抽象的な要望から PRD やデザインドックで仕様の解像度を上げる進め方を得意とし、要件定義と効果測定には日常的にデータ分析を取り入れています。ドキュメントのないレガシーシステムの解析や長期の段階的な移行など、泥臭く難易度の高いプロジェクトにも粘り強く取り組んできました。\n\n直近では、生成 AI のモックアップによる高速な仮説検証と、型検査やテストで品質を担保しながら AI エージェントに開発を任せる AI 駆動開発の導入をリードしています。メガベンチャーからスタートアップまで、1〜2 年ごとにさまざまな規模の現場を経験してきました。",
     "visibility": {
       "age": true,
-      "gender": false,
+      "gender": true,
       "experience": true,
       "education": true,
       "station": true,
+      "availableFrom": true,
       "desiredHours": true,
+      "desiredRate": false,
+      "workStyle": true,
       "desiredEmployment": true,
       "affiliation": true,
+      "highlights": true,
       "selfPr": true
     },
     "links": [
@@ -38,18 +46,26 @@
         "url": "https://blog.example.com"
       }
     ],
-    "desiredHours": "週 4 日（月 130 時間程度）、リモート中心",
+    "availableFrom": "2026年12月〜",
+    "desiredHours": "週4日（月130h程度）",
+    "desiredRate": "",
+    "workStyle": "フルリモート希望（月1〜2回の出社可）",
     "desiredEmployment": "業務委託",
     "affiliation": "フリーランス",
-    "strongSkills": "TypeScript / React / Next.js によるフロントエンド設計、デザインシステム、Figma、SQL によるデータ分析、AI 駆動開発の仕組みづくり",
-    "strongWork": "PRD・デザインドックによる要件の具体化、レガシーシステムの解析と段階的な移行、データにもとづく効果測定と改善、生成 AI を使った高速な仮説検証",
+    "highlights": [
+      "フロントエンド設計とデザインシステム構築を、要件定義から実装・運用まで一貫して担当（経験 10 年以上）",
+      "ドキュメントのないレガシー画面の解析と、サービスを止めない段階移行を 2 件リード",
+      "生成 AI による仮説検証と AI 駆動開発の導入を 2 社で主導し、検証サイクルを 2 週間→2 日に短縮"
+    ],
+    "qualifications": ["応用情報技術者試験", "TOEIC 820"],
     "skillGroups": [
       {
         "name": "フロントエンド",
         "skills": [
           {
             "name": "TypeScript",
-            "auto": true
+            "auto": true,
+            "featured": true
           },
           {
             "name": "JavaScript",
@@ -60,11 +76,13 @@
           },
           {
             "name": "React",
-            "auto": true
+            "auto": true,
+            "featured": true
           },
           {
             "name": "Next.js",
-            "auto": true
+            "auto": true,
+            "featured": true
           },
           {
             "name": "Vue.js",
@@ -99,7 +117,8 @@
           },
           {
             "name": "Storybook",
-            "auto": true
+            "auto": true,
+            "featured": true
           }
         ]
       },
@@ -152,7 +171,8 @@
             "experience": {
               "years": 9,
               "months": 0
-            }
+            },
+            "featured": true
           },
           {
             "name": "OpenAI API",
@@ -203,7 +223,8 @@
             "experience": {
               "years": 8,
               "months": 0
-            }
+            },
+            "featured": true
           },
           {
             "name": "Sketch",

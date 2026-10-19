@@ -1,9 +1,10 @@
 import { Result } from "neverthrow";
 import { useRef, useState } from "react";
 import { css } from "styled-system/css";
-import { toSheetFile, type SheetInput } from "@/shared/features/skill-sheet/sheet";
+import { displayNameOf, toSheetFile, type SheetInput } from "@/shared/features/skill-sheet/sheet";
 import { Button } from "@/src/components/ui/Button/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";
+import { printTitle } from "../values";
 
 const actions = css({
   display: "flex",
@@ -45,6 +46,24 @@ function download(sheet: SheetInput) {
   URL.revokeObjectURL(url);
 }
 
+// 印刷する。PDF に保存するときの既定のファイル名は document.title なので、
+// 印刷の間だけ氏名と日付の入った名前に変え、終わったら戻す。
+function printSheet(sheet: SheetInput) {
+  const now = new Date();
+  const previous = document.title;
+  document.title = printTitle(displayNameOf(sheet), {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+    day: now.getDate(),
+  });
+  const restore = () => {
+    document.title = previous;
+    window.removeEventListener("afterprint", restore);
+  };
+  window.addEventListener("afterprint", restore);
+  window.print();
+}
+
 // 印刷と、JSON の読み込み・書き出し。読み込みは確認してから今の内容を置き換える。
 export function SheetActions({
   sheet,
@@ -62,8 +81,8 @@ export function SheetActions({
   return (
     <div>
       <div className={actions}>
-        <Button type="button" variant="outline" size="sm" onClick={() => window.print()}>
-          印刷
+        <Button type="button" variant="outline" size="sm" onClick={() => printSheet(sheet)}>
+          印刷 / PDF 保存
         </Button>
         <Button
           type="button"

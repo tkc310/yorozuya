@@ -7,9 +7,12 @@ import {
   fromMonths,
   type Career,
   isGender,
+  MAX_FEATURED_SKILLS,
+  NAME_DISPLAYS,
   type CalendarDate,
   type Duration,
   type Gender,
+  type NameDisplay,
   type Phase,
   type ProfileLink,
   type ProfileTexts,
@@ -23,7 +26,9 @@ import {
   careerPhases,
   careerTools,
   careers,
+  profileHighlights,
   profileLinks,
+  profileQualifications,
   profiles,
   skillGroups,
   skills,
@@ -35,11 +40,14 @@ export type ProfileWrite = {
   updatedOn: CalendarDate | null;
   updatedAuto: boolean;
   name: string;
+  nameDisplay: NameDisplay;
   age: number | null;
   gender: Gender | null;
   experience: string;
   experienceAuto: boolean;
   visibility: ProfileVisibility;
+  highlights: string[];
+  qualifications: string[];
   links: ProfileLink[];
   education: string;
   station: string;
@@ -68,8 +76,12 @@ function experienceMonths(experience: Duration | null): number | null {
   return total > 0 ? total : null;
 }
 
-function skillOf(name: string, months: number | null, auto: boolean): Skill {
-  const base: Skill = auto ? { name, auto } : { name };
+function isNameDisplay(value: string): value is NameDisplay {
+  return (NAME_DISPLAYS as readonly string[]).includes(value);
+}
+
+function skillOf(name: string, months: number | null, auto: boolean, featured: boolean): Skill {
+  const base: Skill = { name, ...(auto ? { auto } : {}), ...(featured ? { featured } : {}) };
   return months === null || months <= 0 ? base : { ...base, experience: fromMonths(months) };
 }
 
@@ -96,6 +108,13 @@ function profileColumns(input: ProfileWrite) {
     updatedDay: input.updatedOn?.day ?? null,
     updatedAuto: input.updatedAuto,
     name: input.name,
+    nameKana: input.nameKana,
+    nameInitials: input.nameInitials,
+    nameDisplay: input.nameDisplay,
+    title: input.title,
+    availableFrom: input.availableFrom,
+    desiredRate: input.desiredRate,
+    workStyle: input.workStyle,
     age: input.age,
     gender: input.gender ?? "",
     experience: input.experience,
@@ -105,6 +124,10 @@ function profileColumns(input: ProfileWrite) {
     showExperience: input.visibility.experience,
     showEducation: input.visibility.education,
     showStation: input.visibility.station,
+    showAvailableFrom: input.visibility.availableFrom,
+    showDesiredRate: input.visibility.desiredRate,
+    showWorkStyle: input.visibility.workStyle,
+    showHighlights: input.visibility.highlights,
     showDesiredHours: input.visibility.desiredHours,
     showDesiredEmployment: input.visibility.desiredEmployment,
     showAffiliation: input.visibility.affiliation,
@@ -115,8 +138,6 @@ function profileColumns(input: ProfileWrite) {
     desiredHours: input.desiredHours,
     desiredEmployment: input.desiredEmployment,
     affiliation: input.affiliation,
-    strongSkills: input.strongSkills,
-    strongWork: input.strongWork,
   };
 }
 
@@ -139,10 +160,19 @@ function careerColumns(input: CareerWrite) {
   };
 }
 
-function replaceLinks(tx: Transaction, links: ProfileLink[]): void {
+// プロフィールに付く一覧（リンク・ハイライト・資格）を並びごと置き換える。
+function replaceProfileLists(tx: Transaction, input: ProfileWrite): void {
   tx.delete(profileLinks).run();
-  links.forEach((link, index) => {
+  input.links.forEach((link, index) => {
     tx.insert(profileLinks).values({ position: index, label: link.label, url: link.url }).run();
+  });
+  tx.delete(profileHighlights).run();
+  input.highlights.forEach((text, index) => {
+    tx.insert(profileHighlights).values({ position: index, text }).run();
+  });
+  tx.delete(profileQualifications).run();
+  input.qualifications.forEach((name, index) => {
+    tx.insert(profileQualifications).values({ position: index, name }).run();
   });
 }
 
@@ -181,6 +211,13 @@ export class SkillSheetRepository {
         updatedOn: date(profile.updatedYear, profile.updatedMonth, profile.updatedDay),
         updatedAuto: profile.updatedAuto,
         name: profile.name,
+        nameKana: profile.nameKana,
+        nameInitials: profile.nameInitials,
+        nameDisplay: isNameDisplay(profile.nameDisplay) ? profile.nameDisplay : "full",
+        title: profile.title,
+        availableFrom: profile.availableFrom,
+        desiredRate: profile.desiredRate,
+        workStyle: profile.workStyle,
         age: profile.age,
         gender: isGender(profile.gender) ? profile.gender : null,
         experience: profile.experience,
@@ -191,6 +228,10 @@ export class SkillSheetRepository {
           experience: profile.showExperience,
           education: profile.showEducation,
           station: profile.showStation,
+          availableFrom: profile.showAvailableFrom,
+          desiredRate: profile.showDesiredRate,
+          workStyle: profile.showWorkStyle,
+          highlights: profile.showHighlights,
           desiredHours: profile.showDesiredHours,
           desiredEmployment: profile.showDesiredEmployment,
           affiliation: profile.showAffiliation,
@@ -202,8 +243,18 @@ export class SkillSheetRepository {
         desiredHours: profile.desiredHours,
         desiredEmployment: profile.desiredEmployment,
         affiliation: profile.affiliation,
-        strongSkills: profile.strongSkills,
-        strongWork: profile.strongWork,
+        highlights: this.db
+          .select()
+          .from(profileHighlights)
+          .orderBy(asc(profileHighlights.position))
+          .all()
+          .map((row) => row.text),
+        qualifications: this.db
+          .select()
+          .from(profileQualifications)
+          .orderBy(asc(profileQualifications.position))
+          .all()
+          .map((row) => row.name),
         links: this.db
           .select()
           .from(profileLinks)
@@ -214,7 +265,9 @@ export class SkillSheetRepository {
           name: group.name,
           skills: skillRows
             .filter((skill) => skill.groupId === group.id)
-            .map((skill) => skillOf(skill.name, skill.experienceMonths, skill.experienceAuto)),
+            .map((skill) =>
+              skillOf(skill.name, skill.experienceMonths, skill.experienceAuto, skill.featured),
+            ),
         })),
         careers: careerRows.map((career) => {
           const item: Career = {
@@ -261,7 +314,7 @@ export class SkillSheetRepository {
       }
       this.db.transaction((tx) => {
         tx.update(profiles).set(profileColumns(input)).where(eq(profiles.id, "profile")).run();
-        replaceLinks(tx, input.links);
+        replaceProfileLists(tx, input);
       });
       return ok({ saved: true });
     } catch (error) {
@@ -324,7 +377,7 @@ export class SkillSheetRepository {
       }
       this.db.transaction((tx) => {
         tx.update(profiles).set(profileColumns(sheet)).where(eq(profiles.id, "profile")).run();
-        replaceLinks(tx, sheet.links);
+        replaceProfileLists(tx, sheet);
         tx.delete(skills).run();
         tx.delete(skillGroups).run();
         tx.delete(careerEnvironments).run();
@@ -345,6 +398,7 @@ export class SkillSheetRepository {
                 position: skillIndex,
                 experienceMonths: experienceMonths(skill.experience ?? null),
                 experienceAuto: skill.auto ?? false,
+                featured: skill.featured ?? false,
               })
               .run();
           });
@@ -469,6 +523,37 @@ export class SkillSheetRepository {
       return err(
         new ServerFunctionError(
           error instanceof Error ? error.message : "経験年数を保存できませんでした",
+        ),
+      );
+    }
+  }
+
+  // 主要スキルにするか切り替える。主要スキルは MAX_FEATURED_SKILLS 件まで。
+  updateSkillFeatured(
+    skillName: string,
+    featured: boolean,
+  ): Result<{ saved: true }, ServerFunctionError> {
+    try {
+      const name = skillName.trim();
+      const rows = this.db.select().from(skills).all();
+      const matches = rows.filter((row) => row.name.trim() === name);
+      if (matches.length === 0) {
+        return err(new ServerFunctionError("技術がありません"));
+      }
+      const others = rows.filter((row) => row.featured && row.name.trim() !== name).length;
+      if (featured && others >= MAX_FEATURED_SKILLS) {
+        return err(new ServerFunctionError(`主要スキルは${MAX_FEATURED_SKILLS}件まで選べます`));
+      }
+      this.db.transaction((tx) => {
+        for (const match of matches) {
+          tx.update(skills).set({ featured }).where(eq(skills.id, match.id)).run();
+        }
+      });
+      return ok({ saved: true });
+    } catch (error) {
+      return err(
+        new ServerFunctionError(
+          error instanceof Error ? error.message : "主要スキルを保存できませんでした",
         ),
       );
     }

@@ -81,6 +81,9 @@ export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
           onUpdateSkillExperience={(skillName, experience, auto) =>
             commands.updateSkillExperience({ skillName, experience, auto })
           }
+          onUpdateSkillFeatured={(skillName, featured) =>
+            commands.updateSkillFeatured({ skillName, featured })
+          }
           onRemoveSkill={commands.removeSkill}
           onAddCareer={commands.addCareer}
           onUpdateCareer={(careerId, career) => commands.updateCareer({ careerId, career })}

@@ -8,6 +8,14 @@ export const profiles = sqliteTable("profiles", {
   // 真なら更新日を今日にする。
   updatedAuto: integer("updated_auto", { mode: "boolean" }).notNull().default(false),
   name: text("name").notNull(),
+  nameKana: text("name_kana").notNull().default(""),
+  nameInitials: text("name_initials").notNull().default(""),
+  // full か initials。
+  nameDisplay: text("name_display").notNull().default("full"),
+  title: text("title").notNull().default(""),
+  availableFrom: text("available_from").notNull().default(""),
+  desiredRate: text("desired_rate").notNull().default(""),
+  workStyle: text("work_style").notNull().default(""),
   age: integer("age"),
   gender: text("gender").notNull().default(""),
   // 自由入力の経験年数。experience_auto が真なら職務経歴から数える。
@@ -19,13 +27,15 @@ export const profiles = sqliteTable("profiles", {
   desiredHours: text("desired_hours").notNull().default(""),
   desiredEmployment: text("desired_employment").notNull().default(""),
   affiliation: text("affiliation").notNull().default(""),
-  strongSkills: text("strong_skills").notNull().default(""),
-  strongWork: text("strong_work").notNull().default(""),
   showAge: integer("show_age", { mode: "boolean" }).notNull().default(true),
   showGender: integer("show_gender", { mode: "boolean" }).notNull().default(true),
   showExperience: integer("show_experience", { mode: "boolean" }).notNull().default(true),
   showEducation: integer("show_education", { mode: "boolean" }).notNull().default(true),
   showStation: integer("show_station", { mode: "boolean" }).notNull().default(true),
+  showAvailableFrom: integer("show_available_from", { mode: "boolean" }).notNull().default(true),
+  showDesiredRate: integer("show_desired_rate", { mode: "boolean" }).notNull().default(false),
+  showWorkStyle: integer("show_work_style", { mode: "boolean" }).notNull().default(true),
+  showHighlights: integer("show_highlights", { mode: "boolean" }).notNull().default(true),
   showDesiredHours: integer("show_desired_hours", { mode: "boolean" }).notNull().default(true),
   showDesiredEmployment: integer("show_desired_employment", { mode: "boolean" })
     .notNull()
@@ -48,6 +58,8 @@ export const skills = sqliteTable("skills", {
   experienceMonths: integer("experience_months"),
   // 真なら経験年数を職務経歴から数える。
   experienceAuto: integer("experience_auto", { mode: "boolean" }).notNull().default(false),
+  // 真なら主要スキルとして 1 ページ目に出す。
+  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
 });
 
 export const careers = sqliteTable("careers", {
@@ -106,4 +118,16 @@ export const profileLinks = sqliteTable("profile_links", {
   position: integer("position").primaryKey(),
   label: text("label").notNull(),
   url: text("url").notNull(),
+});
+
+// 1 ページ目に出すハイライト。
+export const profileHighlights = sqliteTable("profile_highlights", {
+  position: integer("position").primaryKey(),
+  text: text("text").notNull(),
+});
+
+// 資格・語学。
+export const profileQualifications = sqliteTable("profile_qualifications", {
+  position: integer("position").primaryKey(),
+  name: text("name").notNull(),
 });

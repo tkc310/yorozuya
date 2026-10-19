@@ -3,34 +3,45 @@ import { css } from "styled-system/css";
 // プレビューの各部品で共通に使う見た目。
 
 // 用紙は印刷物なので、画面の文字の大きさの規則（14px 以上）ではなく pt で組む。
-// 罫線で囲む表組みは一覧だけにし、ほかは見出し・余白・細い線で区切って読みやすくする。
-export const hairline = "0.5pt solid #b3b3b3";
-export const rule = "0.75pt solid black";
+// 色はアクセントの濃紺 1 色とその淡色だけにし、白黒印刷でも濃淡で見分けられるようにする。
+// 文字は 7pt より小さくしない。
+// css() は静的に解析されるので、値は文字列の定数にして直接参照する。
+export const ACCENT = "#1f3a5f";
+export const ACCENT_SOFT = "#eef3f8";
+export const ACCENT_MID = "#7b9cc0";
+export const TEXT = "#1f2328";
+export const SUB = "#57606a";
+export const PANEL = "#fafbfc";
+export const EMPHASIS = "#f3f7fb";
 
-// 大分類（基本情報・職務経歴の一覧・職務経歴の詳細）の見出し。左寄せで、左に縦線を付ける。
+export const accentRule = "0.75pt solid #1f3a5f";
+
+// 大見出し（基本情報・保有技術・職務経歴サマリーなど）。下にアクセント色の線を引く。
 export const sectionTitle = css({
-  borderLeft: "1.2mm solid black",
-  fontSize: "11pt",
+  alignItems: "baseline",
+  borderBottom: accentRule,
+  color: ACCENT,
+  display: "flex",
+  flexWrap: "wrap",
+  fontSize: "10.5pt",
   fontWeight: "bold",
+  gap: "0 2mm",
   lineHeight: "1.3",
   margin: "0",
-  mb: "3mm",
-  pl: "2mm",
+  mb: "2mm",
+  pb: "0.6mm",
 });
 
-// 小見出し（保有技術・自己紹介など）。
-export const subTitle = css({
-  borderBottom: hairline,
-  color: "black",
-  fontSize: "9pt",
-  fontWeight: "bold",
-  margin: "0",
-  mb: "1.5mm",
-  pb: "0.5mm",
+// 見出しの横に添える注釈。
+export const sectionNote = css({
+  color: SUB,
+  fontSize: "7pt",
+  fontWeight: "normal",
 });
 
+// ブロックの下の余白。
 export const part = css({
-  mb: "6mm",
+  mb: "5mm",
 });
 
 export const prose = css({
@@ -38,28 +49,17 @@ export const prose = css({
   whiteSpace: "pre-wrap",
 });
 
+// 本文の中の小見出し（担当業務・成果など）。
 export const itemLabel = css({
-  color: "#4d4d4d",
+  color: ACCENT,
   display: "block",
-  fontSize: "7.5pt",
+  fontSize: "7.2pt",
   fontWeight: "bold",
-  mb: "0.5mm",
+  mb: "0.3mm",
 });
 
-export const tags = css({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "1mm",
+export const plainList = css({
   listStyle: "none",
   margin: "0",
   p: "0",
-});
-
-export const tag = css({
-  border: hairline,
-  borderRadius: "1mm",
-  fontSize: "7.5pt",
-  lineHeight: "1.3",
-  px: "1.2mm",
-  py: "0.3mm",
 });

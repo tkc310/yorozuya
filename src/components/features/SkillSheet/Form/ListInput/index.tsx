@@ -3,8 +3,8 @@ import { css } from "styled-system/css";
 import { Button } from "@/src/components/ui/Button/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Truncate } from "@/src/components/ui/Truncate/index";
-import { ItemActions } from "../../ItemActions/index";
-import { itemLabel, items, listItem } from "../../styles";
+import { ItemActions } from "../ItemActions/index";
+import { itemLabel, items, listItem } from "../styles";
 
 const group = css({
   border: "none",

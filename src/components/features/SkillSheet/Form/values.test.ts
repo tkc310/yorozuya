@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   ageError,
   fromDateValue,
+  lengthHint,
+  printTitle,
   requiredError,
   sameExperience,
   toAge,
@@ -39,5 +41,20 @@ describe("入力欄の値", () => {
     expect(sameExperience({ years: 1, months: 2 }, { years: 1, months: 2 })).toBe(true);
     expect(sameExperience(null, undefined)).toBe(true);
     expect(sameExperience(null, { years: 1, months: 0 })).toBe(false);
+  });
+
+  it("文字数の目安を超えたら注意にする", () => {
+    expect(lengthHint("あいう", 3)).toEqual({ text: "3 / 3字", over: false });
+    expect(lengthHint(" あいうえ ", 3)).toEqual({
+      text: "4 / 3字（目安を超えています）",
+      over: true,
+    });
+  });
+
+  it("印刷の既定のファイル名に氏名と日付を入れる", () => {
+    expect(printTitle("新究羅 理定", { year: 2026, month: 4, day: 3 })).toBe(
+      "スキルシート_新究羅 理定_20260403",
+    );
+    expect(printTitle("  ", { year: 2026, month: 12, day: 31 })).toBe("スキルシート_20261231");
   });
 });

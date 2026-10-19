@@ -37,6 +37,7 @@ export const Example: Story = {
     today: { year: 2026, month: 10, day: 17 },
     onAddSkill: () => undefined,
     onUpdateSkillExperience: () => undefined,
+    onUpdateSkillFeatured: () => undefined,
     onRemoveSkill: () => undefined,
     onAddCareer: noopCareer,
     onUpdateCareer: () => undefined,
@@ -58,6 +59,31 @@ export const Example: Story = {
     await userEvent.click(canvas.getByRole("switch", { name: "経験年数を職務経歴から自動計算" }));
     await expect(experience).toBeEnabled();
     await expect(canvas.getByRole("switch", { name: "年齢をプレビューに表示" })).toBeChecked();
+    await expect(canvas.getByRole("textbox", { name: "フリガナ" })).toHaveValue(
+      "シンギュラ リティ",
+    );
+    await expect(canvas.getByRole("textbox", { name: "肩書" })).toHaveValue("Webエンジニア");
+    // 希望単価は出したい人だけ出す項目だが、見本では表示にしている。
+    await expect(canvas.getByRole("switch", { name: "希望単価をプレビューに表示" })).toBeChecked();
+    // ハイライトは 3 件まで。文字数の目安を出す。
+    const highlight = canvas.getByRole("textbox", { name: "ハイライト 2" });
+    await userEvent.type(highlight, "要件定義から運用まで担当");
+    await expect(canvas.getByText("12 / 60字")).toBeVisible();
+    await expect(
+      canvas.getByRole("checkbox", { name: "Typescriptを主要スキルにする" }),
+    ).not.toBeChecked();
+    // 経験年数の編集と削除は「詳細」の中にしまっている。
+    await expect(canvas.queryByRole("textbox", { name: "Typescriptの経験年数" })).toBeNull();
+    const detail = canvas.getByRole("button", { name: "Typescriptの詳細" });
+    await expect(detail).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(detail);
+    await expect(detail).toHaveAttribute("aria-expanded", "true");
+    await expect(canvas.getByRole("textbox", { name: "Typescriptの経験年数" })).toBeDisabled();
+    await expect(canvas.getByText("3年（自動）")).toBeVisible();
+    // 選考で見られやすい項目の抜けを知らせる。
+    await expect(
+      canvas.getByText("主要スキルが選ばれていません（経験年数の長い順に出します）"),
+    ).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: "リンクを追加" }));
     const linkUrl = canvas.getByRole("textbox", { name: "URL" });
     await expect(linkUrl).toHaveAttribute("aria-invalid", "true");

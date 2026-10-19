@@ -19,6 +19,13 @@ export function seed(db: SeedDatabase): void {
         updatedDay: sheet.updatedOn?.day ?? null,
         updatedAuto: sheet.updatedAuto,
         name: sheet.name,
+        nameKana: sheet.nameKana,
+        nameInitials: sheet.nameInitials,
+        nameDisplay: sheet.nameDisplay,
+        title: sheet.title,
+        availableFrom: sheet.availableFrom,
+        desiredRate: sheet.desiredRate,
+        workStyle: sheet.workStyle,
         age: sheet.age,
         gender: sheet.gender ?? "",
         experience: sheet.experience,
@@ -28,6 +35,10 @@ export function seed(db: SeedDatabase): void {
         showExperience: sheet.visibility.experience,
         showEducation: sheet.visibility.education,
         showStation: sheet.visibility.station,
+        showAvailableFrom: sheet.visibility.availableFrom,
+        showDesiredRate: sheet.visibility.desiredRate,
+        showWorkStyle: sheet.visibility.workStyle,
+        showHighlights: sheet.visibility.highlights,
         showDesiredHours: sheet.visibility.desiredHours,
         showDesiredEmployment: sheet.visibility.desiredEmployment,
         showAffiliation: sheet.visibility.affiliation,
@@ -38,10 +49,14 @@ export function seed(db: SeedDatabase): void {
         desiredHours: sheet.desiredHours,
         desiredEmployment: sheet.desiredEmployment,
         affiliation: sheet.affiliation,
-        strongSkills: sheet.strongSkills,
-        strongWork: sheet.strongWork,
       })
       .run();
+    sheet.highlights.forEach((text, position) => {
+      tx.insert(schema.profileHighlights).values({ position, text }).run();
+    });
+    sheet.qualifications.forEach((name, position) => {
+      tx.insert(schema.profileQualifications).values({ position, name }).run();
+    });
     sheet.skillGroups.forEach((group, groupIndex) => {
       const groupId = `group-${groupIndex}`;
       tx.insert(schema.skillGroups)
@@ -56,6 +71,7 @@ export function seed(db: SeedDatabase): void {
             position: skillIndex,
             experienceMonths: skill.experience ? durationMonths(skill.experience) : null,
             experienceAuto: skill.auto ?? false,
+            featured: skill.featured ?? false,
           })
           .run();
       });
