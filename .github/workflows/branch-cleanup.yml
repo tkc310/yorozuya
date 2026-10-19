@@ -1,0 +1,41 @@
+name: Branch cleanup
+
+# マージ済みのブランチを消す。マージ時の自動削除（delete_branch_on_merge）で消えなかったものを拾う。
+# 消す条件は scripts/git/prune-branches.ts（make branch-prune）と同じ。未マージのブランチと main・gh-pages は消さない。
+on:
+  schedule:
+    # 毎週月曜 9:12（日本時間）
+    - cron: "12 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 消さずに一覧だけ出す
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: branch-cleanup
+
+jobs:
+  cleanup:
+    name: Delete merged branches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - name: Delete merged branches
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            make branch-prune ARGS=
+          else
+            make branch-prune ARGS=--apply
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
