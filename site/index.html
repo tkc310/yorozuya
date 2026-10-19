@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>よろずや — フリーランスのための、手元で動く道具箱</title>
+    <meta
+      name="description"
+      content="よろずやは、フリーランスの仕事のまわりにある細かな作業を片づけるアプリです。書類選考で読みやすいスキルシートを、手元のパソコンだけで作れます。"
+    />
+    <meta property="og:title" content="よろずや" />
+    <meta
+      property="og:description"
+      content="書類選考で読みやすいスキルシートを、手元のパソコンだけで作れるアプリ。"
+    />
+    <meta property="og:image" content="https://tkc310.github.io/yorozuya/media/sheet-first.png" />
+    <link rel="icon" href="images/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="nav-logo" href="./"><img src="images/logo.svg" alt="よろずや" /></a>
+        <nav aria-label="ページ内">
+          <a href="#about">よろずやとは</a>
+          <a href="#skill-sheet">スキルシート</a>
+          <a href="storybook/">Storybook</a>
+          <a href="https://github.com/tkc310/yorozuya">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap hero-inner">
+          <p class="eyebrow">フリーランスのための道具箱</p>
+          <h1>手元で動く、<br />小さな仕事道具。</h1>
+          <p class="lead">
+            よろずやは、フリーランスの仕事のまわりにある細かな作業を片づけるアプリです。
+            データはパソコンの中だけに置き、印刷や PDF にもそのまま使えます。
+          </p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/tkc310/yorozuya/releases"
+              >macOS 版をダウンロード</a
+            >
+            <a class="button" href="https://github.com/tkc310/yorozuya">ソースコードを見る</a>
+          </div>
+          <figure class="shot hero-shot">
+            <img
+              src="media/editor.png"
+              width="1440"
+              height="900"
+              alt="スキルシートの画面。左に入力フォーム、右に A4 のプレビューが並ぶ。"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section id="about" class="band">
+        <div class="wrap">
+          <h2>よろずやとは</h2>
+          <ul class="cards">
+            <li>
+              <h3>手元だけで動く</h3>
+              <p>
+                データはパソコンの中の SQLite
+                ファイルに保存します。クラウドもアカウントも要りません。
+              </p>
+            </li>
+            <li>
+              <h3>そのまま印刷できる</h3>
+              <p>画面で見たままの A4 レイアウトで、印刷や PDF 保存ができます。</p>
+            </li>
+            <li>
+              <h3>macOS アプリで使える</h3>
+              <p>
+                アプリを開くだけで起動し、Dock
+                から終了できます。機能はこれから順に増やしていきます。
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="skill-sheet">
+        <div class="wrap">
+          <p class="eyebrow">機能</p>
+          <h2>スキルシート</h2>
+          <p class="lead">
+            プロフィール・保有技術・職務経歴を入力すると、業務委託の書類選考で読みやすい A4
+            のスキルシートができあがります。入力した内容はその場でプレビューに映ります。
+          </p>
+
+          <figure class="shot video">
+            <video
+              controls
+              muted
+              playsinline
+              preload="metadata"
+              poster="media/demo-poster.png"
+              width="1440"
+              height="900"
+            >
+              <source src="media/demo.mp4" type="video/mp4" />
+              <source src="media/demo.webm" type="video/webm" />
+            </video>
+            <figcaption>入力するとプレビューがすぐ変わる様子</figcaption>
+          </figure>
+
+          <div class="feature">
+            <div>
+              <h3>1 ページ目で判断できる</h3>
+              <p>
+                氏名・肩書・経験年数、稼働開始や稼働量などの条件、ハイライトと主要スキルを 1
+                ページ目の上半分にまとめます。採用担当者が短い時間で判断できる並びです。
+              </p>
+              <ul class="points">
+                <li>経験年数は職務経歴の期間から自動で数えます</li>
+                <li>保有技術は 0.5 年刻みで、経験の長い順に並べます</li>
+                <li>項目ごとに、用紙に出すかを切り替えられます</li>
+              </ul>
+            </div>
+            <figure class="shot paper">
+              <img
+                src="media/sheet-first.png"
+                alt="スキルシートの 1 ページ目。人物、基本情報、ハイライト、主要スキル、保有技術が並ぶ。"
+              />
+            </figure>
+          </div>
+
+          <div class="feature reverse">
+            <div>
+              <h3>面談でそのまま説明できる職務経歴</h3>
+              <p>
+                自己 PR から職務経歴サマリー、案件ごとの詳細へと、面談で話す順に並べます。
+                成果は目立つように強調し、担当工程はひと目で分かるチップで示します。
+              </p>
+              <ul class="points">
+                <li>改ページは中身に合わせて自動で決まります</li>
+                <li>2 ページ目以降にも氏名と更新日が入ります</li>
+                <li>「抜粋」タグで、特に見てほしい案件を示せます</li>
+              </ul>
+            </div>
+            <figure class="shot paper">
+              <img
+                src="media/sheet-details.png"
+                alt="職務経歴詳細のページ。案件ごとのカードに担当業務・成果・技術・担当工程が並ぶ。"
+              />
+            </figure>
+          </div>
+
+          <div class="feature">
+            <div>
+              <h3>手元のスキルシートを取り込む</h3>
+              <p>
+                いま使っている Excel や PDF のスキルシートを生成 AI
+                に渡すためのプロンプトを作れます。できた JSON
+                を読み込めば、入力し直さずに始められます。
+              </p>
+              <ul class="points">
+                <li>本文の貼り付け・URL・添付ファイルに対応します</li>
+                <li>JSON の書き出し・読み込みでバックアップもできます</li>
+              </ul>
+            </div>
+            <figure class="shot">
+              <img src="media/prompt.png" alt="インポート用のプロンプトを作るダイアログ。" />
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap developer">
+          <div>
+            <h2>開発者の方へ</h2>
+            <p>
+              画面の部品は Storybook で確かめられます。TypeScript・React・TanStack Start・SQLite
+              で作っていて、ソースコードは MIT ライセンスで公開しています。
+            </p>
+          </div>
+          <div class="actions">
+            <a class="button primary" href="storybook/">Storybook を開く</a>
+            <a class="button" href="https://github.com/tkc310/yorozuya">GitHub</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <img src="images/logo.svg" alt="よろずや" height="24" />
+        <p>MIT License</p>
+      </div>
+    </footer>
+  </body>
+</html>

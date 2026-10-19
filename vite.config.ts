@@ -20,12 +20,12 @@ export default defineConfig({
   },
   plugins: testing ? [react()] : [tanstackStart(), react()],
   fmt: {
-    ignorePatterns: ["src/routeTree.gen.ts"],
+    ignorePatterns: ["src/routeTree.gen.ts", ".site/**"],
     semi: true,
     singleQuote: false,
   },
   lint: {
-    ignorePatterns: ["src/routeTree.gen.ts"],
+    ignorePatterns: ["src/routeTree.gen.ts", ".site/**"],
     plugins: ["typescript", "react", "oxc"],
     jsPlugins: ["./oxlint-plugins/must-use-result.js", "./oxlint-plugins/no-create-table.js"],
     rules: {
