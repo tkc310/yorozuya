@@ -100,7 +100,10 @@ export const PROFILE_FIELD_GUIDE: Record<ProfileKey, FieldGuide> = {
     type: "string[]",
     description: `書類選考で最初に読まれる強み。最大 ${MAX_HIGHLIGHTS} 件、1 件 ${HIGHLIGHT_GUIDE_LENGTH} 字目安。直近の実績を 1 件入れる`,
   },
-  qualifications: { type: "string[]", description: "資格・語学（例: 応用情報技術者試験、TOEIC 820）" },
+  qualifications: {
+    type: "string[]",
+    description: "資格・語学（例: 応用情報技術者試験、TOEIC 820）",
+  },
   links: {
     type: "{ label: string, url: string }[]",
     description: "ポートフォリオなどのリンク。url は http:// か https:// で始まるもの",
@@ -145,7 +148,8 @@ export const SKILL_FIELD_GUIDE: Record<keyof Skill, FieldGuide> = {
   },
   auto: {
     type: "boolean（省略可）",
-    description: "true なら職務経歴の environment から経験年数を数える。年数が書かれていなければ true",
+    description:
+      "true なら職務経歴の environment から経験年数を数える。年数が書かれていなければ true",
   },
   featured: {
     type: "boolean（省略可）",
@@ -176,7 +180,8 @@ export const CAREER_FIELD_GUIDE: Record<keyof Omit<Career, "id">, FieldGuide> = 
   employment: { type: "string", description: "雇用形態（例: 正社員、業務委託）" },
   environment: {
     type: "string[]",
-    description: "技術・環境（言語・フレームワーク・DB・クラウドなど）。保有技術の name と表記を揃える",
+    description:
+      "技術・環境（言語・フレームワーク・DB・クラウドなど）。保有技術の name と表記を揃える",
   },
   team: { type: "string", description: "チーム構成（例: 5名（PM 1、エンジニア 4））" },
   methodology: { type: "string", description: "開発手法（例: スクラム、ウォーターフォール）" },

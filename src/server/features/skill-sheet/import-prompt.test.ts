@@ -33,7 +33,9 @@ describe("インポート用のプロンプトと読み込みの検査", () => {
   });
 
   it("保有技術と職務経歴の項目は検査と同じ", () => {
-    expect(sorted(Object.keys(SKILL_FIELD_GUIDE))).toEqual(sorted(Object.keys(SkillSchema.entries)));
+    expect(sorted(Object.keys(SKILL_FIELD_GUIDE))).toEqual(
+      sorted(Object.keys(SkillSchema.entries)),
+    );
     expect(sorted(Object.keys(CAREER_FIELD_GUIDE))).toEqual(
       sorted(Object.keys(CareerSchema.entries)),
     );

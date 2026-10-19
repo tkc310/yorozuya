@@ -27,7 +27,9 @@ export const Example: Story = {
   name: "本文を貼り付ける",
   play: async () => {
     const body = within(document.body);
-    await expect(body.getByRole("dialog", { name: "インポート用のプロンプトを作る" })).toBeVisible();
+    await expect(
+      body.getByRole("dialog", { name: "インポート用のプロンプトを作る" }),
+    ).toBeVisible();
     const copy = body.getByRole("button", { name: "プロンプトをコピー" });
     await expect(copy).toBeDisabled();
     await expect(body.getByText("参照情報を入れるとプロンプトができます")).toBeVisible();
