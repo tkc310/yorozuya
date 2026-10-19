@@ -140,6 +140,10 @@ p {
   margin-top: 24px;
 }
 
+.section-shot {
+  margin-top: 40px;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

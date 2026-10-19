@@ -34,7 +34,7 @@ description: 製品紹介ページ（LP）と Storybook を GitHub Pages に公�
 3. 組み立てる: `pnpm site:build`
    - 文言だけを直したときは `pnpm site:build --skip-capture` で撮影を省ける（前回の `.site/media` を使う）。
 4. 確かめる: `pnpm site:preview` を実行し、表示された URL を開く。
-   - LP の画像 4 枚（editor / sheet-first / sheet-details / prompt）が出ている
+   - LP の画像 5 枚（home / editor / sheet-first / sheet-details / prompt）が出ている
    - 動画が再生でき、肩書・希望単価・主要スキルの変更がプレビューに映っている
    - 「Storybook を開く」から Storybook が開き、ストーリーが表示される
    - スマートフォンの幅でも横にはみ出さない

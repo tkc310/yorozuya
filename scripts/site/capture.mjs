@@ -3,7 +3,7 @@
 //
 //   node scripts/site/capture.mjs <Storybook の URL> <出力先>
 //
-// 出力: editor.png / sheet-first.png / sheet-details.png / prompt.png / demo-poster.png / demo.webm
+// 出力: home.png / editor.png / sheet-first.png / sheet-details.png / prompt.png / demo-poster.png / demo.webm
 //       （ffmpeg があれば demo.mp4 も作る）
 import { spawnSync } from "node:child_process";
 import { mkdir, readdir, rename, rm } from "node:fs/promises";
@@ -16,19 +16,35 @@ if (!base || !out) {
   process.exit(1);
 }
 
-const DEMO_TITLE = "スキルシート/デモ";
-const DEMO_NAME = "見本";
+const DEMO = { title: "スキルシート/デモ", name: "見本" };
+const HOME = { title: "トップ/画面", name: "トップ" };
 
-async function demoUrl() {
+async function storyUrl({ title, name }) {
   const response = await fetch(new URL("index.json", base));
   const index = await response.json();
   const entry = Object.values(index.entries).find(
-    (item) => item.type === "story" && item.title === DEMO_TITLE && item.name === DEMO_NAME,
+    (item) => item.type === "story" && item.title === title && item.name === name,
   );
   if (!entry) {
-    throw new Error(`Storybook に「${DEMO_TITLE} / ${DEMO_NAME}」がありません`);
+    throw new Error(`Storybook に「${title} / ${name}」がありません`);
   }
   return new URL(`iframe.html?id=${entry.id}&viewMode=story`, base).toString();
+}
+
+// よろずやのトップページ。LP のファーストビューに使う。
+async function home(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 2,
+  });
+  const page = await context.newPage();
+  page.errors = watch(page);
+  await page.goto(await storyUrl(HOME));
+  await page.getByRole("heading", { name: "よろずや", level: 1 }).waitFor({ timeout: 30000 });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: join(out, "home.png") });
+  await context.close();
 }
 
 // ページのエラーを集め、撮れなかったときに原因を出す。
@@ -220,9 +236,10 @@ async function launch() {
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
-const url = await demoUrl();
+const url = await storyUrl(DEMO);
 const browser = await launch();
 try {
+  await home(browser);
   await stills(browser, url);
   // 動画は ffmpeg が無い環境では撮れない。そのときはスクリーンショットだけで続ける。
   await video(browser, url).catch((error) => {
