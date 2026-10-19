@@ -10,7 +10,9 @@ const contents = join(app, "Contents");
 const macos = join(contents, "MacOS");
 const resources = join(contents, "Resources");
 const work = join(root, "dist/app-build");
-const icon = join(root, "src/assets/images/icon.png");
+// macOS のアプリアイコンの原画。角丸の地まで描いた 1024px の正方形を使う（icon.png は Web 用の透過した紋）。
+const icon = join(root, "src/assets/images/icon_apple.png");
+const ICON_SIZE = 1024;
 const { version } = (await Bun.file(join(root, "package.json")).json()) as { version: string };
 const target = process.env.YOROZUYA_TARGET;
 
@@ -34,15 +36,23 @@ await $`chmod +x ${join(resources, "start.sh")}`;
 await cp(join(root, "dist/client"), join(resources, "client"), { recursive: true });
 await cp(join(root, "src/db/migrations"), join(resources, "migrations"), { recursive: true });
 
-// icon.png（512px）から .icns を作る。
+// icon_apple.png（1024px）から .icns を作る。原画の大きさが違えば、粗いアイコンにならないよう止める。
+const iconInfo = await $`sips -g pixelWidth -g pixelHeight ${icon}`.text();
+const [width, height] = ["pixelWidth", "pixelHeight"].map((key) =>
+  Number(new RegExp(`${key}: (\\d+)`).exec(iconInfo)?.[1]),
+);
+if (width !== ICON_SIZE || height !== ICON_SIZE) {
+  console.error(
+    `アプリアイコンの原画は ${ICON_SIZE}px の正方形にしてください: ${icon}（${width}×${height}）`,
+  );
+  process.exit(1);
+}
 const iconset = join(work, "AppIcon.iconset");
 await mkdir(iconset, { recursive: true });
 for (const size of [16, 32, 128, 256, 512]) {
   await $`sips -z ${size} ${size} ${icon} --out ${join(iconset, `icon_${size}x${size}.png`)}`.quiet();
-  if (size < 512) {
-    const double = size * 2;
-    await $`sips -z ${double} ${double} ${icon} --out ${join(iconset, `icon_${size}x${size}@2x.png`)}`.quiet();
-  }
+  const double = size * 2;
+  await $`sips -z ${double} ${double} ${icon} --out ${join(iconset, `icon_${size}x${size}@2x.png`)}`.quiet();
 }
 await $`iconutil -c icns ${iconset} -o ${join(resources, "AppIcon.icns")}`;
 
