@@ -192,7 +192,7 @@ export const CAREER_FIELD_GUIDE: Record<keyof Omit<Career, "id">, FieldGuide> = 
   },
   hard: {
     type: "boolean",
-    description: "特にスキルアップできた案件なら true（用紙で「ピックアップ」タグになる）",
+    description: "高難易度な案件やスキルアップできた案件なら true（用紙で「抜粋」タグになる）",
   },
 };
 
