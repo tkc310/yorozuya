@@ -100,6 +100,10 @@ site-build: ## LP と Storybook を .site/ に組み立てる（撮影を省く�
 site-preview: ## 組み立てた .site/ を手元で確かめる
 	$(PNPM) site:preview $(ARGS)
 
+.PHONY: brand-images
+brand-images: ## ロゴから README のバナー・Storybook のロゴ・OGP 画像を作り直す
+	$(PNPM) brand:images $(ARGS)
+
 .PHONY: site-publish
 site-publish: ## .site/ を gh-pages に公開する（送らずに確かめるなら ARGS=--dry-run）
 	$(PNPM) site:publish $(ARGS)
