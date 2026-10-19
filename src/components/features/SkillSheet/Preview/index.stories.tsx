@@ -73,7 +73,7 @@ export const Example: Story = {
     await expect(canvas.getByText("1年未満")).toBeVisible();
     await expect(canvas.getAllByRole("article")).toHaveLength(5);
     await expect(canvas.getByText("期間の重なりは並行案件")).toBeVisible();
-    await expect(canvas.getByText("は特にスキルアップできた案件")).toBeVisible();
+    await expect(canvas.getByText("は高難易度な案件やスキルアップできた案件など")).toBeVisible();
     // 担当工程は短い名前で出す。
     await expect(canvas.getAllByText("単テ").length).toBe(5);
   },
@@ -131,8 +131,8 @@ export const WithoutNotes: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.queryByText("期間の重なりは並行案件")).toBeNull();
-    await expect(canvas.queryByText("は特にスキルアップできた案件")).toBeNull();
-    await expect(canvas.queryByText("ピックアップ")).toBeNull();
+    await expect(canvas.queryByText("は高難易度な案件やスキルアップできた案件など")).toBeNull();
+    await expect(canvas.queryByText("抜粋")).toBeNull();
   },
 };
 

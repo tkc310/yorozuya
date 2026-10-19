@@ -111,7 +111,7 @@ export function CareerListHead({ view }: { view: SheetView }) {
         ) : null}
         {view.hardCount > 0 ? (
           <span className={sectionNote}>
-            <BadgeNote kind="pickup" />
+            <BadgeNote kind="excerpt" />
           </span>
         ) : null}
       </h3>
@@ -138,7 +138,7 @@ export function CareerRow({ no, item, until }: { no: number; item: Career; until
           </td>
           <td>
             <span className={projectName}>{item.projectName}</span>
-            {item.hard ? <Badge kind="pickup" /> : null}
+            {item.hard ? <Badge kind="excerpt" /> : null}
             {item.summary.trim() ? (
               <>
                 <br />

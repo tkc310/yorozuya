@@ -608,7 +608,7 @@ function CareerForm({
             checked={draft.hard}
             onChange={(event) => update({ hard: event.target.checked })}
           >
-            特にスキルアップできた案件（ピックアップ タグを付ける）
+            高難易度な案件やスキルアップできた案件（抜粋 タグを付ける）
           </Checkbox>
         </div>
       </fieldset>

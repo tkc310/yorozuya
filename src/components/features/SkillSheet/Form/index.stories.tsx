@@ -72,6 +72,14 @@ export const Example: Story = {
     await expect(
       canvas.getByRole("checkbox", { name: "Typescriptを主要スキルにする" }),
     ).not.toBeChecked();
+    // 経験年数の編集と削除は「詳細」の中にしまっている。
+    await expect(canvas.queryByRole("textbox", { name: "Typescriptの経験年数" })).toBeNull();
+    const detail = canvas.getByRole("button", { name: "Typescriptの詳細" });
+    await expect(detail).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(detail);
+    await expect(detail).toHaveAttribute("aria-expanded", "true");
+    await expect(canvas.getByRole("textbox", { name: "Typescriptの経験年数" })).toBeDisabled();
+    await expect(canvas.getByText("3年（自動）")).toBeVisible();
     // 選考で見られやすい項目の抜けを知らせる。
     await expect(
       canvas.getByText("主要スキルが選ばれていません（経験年数の長い順に出します）"),

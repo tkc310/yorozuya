@@ -2,8 +2,8 @@ import { css, cx } from "styled-system/css";
 
 // 案件や技術に付けるタグ。記号ではなく文字で意味を示し、注釈にも同じタグを置く。
 const BADGES = {
-  pickup: {
-    label: "ピックアップ",
+  excerpt: {
+    label: "抜粋",
     className: css({ background: "#fff8e1", borderColor: "#d4a017", color: "#8a5a00" }),
   },
   main: {
@@ -16,7 +16,7 @@ export type BadgeKind = keyof typeof BADGES;
 
 // 注釈に書く意味。タグを足したら型検査で注釈の書き漏れに気づけるよう Record にする。
 export const BADGE_MEANING: Record<BadgeKind, string> = {
-  pickup: "は特にスキルアップできた案件",
+  excerpt: "は高難易度な案件やスキルアップできた案件など",
   main: "は主要スキル",
 };
 

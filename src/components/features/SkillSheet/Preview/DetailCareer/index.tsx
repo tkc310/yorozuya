@@ -166,7 +166,7 @@ export function DetailCareer({ no, item, until }: { no: number; item: Career; un
         <span className={cardNo}>{no}</span>
         <h4 className={cardTitle}>
           {item.projectName}
-          {item.hard ? <Badge kind="pickup" /> : null}
+          {item.hard ? <Badge kind="excerpt" /> : null}
         </h4>
         <span className={cardPeriod}>
           {startLabel(item.period)} – {endLabel(item.period)}
