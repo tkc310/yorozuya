@@ -158,23 +158,26 @@ GitHub Actions で次のワークフローが動きます。
 
 ### 手順
 
-1. `main` を最新にし、CI が通っていることを確かめる
-2. `package.json` の `version` を上げ、コミットして `main` に入れる
+リリースは 2 つのコマンドで行います。どちらも `main` を最新にし、手元に変更が無い状態で実行します。
 
-   ```bash
-   git switch -c release/v0.2.0
-   # package.json の "version" を "0.2.0" にする
-   git commit -am "chore(release): v0.2.0"
-   # Pull Request を作ってマージする
-   ```
-
-3. マージしたコミットにタグを付けて push する
+1. 版を上げる Pull Request を作る
 
    ```bash
    git switch main && git pull
-   git tag v0.2.0
-   git push origin v0.2.0
+   make release-version ARGS=minor   # patch・minor・major、または 0.2.0-beta.1 のように直接指定
    ```
+
+   `release/v0.2.0` ブランチを作り、`package.json` の `version` を上げて `chore(release): v0.2.0` をコミットし、Pull Request を出します。次の版を確かめるだけなら `ARGS="minor --dry-run"` にします。
+
+2. CI が通ったら Pull Request をマージする
+3. タグを付けて公開する
+
+   ```bash
+   git switch main && git pull
+   make release-tag
+   ```
+
+   `main` の最新コミットの CI が通っていることを確かめてから、`v<version>` のタグを付けて push します。付ける前に確かめるだけなら `ARGS=--dry-run` にします。
 
 4. [Release ワークフロー](./.github/workflows/release.yml) が次を行う
    - タグと `package.json` の `version` が一致するか確かめる（違えば失敗する）
@@ -186,14 +189,14 @@ GitHub Actions で次のワークフローが動きます。
 
 ### 失敗したとき
 
-ワークフローが失敗したら、原因を直してからタグを付け直します。
+ワークフローが失敗したら、原因を直す Pull Request をマージしてから、タグを付け直します。
 
 ```bash
-git tag -d v0.2.0
-git push origin :refs/tags/v0.2.0
-# 直したコミットに付け直す
-git tag v0.2.0 && git push origin v0.2.0
+git switch main && git pull
+make release-tag ARGS=--retag
 ```
+
+GitHub Release がすでに公開されている版は付け直せません。その場合は `make release-version ARGS=patch` で版を上げてください。
 
 ### 配布物について
 
