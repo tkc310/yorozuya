@@ -13,6 +13,8 @@
   <img alt="Bun" src="https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white">
   <img alt="SQLite" src="https://img.shields.io/badge/SQLite-local-003B57?logo=sqlite&logoColor=white">
   <a href="https://tkc310.github.io/yorozuya/storybook/"><img alt="Storybook" src="https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white"></a>
+  <a href="./AGENTS.md"><img alt="AGENTS.md" src="https://img.shields.io/badge/AGENTS.md-ready-1f3a5f"></a>
+  <a href="./.cursor/skills"><img alt="Agent Skills" src="https://img.shields.io/badge/Agent_Skills-3-1f3a5f?logo=anthropic&logoColor=white"></a>
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
 </p>
 
