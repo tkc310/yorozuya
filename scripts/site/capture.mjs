@@ -35,6 +35,11 @@ async function demoUrl() {
 function watch(page) {
   const errors = [];
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
+  page.on("response", (response) => {
+    if (response.status() >= 400) {
+      errors.push(`${response.status()}: ${response.url()}`);
+    }
+  });
   page.on("console", (message) => {
     if (message.type() === "error") {
       errors.push(`console: ${message.text()}`);
@@ -53,6 +58,10 @@ async function ready(page) {
     console.error(`デモが表示されませんでした: ${page.url()}`);
     console.error(`画面: ${join(out, "failure.png")}`);
     console.error(errors.length > 0 ? errors.join("\n") : "ページのエラーはありません");
+    const text = await page
+      .evaluate(() => document.body.innerText.slice(0, 800))
+      .catch(() => "（読めませんでした）");
+    console.error(`画面の文字:\n${text || "（空）"}`);
     throw error;
   }
   await page.evaluate(() => document.fonts.ready);
