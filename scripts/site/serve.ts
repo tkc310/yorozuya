@@ -26,7 +26,7 @@ export function serveStatic(directory: string, port = 0) {
   return { url: `http://127.0.0.1:${server.port}/`, stop: () => server.stop(true) };
 }
 
-// pnpm site:preview で .site を確かめる。
+// make site-preview で .site を確かめる。
 if (import.meta.main) {
   const directory = join(import.meta.dir, "../../.site");
   const server = serveStatic(directory, Number(process.env.PORT ?? 46281));

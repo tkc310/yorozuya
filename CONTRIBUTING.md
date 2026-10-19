@@ -132,6 +132,18 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 make storybook   # http://127.0.0.1:6006
 ```
 
+### LP と Storybook を更新する
+
+製品紹介ページ（LP）と Storybook は GitHub Pages で公開しています。CI では更新せず、手元で組み立てて公開します。
+
+```bash
+make site-build     # Storybook を組み立て、デモから撮影し、.site/ に LP を作る（文言だけなら ARGS=--skip-capture）
+make site-preview   # http://127.0.0.1:46281 で確かめる
+make site-publish   # gh-pages に公開する（送らずに確かめるなら ARGS=--dry-run）
+```
+
+LP の原稿は `site/` にあります。原稿や撮影の手順を変えたら PR でレビューし、マージした `main` から公開します。構成、確かめる点、うまくいかないときの対処は [`docs/site.md`](./docs/site.md) を見てください。
+
 ### ダミーデータで確かめる
 
 [`fixtures/dummy-skill-sheet.json`](./fixtures/dummy-skill-sheet.json) は、架空の人物（経歴 10 年以上のデザインエンジニア）のスキルシートです。スキルシートの「JSONを読み込む」で読み込むと、職務経歴が 8 件ある、複数ページのプレビューを確かめられます。読み込むと今の内容は置き換わるので、必要なら先に「JSONを書き出す」で控えを取ってください。

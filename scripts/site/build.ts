@@ -86,4 +86,4 @@ for (const name of ["logo.svg", "icon.svg", "icon.png"]) {
 await Bun.write(join(out, ".nojekyll"), "");
 
 console.log(`できました: ${out}`);
-console.log("確かめるには pnpm site:preview、公開するには pnpm site:publish");
+console.log("確かめるには make site-preview、公開するには make site-publish");

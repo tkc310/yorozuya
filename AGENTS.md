@@ -8,7 +8,7 @@
 - Storybook 起動: `make storybook`
 - GitHub Pages のサイトを組み立てる: `make site-build`（撮影を省くなら `ARGS=--skip-capture`）
 - 組み立てたサイトを確かめる: `make site-preview`
-- サイトを公開する: `make site-publish`（手順は `.claude/skills/publish-site/SKILL.md`）
+- サイトを公開する: `make site-publish`（手順は `docs/site.md`）
 - スタイル生成: `make prepare`
 - Playwright の Chromium を入れる: `make browsers`
 - マイグレーション生成: `make db-generate`
@@ -34,7 +34,7 @@
 | 判断の理由を知る                       | `docs/decisions/`（ADR）                                       |
 | 機能を足す・大きく変える               | `docs/specs/`（先に指示書を書く）                              |
 | 過去に直したこと・残っている改善を知る | `docs/improvement/log.md`・`docs/improvement/backlog.md`       |
-| LP と Storybook を公開する             | `.claude/skills/publish-site/SKILL.md`                         |
+| LP と Storybook を更新・公開する       | `docs/site.md` → `.claude/skills/publish-site/SKILL.md`        |
 | エージェントとの進め方を知る           | `docs/ai-agents.md`                                            |
 | 開発の手順を知る                       | `CONTRIBUTING.md`                                              |
 
