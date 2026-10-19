@@ -8,7 +8,7 @@
 - Storybook 起動: `make storybook`
 - GitHub Pages のサイトを組み立てる: `make site-build`（撮影を省くなら `ARGS=--skip-capture`）
 - 組み立てたサイトを確かめる: `make site-preview`
-- ロゴからバナー・Storybook のロゴ・OGP 画像を作り直す: `make brand-images`
+- ロゴからREADME のバナーと OGP 画像を作り直す: `make brand-images`
 - サイトを公開する: `make site-publish`（手順は `docs/site.md`）
 - スタイル生成: `make prepare`
 - Playwright の Chromium を入れる: `make browsers`

@@ -20,13 +20,12 @@ LP の原稿（`site/`）や撮影の手順を変えたら、ふつうのコー�
 
 ## ロゴ・バナー・OGP 画像
 
-README のバナー、Storybook のサイドバーのロゴ、LP の OGP 画像は、ロゴ（`src/assets/images/logo.svg`）から `make brand-images` で作ります。ロゴや色を変えたら作り直してコミットします。手で個別に直しません。
+README のバナーと LP の OGP 画像は、ロゴ（`src/assets/images/logo.svg`）から `make brand-images` で作ります。Storybook のサイドバーには、ロゴをそのまま使います（`.storybook/manager.ts`）。ロゴや色を変えたら作り直してコミットします。手で個別に直しません。
 
-| 画像                                    | 大きさ   | 使う場所                                          |
-| --------------------------------------- | -------- | ------------------------------------------------- |
-| `docs/assets/banner.svg`                | 1280×400 | README の先頭                                     |
-| `src/assets/images/storybook-brand.svg` | 480×120  | Storybook のサイドバー（`.storybook/manager.ts`） |
-| `site/ogp.png`                          | 1200×630 | LP の `og:image`（SNS で共有したときの画像）      |
+| 画像                     | 大きさ   | 使う場所                                     |
+| ------------------------ | -------- | -------------------------------------------- |
+| `docs/assets/banner.svg` | 1280×400 | README の先頭                                |
+| `site/ogp.png`           | 1200×630 | LP の `og:image`（SNS で共有したときの画像） |
 
 OGP 画像はブラウザで描いて PNG にするので、Playwright の Chromium か Google Chrome が要ります。
 

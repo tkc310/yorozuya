@@ -101,7 +101,7 @@ site-preview: ## 組み立てた .site/ を手元で確かめる
 	$(PNPM) site:preview $(ARGS)
 
 .PHONY: brand-images
-brand-images: ## ロゴから README のバナー・Storybook のロゴ・OGP 画像を作り直す
+brand-images: ## ロゴから README のバナーと OGP 画像を作り直す
 	$(PNPM) brand:images $(ARGS)
 
 .PHONY: site-publish
