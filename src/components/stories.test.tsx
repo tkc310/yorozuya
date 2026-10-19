@@ -20,6 +20,7 @@ import * as formStories from "./features/SkillSheet/Form/index.stories";
 import * as listInputStories from "./features/SkillSheet/Form/ListInput/index.stories";
 import * as importPromptStories from "./features/SkillSheet/Form/SheetActions/ImportPromptDialog/index.stories";
 import * as previewStories from "./features/SkillSheet/Preview/index.stories";
+import * as demoStories from "./features/SkillSheet/Demo/index.stories";
 
 const groups = [
   breadcrumbStories,
@@ -41,6 +42,7 @@ const groups = [
   listInputStories,
   importPromptStories,
   previewStories,
+  demoStories,
 ];
 
 afterEach(() => {
