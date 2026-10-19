@@ -14,6 +14,8 @@ const skipped = new Set([
   "playwright-report",
   "test-results",
   "storybook-static",
+  ".site",
+  ".site-media-keep",
   "agent-tools",
 ]);
 const extensions = new Set([".ts", ".tsx", ".js", ".mjs", ".cjs", ".mts"]);

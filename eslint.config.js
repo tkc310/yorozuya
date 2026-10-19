@@ -21,6 +21,8 @@ export default [
       "playwright-report/**",
       "test-results/**",
       "storybook-static/**",
+      ".site/**",
+      ".site-media-keep/**",
       "sample/**",
     ],
   },

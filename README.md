@@ -33,6 +33,8 @@
 
 起動するとトップページ（`/`）が開き、そこから各機能に移動できます。
 
+製品の紹介は <https://tkc310.github.io/yorozuya/>、画面の部品は [Storybook](https://tkc310.github.io/yorozuya/storybook/) で見られます。
+
 ## ダウンロード
 
 [Releases](https://github.com/tkc310/yorozuya/releases) から、お使いの Mac に合う zip をダウンロードします。
