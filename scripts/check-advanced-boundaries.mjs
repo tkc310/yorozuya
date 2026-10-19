@@ -99,6 +99,15 @@ function scan(file) {
 
 walk(root);
 
+// Git フックから呼ぶ make は ARGS= で空にする。make のコマンド行の ARGS が MAKEFLAGS を通して
+// フックにまで引き継がれ、`make release-version ARGS=minor` の push で typecheck に minor が渡ったため。
+for (const line of readFileSync(path.join(root, "lefthook.yml"), "utf8").split("\n")) {
+  const command = /^\s*run:\s*(make\s.*)$/.exec(line)?.[1];
+  if (command && !/(^|\s)ARGS=(\s|$)/.test(command)) {
+    failures.push(`lefthook.yml: フックの make には ARGS= を付ける（${command.trim()}）`);
+  }
+}
+
 if (failures.length > 0) {
   console.error("Advanced boundary checks failed:\n");
   for (const failure of failures) {
