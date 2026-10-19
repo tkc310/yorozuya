@@ -12,6 +12,7 @@
 - スタイル生成: `make prepare`
 - Playwright の Chromium を入れる: `make browsers`
 - マイグレーション生成: `make db-generate`
+- リリース: `make release-version ARGS=minor` → マージ → `make release-tag`（手順は `CONTRIBUTING.md` の「リリース」）
 - マージ済みのブランチを消す: `make branch-prune`（一覧だけ。消すなら `ARGS=--apply`）
 - まとめて検査（型・静的・フォーマット・テスト）: `make check`
 - テスト: `make test`

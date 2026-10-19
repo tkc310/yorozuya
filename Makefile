@@ -5,6 +5,7 @@
 #   make site-build ARGS=--skip-capture
 #   make site-publish ARGS=--dry-run
 #   make branch-prune ARGS=--apply
+#   make release-version ARGS=minor
 #   make test ARGS="src/components/features/SkillSheet"
 
 PNPM ?= pnpm
@@ -98,3 +99,13 @@ site-preview: ## 組み立てた .site/ を手元で確かめる
 .PHONY: site-publish
 site-publish: ## .site/ を gh-pages に公開する（送らずに確かめるなら ARGS=--dry-run）
 	$(PNPM) site:publish $(ARGS)
+
+## リリース（手順は CONTRIBUTING.md の「リリース」）
+
+.PHONY: release-version
+release-version: ## 版を上げる Pull Request を作る（ARGS=patch / minor / major / 1.2.3。確かめるだけなら --dry-run も足す）
+	$(PNPM) release:version $(ARGS)
+
+.PHONY: release-tag
+release-tag: ## マージ後の main にタグを付けて push し、Release ワークフローを動かす（ARGS=--dry-run / --retag）
+	$(PNPM) release:tag $(ARGS)

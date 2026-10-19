@@ -41,7 +41,7 @@ export default defineConfig({
         test: {
           name: "model",
           environment: "node",
-          include: ["shared/**/*.test.ts"],
+          include: ["shared/**/*.test.ts", "scripts/**/*.test.ts"],
         },
       },
       {

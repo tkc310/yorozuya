@@ -13,6 +13,7 @@
 | [0006](./0006-capture-from-storybook.md)      | LP の画像と動画は Storybook のデモから撮り、動画は ffmpeg を使わない       | 採用 |
 | [0007](./0007-makefile.md)                    | コマンドの入口を Makefile にまとめる                                       | 採用 |
 | [0008](./0008-improvement-loop.md)            | AI 駆動開発の改善ループ（バックログ・ログ・ADR・改善スキル）を置く         | 採用 |
+| [0009](./0009-release-commands.md)            | リリースを 2 つのコマンド（版を上げる PR・タグ付け）で行う                 | 採用 |
 
 ## テンプレート
 

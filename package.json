@@ -11,6 +11,8 @@
     "site:build": "bun scripts/site/build.ts",
     "site:preview": "bun scripts/site/serve.ts",
     "site:publish": "bun scripts/site/publish.ts",
+    "release:version": "bun scripts/release/version.ts",
+    "release:tag": "bun scripts/release/tag.ts",
     "branch:prune": "bun scripts/git/prune-branches.ts",
     "prepare": "panda codegen && lefthook install",
     "test": "vp test --run",

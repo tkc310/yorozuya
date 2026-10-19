@@ -97,27 +97,29 @@ make build-app
 
 コマンドは `make` で実行します。`make`（または `make help`）で一覧が出ます。中身は `package.json` のスクリプトや `pnpm exec` を呼ぶだけなので、`pnpm` で直接実行してもかまいません。追加の引数は `ARGS` で渡します（例: `make site-build ARGS=--skip-capture`）。
 
-| コマンド             | 内容                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| `make install`       | 依存パッケージを入れる                                       |
-| `make dev`           | 開発サーバを起動する                                         |
-| `make build-app`     | macOS アプリを作る                                           |
-| `make storybook`     | Storybook を起動する（<http://127.0.0.1:6006>）              |
-| `make prepare`       | Panda CSS のスタイルを生成し、Git フックを入れる             |
-| `make browsers`      | e2e と撮影に使う Playwright の Chromium を入れる             |
-| `make db-generate`   | スキーマの変更からマイグレーションを生成する                 |
-| `make branch-prune`  | マージ済みのブランチを一覧する（`ARGS=--apply` で消す）      |
-| `make check`         | 型検査・静的検査・フォーマット検査・テストをまとめて実行する |
-| `make test`          | ユニットテストと Storybook の play を実行する                |
-| `make test-e2e`      | Playwright で e2e テストを実行する                           |
-| `make typecheck`     | 型を検査する                                                 |
-| `make lint`          | 静的検査と境界検査を実行する                                 |
-| `make lint-boundary` | import の境界とデータベース操作の場所を検査する              |
-| `make fmt`           | フォーマットを検査する                                       |
-| `make fmt-fix`       | フォーマットを直す                                           |
-| `make site-build`    | GitHub Pages の LP と Storybook を `.site/` に組み立てる     |
-| `make site-preview`  | 組み立てた `.site/` を手元で確かめる                         |
-| `make site-publish`  | `.site/` を GitHub Pages（`gh-pages`）に公開する             |
+| コマンド               | 内容                                                               |
+| ---------------------- | ------------------------------------------------------------------ |
+| `make install`         | 依存パッケージを入れる                                             |
+| `make dev`             | 開発サーバを起動する                                               |
+| `make build-app`       | macOS アプリを作る                                                 |
+| `make storybook`       | Storybook を起動する（<http://127.0.0.1:6006>）                    |
+| `make prepare`         | Panda CSS のスタイルを生成し、Git フックを入れる                   |
+| `make browsers`        | e2e と撮影に使う Playwright の Chromium を入れる                   |
+| `make db-generate`     | スキーマの変更からマイグレーションを生成する                       |
+| `make release-version` | 版を上げる Pull Request を作る（`ARGS=patch` / `minor` / `major`） |
+| `make release-tag`     | マージ後の `main` にタグを付けて公開する                           |
+| `make branch-prune`    | マージ済みのブランチを一覧する（`ARGS=--apply` で消す）            |
+| `make check`           | 型検査・静的検査・フォーマット検査・テストをまとめて実行する       |
+| `make test`            | ユニットテストと Storybook の play を実行する                      |
+| `make test-e2e`        | Playwright で e2e テストを実行する                                 |
+| `make typecheck`       | 型を検査する                                                       |
+| `make lint`            | 静的検査と境界検査を実行する                                       |
+| `make lint-boundary`   | import の境界とデータベース操作の場所を検査する                    |
+| `make fmt`             | フォーマットを検査する                                             |
+| `make fmt-fix`         | フォーマットを直す                                                 |
+| `make site-build`      | GitHub Pages の LP と Storybook を `.site/` に組み立てる           |
+| `make site-preview`    | 組み立てた `.site/` を手元で確かめる                               |
+| `make site-publish`    | `.site/` を GitHub Pages（`gh-pages`）に公開する                   |
 
 `git push` の前に、[lefthook](https://github.com/evilmartians/lefthook) が typecheck・lint・fmt を実行します。
 
