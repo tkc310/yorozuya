@@ -84,6 +84,11 @@ docs: リリース手順を書く
 
 scope には `skill-sheet` や `app` など、変更した領域を書きます。
 
+- 1 行目は `type(scope): 説明`。scope は省略でき、英小文字・数字・`-` で書きます。互換を壊す変更は `feat!:` のように `!` を付けます
+- 説明は「〜する」の形で、終わりに句点を付けません（日本語でも英語でもかまいません）
+- 本文が要るときは 1 行あけて書きます
+- `git commit` のときに [lefthook](./lefthook.yml) の `commit-msg` フックが形を検査します。Pull Request では CI も同じ検査（`make lint-commits`）をします。`Merge ...` や `Revert "..."` など Git や GitHub が作るメッセージは対象外です
+
 ### 守ってほしいこと
 
 - 設計のルール（[`rules/security.md`](./rules/security.md)）に従う。主なものは `make lint-boundary` が検査します
