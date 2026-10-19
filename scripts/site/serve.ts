@@ -29,6 +29,6 @@ export function serveStatic(directory: string, port = 0) {
 // pnpm site:preview で .site を確かめる。
 if (import.meta.main) {
   const directory = join(import.meta.dir, "../../.site");
-  const server = serveStatic(directory, Number(process.env.PORT ?? 4629));
+  const server = serveStatic(directory, Number(process.env.PORT ?? 46281));
   console.log(`${server.url} で .site を配っています（Ctrl+C で止まります）`);
 }
