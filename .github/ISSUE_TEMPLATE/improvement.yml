@@ -1,0 +1,33 @@
+name: 改善提案
+description: 使っていて気づいた不便・不具合・文言の違和感などを伝える
+labels: [improvement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: 何が困ったか
+      description: どの画面・機能で、何がどう困ったか（例:「『注力』は他の案件を軽んじる響きがある」）
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 種類
+      description: 優先度の判断に使います（docs/improvement-loop.md）
+      options:
+        - データを失う・壊す
+        - 設計のルールの破れ
+        - 提出物の品質（スキルシートの見た目・印刷など）
+        - 開発体験（コマンド・検査・ドキュメント）
+        - 見た目の好み
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: こうなるとよい
+  - type: textarea
+    id: prevent
+    attributes:
+      label: 再発防止の案（任意）
+      description: 検査・テスト・ルール・スキルのどれで防げそうか

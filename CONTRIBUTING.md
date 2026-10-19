@@ -58,6 +58,7 @@ make dev       # http://127.0.0.1:46280
    `git push` の前に [lefthook](./lefthook.yml) が typecheck・lint・fmt を実行します。フォーマットの崩れは `make fmt-fix` で直せます。
 
 4. Pull Request を作る。テンプレートのチェックリストを埋めてください
+5. マージすると、GitHub が作業ブランチを自動で消します（Settings の「Automatically delete head branches」）。手元に残ったブランチや、設定前に残ったブランチは `make branch-prune` で一覧し、`make branch-prune ARGS=--apply` で消します。未マージのブランチと `main`・`gh-pages` は消しません
 
 ### コミットメッセージ
 
@@ -89,6 +90,7 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 - コンポーネントの置き方は [`src/components/COMPONENT_STRUCTURE.md`](./src/components/COMPONENT_STRUCTURE.md) に従う
 - 見本 PDF の本文や、実在する個人の経歴をリポジトリに入れない
 - `data/yorozuya.db` や秘密情報をコミットしない
+- 直したことは [`docs/improvement/log.md`](./docs/improvement/log.md) に 1 行記録し、再発防止を足す。手順は [改善ループ](./docs/improvement-loop.md)、判断の記録は [`docs/decisions/`](./docs/decisions/README.md)
 
 ## テスト
 

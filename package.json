@@ -11,6 +11,7 @@
     "site:build": "bun scripts/site/build.ts",
     "site:preview": "bun scripts/site/serve.ts",
     "site:publish": "bun scripts/site/publish.ts",
+    "branch:prune": "bun scripts/git/prune-branches.ts",
     "prepare": "panda codegen && lefthook install",
     "test": "vp test --run",
     "test:e2e": "playwright test",

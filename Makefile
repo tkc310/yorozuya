@@ -4,6 +4,7 @@
 # 追加の引数は ARGS で渡す。
 #   make site-build ARGS=--skip-capture
 #   make site-publish ARGS=--dry-run
+#   make branch-prune ARGS=--apply
 #   make test ARGS="src/components/features/SkillSheet"
 
 PNPM ?= pnpm
@@ -46,6 +47,10 @@ build-app: ## macOS アプリを作る（dist/Yorozuya.app）
 .PHONY: db-generate
 db-generate: ## スキーマの変更からマイグレーションを生成する
 	$(PNPM) exec drizzle-kit generate $(ARGS)
+
+.PHONY: branch-prune
+branch-prune: ## 用の済んだブランチ（マージ済み）を一覧する（消すなら ARGS=--apply）
+	$(PNPM) branch:prune $(ARGS)
 
 ## 検査
 
