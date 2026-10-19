@@ -71,11 +71,11 @@ if (keepMedia) {
 
 console.log("製品紹介のページを写します");
 await cp(join(root, "site"), out, { recursive: true });
-// 動画を撮れなかったときは、LP から動画の欄を外す（<!-- video:start --> から <!-- video:end --> まで）。
+// 動画を撮れなかったときは、LP から動画のボタンとモーダルを外す（<!-- video:start --> から <!-- video:end --> までをすべて）。
 if (!(await exists(join(media, "demo.webm")))) {
   const page = join(out, "index.html");
   const html = await Bun.file(page).text();
-  await Bun.write(page, html.replace(/<!-- video:start -->[\s\S]*?<!-- video:end -->/, ""));
+  await Bun.write(page, html.replace(/<!-- video:start -->[\s\S]*?<!-- video:end -->/g, ""));
   console.warn("操作動画が無いため、LP から動画の欄を外しました");
 }
 await mkdir(join(out, "images"), { recursive: true });

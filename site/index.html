@@ -93,31 +93,62 @@
             のスキルシートができあがります。入力した内容はその場でプレビューに映ります。
           </p>
 
-          <figure class="shot section-shot">
+          <figure class="shot section-shot demo">
             <img
               src="media/editor.png"
               width="1440"
               height="900"
               alt="スキルシートの画面。左に入力フォーム、右に A4 のプレビューが並ぶ。"
             />
+            <!-- video:start -->
+            <button type="button" class="play" data-open-demo aria-haspopup="dialog">
+              <span class="play-icon" aria-hidden="true"></span>
+              操作の様子を動画で見る
+            </button>
+            <!-- video:end -->
           </figure>
 
           <!-- video:start -->
-          <figure class="shot video">
+          <dialog class="demo-dialog" id="demo-dialog" aria-labelledby="demo-dialog-title">
+            <div class="demo-dialog-head">
+              <p id="demo-dialog-title">入力するとプレビューがすぐ変わる様子</p>
+              <button type="button" class="close" data-close-demo>閉じる</button>
+            </div>
             <video
               controls
               muted
               playsinline
-              preload="metadata"
+              preload="none"
               poster="media/demo-poster.png"
-              width="1440"
-              height="900"
+              width="1280"
+              height="800"
             >
               <source src="media/demo.mp4" type="video/mp4" />
               <source src="media/demo.webm" type="video/webm" />
             </video>
-            <figcaption>入力するとプレビューがすぐ変わる様子</figcaption>
-          </figure>
+          </dialog>
+          <script>
+            // スクリーンショットの上のボタンから、操作動画をモーダルで再生する。
+            (() => {
+              const dialog = document.getElementById("demo-dialog");
+              const video = dialog.querySelector("video");
+              document.querySelector("[data-open-demo]").addEventListener("click", () => {
+                dialog.showModal();
+                video.currentTime = 0;
+                video.play().catch(() => {});
+              });
+              dialog
+                .querySelector("[data-close-demo]")
+                .addEventListener("click", () => dialog.close());
+              // 動画の外（背景）を押しても閉じる。
+              dialog.addEventListener("click", (event) => {
+                if (event.target === dialog) {
+                  dialog.close();
+                }
+              });
+              dialog.addEventListener("close", () => video.pause());
+            })();
+          </script>
           <!-- video:end -->
 
           <div class="feature">
