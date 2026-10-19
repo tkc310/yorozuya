@@ -58,7 +58,7 @@ make dev       # http://127.0.0.1:46280
    `git push` の前に [lefthook](./lefthook.yml) が typecheck・lint・fmt を実行します。フォーマットの崩れは `make fmt-fix` で直せます。
 
 4. Pull Request を作る。テンプレートのチェックリストを埋めてください
-5. マージすると、GitHub が作業ブランチを自動で消します（Settings の「Automatically delete head branches」）。手元に残ったブランチや、設定前に残ったブランチは `make branch-prune` で一覧し、`make branch-prune ARGS=--apply` で消します。未マージのブランチと `main`・`gh-pages` は消しません
+5. マージすると、GitHub が作業ブランチを自動で消します（Settings の「Automatically delete head branches」）。消し漏れたリモートのブランチは、[Branch cleanup ワークフロー](./.github/workflows/branch-cleanup.yml) が毎週月曜に消します（Actions から手動でも実行できます）。手元に残ったブランチは `make branch-prune` で一覧し、`make branch-prune ARGS=--apply` で消します。未マージのブランチ、`main`・`gh-pages`、Pull Request の無い作ったばかり（7 日未満）のブランチは消しません
 
 ### コミットメッセージ
 
@@ -144,11 +144,12 @@ make storybook   # http://127.0.0.1:6006
 
 GitHub Actions で次のワークフローが動きます。
 
-| ワークフロー                               | きっかけ                       | 内容                                                              |
-| ------------------------------------------ | ------------------------------ | ----------------------------------------------------------------- |
-| [CI](./.github/workflows/ci.yml)           | Pull Request、`main` への push | typecheck・lint・fmt・test、e2e、macOS アプリのビルド             |
-| [Release](./.github/workflows/release.yml) | `v*.*.*` タグの push           | Apple Silicon / Intel 向けのアプリを作り、GitHub Release に載せる |
-| [Dependabot](./.github/dependabot.yml)     | 毎週                           | 依存と GitHub Actions の更新 Pull Request                         |
+| ワークフロー                                             | きっかけ                       | 内容                                                                      |
+| -------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------- |
+| [CI](./.github/workflows/ci.yml)                         | Pull Request、`main` への push | typecheck・lint・fmt・test、e2e、macOS アプリのビルド                     |
+| [Release](./.github/workflows/release.yml)               | `v*.*.*` タグの push           | Apple Silicon / Intel 向けのアプリを作り、GitHub Release に載せる         |
+| [Branch cleanup](./.github/workflows/branch-cleanup.yml) | 毎週月曜・手動                 | マージ済みのブランチを消す（`make branch-prune ARGS=--apply` と同じ条件） |
+| [Dependabot](./.github/dependabot.yml)                   | 毎週                           | 依存と GitHub Actions の更新 Pull Request                                 |
 
 ツールのバージョンは [`.github/actions/setup`](./.github/actions/setup/action.yml) が `.tool-versions` から入れます。
 
