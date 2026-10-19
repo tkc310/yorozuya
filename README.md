@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/assets/images/logo.svg" alt="よろずや" width="360">
+  <img src="docs/assets/banner.svg" alt="よろずや" width="880">
 </p>
 
 <p align="center">
