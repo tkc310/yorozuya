@@ -58,11 +58,6 @@ if (keepMedia) {
   if (installed.exitCode !== 0) {
     console.warn("Playwright の Chromium を入れられないため、手元の Google Chrome で撮ります");
   }
-  // 操作動画の書き出しに使う、Playwright の ffmpeg を入れる。入れられなければ動画なしで公開する。
-  const ffmpeg = await $`pnpm exec playwright install ffmpeg`.nothrow();
-  if (ffmpeg.exitCode !== 0) {
-    console.warn("Playwright の ffmpeg を入れられないため、操作動画は撮りません");
-  }
   console.log("スクリーンショットと操作動画を撮ります");
   const server = serveStatic(storybook);
   try {

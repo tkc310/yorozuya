@@ -4,9 +4,9 @@
 //   node scripts/site/capture.mjs <Storybook の URL> <出力先>
 //
 // 出力: home.png / editor.png / sheet-first.png / sheet-details.png / prompt.png / demo-poster.png / demo.webm
-//       （ffmpeg があれば demo.mp4 も作る）
+//       （手元に ffmpeg があれば demo.mp4 も作る。動画の撮影そのものに ffmpeg は要らない）
 import { spawnSync } from "node:child_process";
-import { mkdir, readdir, rename, rm } from "node:fs/promises";
+import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { chromium } from "@playwright/test";
 
@@ -124,17 +124,117 @@ async function stills(browser, url) {
   await context.close();
 }
 
-async function video(browser, url) {
-  const raw = join(out, "video-raw");
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 800 },
-    recordVideo: { dir: raw, size: { width: 1280, height: 800 } },
+// 操作動画の録画。Playwright の録画（recordVideo）は Playwright の ffmpeg が要り、
+// 対応していない OS（macOS 13 など）では使えないので、ブラウザの機能だけで録る。
+//   1. Chrome DevTools Protocol の画面配信（Page.startScreencast）で、ページの画像を時刻つきで集める
+//   2. 別のページで画像を canvas に同じ間隔で描き直し、MediaRecorder で webm にする
+async function startRecording(context, page, size) {
+  const session = await context.newCDPSession(page);
+  const frames = [];
+  session.on("Page.screencastFrame", (frame) => {
+    frames.push({ time: frame.metadata.timestamp, data: frame.data });
+    session.send("Page.screencastFrameAck", { sessionId: frame.sessionId }).catch(() => {});
   });
+  await session.send("Page.startScreencast", {
+    format: "jpeg",
+    quality: 85,
+    maxWidth: size.width,
+    maxHeight: size.height,
+  });
+  return async () => {
+    await session.send("Page.stopScreencast");
+    await session.detach();
+    return frames;
+  };
+}
+
+async function encodeFrames(context, frames, size, path) {
+  if (frames.length === 0) {
+    throw new Error("録画の画像がありません");
+  }
+  const page = await context.newPage();
+  // 画像は大きいので、少しずつ渡す。
+  await page.evaluate(() => {
+    window.__frames = [];
+  });
+  for (let start = 0; start < frames.length; start += 40) {
+    await page.evaluate((chunk) => window.__frames.push(...chunk), frames.slice(start, start + 40));
+  }
+  const length = await page.evaluate(async ({ width, height }) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    document.body.append(canvas);
+    const context2d = canvas.getContext("2d");
+    const images = await Promise.all(
+      window.__frames.map(
+        ({ time, data }) =>
+          new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve({ time, image });
+            image.onerror = reject;
+            image.src = `data:image/jpeg;base64,${data}`;
+          }),
+      ),
+    );
+    context2d.drawImage(images[0].image, 0, 0, width, height);
+    const type = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+      ? "video/webm;codecs=vp9"
+      : "video/webm";
+    const recorder = new MediaRecorder(canvas.captureStream(30), {
+      mimeType: type,
+      videoBitsPerSecond: 5_000_000,
+    });
+    const chunks = [];
+    recorder.ondataavailable = (event) => chunks.push(event.data);
+    recorder.start();
+    const first = images[0].time;
+    const started = performance.now();
+    for (const { time, image } of images) {
+      const wait = (time - first) * 1000 - (performance.now() - started);
+      if (wait > 0) {
+        await new Promise((resolve) => setTimeout(resolve, wait));
+      }
+      context2d.drawImage(image, 0, 0, width, height);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const stopped = new Promise((resolve) => {
+      recorder.onstop = resolve;
+    });
+    recorder.stop();
+    await stopped;
+    window.__video = new Uint8Array(await new Blob(chunks, { type }).arrayBuffer());
+    return window.__video.length;
+  }, size);
+  // できた webm を少しずつ受け取って書き出す。
+  const parts = [];
+  for (let start = 0; start < length; start += 1 << 20) {
+    const base64 = await page.evaluate(
+      ({ from, to }) => {
+        let text = "";
+        const bytes = window.__video.subarray(from, to);
+        for (let index = 0; index < bytes.length; index += 0x8000) {
+          text += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+        }
+        return btoa(text);
+      },
+      { from: start, to: Math.min(length, start + (1 << 20)) },
+    );
+    parts.push(Buffer.from(base64, "base64"));
+  }
+  await writeFile(path, Buffer.concat(parts));
+  await page.close();
+}
+
+async function video(browser, url) {
+  const size = { width: 1280, height: 800 };
+  const context = await browser.newContext({ viewport: size });
   const page = await context.newPage();
   page.errors = watch(page);
   await page.goto(url);
   await ready(page);
   await page.screenshot({ path: join(out, "demo-poster.png") });
+  const stop = await startRecording(context, page, size);
   await page.waitForTimeout(1200);
 
   // 肩書を書き換えると、プレビューのヘッダーがすぐ変わる。
@@ -175,12 +275,9 @@ async function video(browser, url) {
   }
   await page.waitForTimeout(1500);
 
-  const recorded = page.video();
+  const frames = await stop();
+  await encodeFrames(context, frames, size, join(out, "demo.webm"));
   await context.close();
-  if (recorded) {
-    await rename(await recorded.path(), join(out, "demo.webm"));
-  }
-  await rm(raw, { recursive: true, force: true });
 }
 
 function toMp4() {
@@ -241,7 +338,7 @@ const browser = await launch();
 try {
   await home(browser);
   await stills(browser, url);
-  // 動画は ffmpeg が無い環境では撮れない。そのときはスクリーンショットだけで続ける。
+  // 動画を撮れなかったときは、スクリーンショットだけで続ける。
   await video(browser, url).catch((error) => {
     console.warn(`操作動画を撮れませんでした: ${error.message.split("\n")[0]}`);
   });
