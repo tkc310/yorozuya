@@ -58,6 +58,11 @@ if (keepMedia) {
   if (installed.exitCode !== 0) {
     console.warn("Playwright の Chromium を入れられないため、手元の Google Chrome で撮ります");
   }
+  // 操作動画の書き出しに使う、Playwright の ffmpeg を入れる。入れられなければ動画なしで公開する。
+  const ffmpeg = await $`pnpm exec playwright install ffmpeg`.nothrow();
+  if (ffmpeg.exitCode !== 0) {
+    console.warn("Playwright の ffmpeg を入れられないため、操作動画は撮りません");
+  }
   console.log("スクリーンショットと操作動画を撮ります");
   const server = serveStatic(storybook);
   try {
@@ -71,6 +76,13 @@ if (keepMedia) {
 
 console.log("製品紹介のページを写します");
 await cp(join(root, "site"), out, { recursive: true });
+// 動画を撮れなかったときは、LP から動画の欄を外す（<!-- video:start --> から <!-- video:end --> まで）。
+if (!(await exists(join(media, "demo.webm")))) {
+  const page = join(out, "index.html");
+  const html = await Bun.file(page).text();
+  await Bun.write(page, html.replace(/<!-- video:start -->[\s\S]*?<!-- video:end -->/, ""));
+  console.warn("操作動画が無いため、LP から動画の欄を外しました");
+}
 await mkdir(join(out, "images"), { recursive: true });
 for (const name of ["logo.svg", "icon.svg", "icon.png"]) {
   await cp(join(root, "src/assets/images", name), join(out, "images", name));

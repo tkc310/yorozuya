@@ -27,7 +27,8 @@ description: 製品紹介ページ（LP）と Storybook を GitHub Pages に公�
 1. 準備を確かめる。
    - `pnpm install` 済みであること。
    - 撮影するブラウザ: `pnpm site:build` が撮影の前に Playwright の Chromium を入れる。Playwright が対応していない OS（macOS 13 など）では入れられないので、そのときは手元の Google Chrome（無ければ Microsoft Edge）で撮る。どちらも無ければ Google Chrome を入れておく。
-   - 動画を mp4 にもしたいときは `ffmpeg` があること（無ければ webm だけで公開する）。
+   - 操作動画は Playwright の ffmpeg で書き出す。`pnpm site:build` が撮影の前に入れる（`pnpm exec playwright install ffmpeg`）。入れられなければ動画なしで組み立て、LP から動画の欄を外す。
+   - 動画を mp4 にもしたいときは、手元に `ffmpeg` があること（無ければ webm だけで公開する）。
    - `origin`（tkc310/yorozuya）にプッシュできること。
 2. 公開したい内容のブランチ（ふつうは最新の `main`）にいることを確かめる。未コミットの変更があっても組み立てられるが、公開のコミットメッセージに「未コミットの変更」と残る。
 3. 組み立てる: `pnpm site:build`

@@ -214,9 +214,14 @@ const url = await demoUrl();
 const browser = await launch();
 try {
   await stills(browser, url);
-  await video(browser, url);
+  // 動画は ffmpeg が無い環境では撮れない。そのときはスクリーンショットだけで続ける。
+  await video(browser, url).catch((error) => {
+    console.warn(`操作動画を撮れませんでした: ${error.message.split("\n")[0]}`);
+  });
 } finally {
   await browser.close();
 }
-toMp4();
+if ((await readdir(out)).includes("demo.webm")) {
+  toMp4();
+}
 console.log(`撮りました: ${(await readdir(out)).sort().join(", ")}`);
