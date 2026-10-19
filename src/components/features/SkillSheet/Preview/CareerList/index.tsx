@@ -1,5 +1,10 @@
 import { css, cx } from "styled-system/css";
-import { formatDuration, type Career, type SheetView, type YearMonth } from "@/shared/features/skill-sheet/sheet";
+import {
+  formatDuration,
+  type Career,
+  type SheetView,
+  type YearMonth,
+} from "@/shared/features/skill-sheet/sheet";
 import { Badge, BadgeNote } from "../Badge/index";
 import { endLabel, periodDuration, startLabel } from "../format";
 import { ACCENT, SUB, sectionNote, sectionTitle } from "../styles";
@@ -117,15 +122,7 @@ export function CareerListHead({ view }: { view: SheetView }) {
   );
 }
 
-export function CareerRow({
-  no,
-  item,
-  until,
-}: {
-  no: number;
-  item: Career;
-  until: YearMonth;
-}) {
+export function CareerRow({ no, item, until }: { no: number; item: Career; until: YearMonth }) {
   return (
     <table className={cx(table, row)} aria-label={`職務経歴 ${no}`}>
       <Columns />

@@ -57,10 +57,7 @@
       "ドキュメントのないレガシー画面の解析と、サービスを止めない段階移行を 2 件リード",
       "生成 AI による仮説検証と AI 駆動開発の導入を 2 社で主導し、検証サイクルを 2 週間→2 日に短縮"
     ],
-    "qualifications": [
-      "応用情報技術者試験",
-      "TOEIC 820"
-    ],
+    "qualifications": ["応用情報技術者試験", "TOEIC 820"],
     "skillGroups": [
       {
         "name": "フロントエンド",
@@ -272,31 +269,11 @@
         "outcome": "・担当した LP の改善で、問い合わせ数を前年同期比 1.4 倍に増加\n・社内向けのコーディング規約とテンプレートを整備し、制作期間を約 2 割短縮",
         "role": "Web デザイナー / フロントエンドエンジニア",
         "employment": "正社員",
-        "environment": [
-          "HTML",
-          "CSS",
-          "Sass",
-          "JavaScript",
-          "jQuery",
-          "PHP",
-          "WordPress"
-        ],
+        "environment": ["HTML", "CSS", "Sass", "JavaScript", "jQuery", "PHP", "WordPress"],
         "team": "5名（ディレクター 1、デザイナー 2、エンジニア 2）",
         "methodology": "ウォーターフォール",
-        "tools": [
-          "Photoshop",
-          "Illustrator",
-          "Git",
-          "Google Analytics",
-          "Backlog"
-        ],
-        "phases": [
-          "基本設計",
-          "詳細設計",
-          "実装",
-          "結合テスト",
-          "保守運用"
-        ],
+        "tools": ["Photoshop", "Illustrator", "Git", "Google Analytics", "Backlog"],
+        "phases": ["基本設計", "詳細設計", "実装", "結合テスト", "保守運用"],
         "hard": false
       },
       {
@@ -317,32 +294,11 @@
         "outcome": "・出品完了率を 6 ポイント改善\n・デザインシステムを 8 チームに展開し、新規画面の実装工数を平均 3 割削減",
         "role": "デザインエンジニア",
         "employment": "正社員",
-        "environment": [
-          "JavaScript",
-          "React",
-          "Redux",
-          "Sass",
-          "Storybook",
-          "BigQuery"
-        ],
+        "environment": ["JavaScript", "React", "Redux", "Sass", "Storybook", "BigQuery"],
         "team": "30名以上（プロダクト部門）、うちデザインシステムチーム 4名",
         "methodology": "スクラム",
-        "tools": [
-          "Sketch",
-          "Git",
-          "GitHub",
-          "JIRA",
-          "Slack",
-          "BigQuery"
-        ],
-        "phases": [
-          "要件定義",
-          "基本設計",
-          "詳細設計",
-          "実装",
-          "ユニットテスト",
-          "結合テスト"
-        ],
+        "tools": ["Sketch", "Git", "GitHub", "JIRA", "Slack", "BigQuery"],
+        "phases": ["要件定義", "基本設計", "詳細設計", "実装", "ユニットテスト", "結合テスト"],
         "hard": false
       },
       {
@@ -363,25 +319,10 @@
         "outcome": "・企画から 5 か月で Web 版をリリースし、新規登録の 25% を Web 経由が占めるまでに成長\n・初回連携完了率を 38% から 61% に改善",
         "role": "フロントエンドリード",
         "employment": "業務委託",
-        "environment": [
-          "TypeScript",
-          "React",
-          "Next.js",
-          "Node.js",
-          "GraphQL",
-          "D3.js",
-          "AWS"
-        ],
+        "environment": ["TypeScript", "React", "Next.js", "Node.js", "GraphQL", "D3.js", "AWS"],
         "team": "8名（PdM 1、デザイナー 1、エンジニア 6）",
         "methodology": "スクラム",
-        "tools": [
-          "Figma",
-          "Git",
-          "GitHub",
-          "Slack",
-          "Redash",
-          "Sentry"
-        ],
+        "tools": ["Figma", "Git", "GitHub", "Slack", "Redash", "Sentry"],
         "phases": [
           "要件定義",
           "基本設計",
@@ -422,14 +363,7 @@
         ],
         "team": "15名（エンジニア 10、QA 3、デザイナー 2）",
         "methodology": "スクラム",
-        "tools": [
-          "Figma",
-          "Git",
-          "GitHub",
-          "JIRA",
-          "Confluence",
-          "BigQuery"
-        ],
+        "tools": ["Figma", "Git", "GitHub", "JIRA", "Confluence", "BigQuery"],
         "phases": [
           "要件定義",
           "基本設計",
@@ -471,23 +405,8 @@
         ],
         "team": "12名（PdM 2、デザイナー 2、エンジニア 7、QA 1）",
         "methodology": "スクラム",
-        "tools": [
-          "Figma",
-          "Git",
-          "GitHub",
-          "Notion",
-          "Slack",
-          "Datadog",
-          "Looker"
-        ],
-        "phases": [
-          "要件定義",
-          "基本設計",
-          "詳細設計",
-          "実装",
-          "ユニットテスト",
-          "結合テスト"
-        ],
+        "tools": ["Figma", "Git", "GitHub", "Notion", "Slack", "Datadog", "Looker"],
+        "phases": ["要件定義", "基本設計", "詳細設計", "実装", "ユニットテスト", "結合テスト"],
         "hard": false
       },
       {
@@ -519,13 +438,7 @@
         ],
         "team": "25名（業務分析 4、エンジニア 16、QA 5）",
         "methodology": "ウォーターフォール",
-        "tools": [
-          "Figma",
-          "Git",
-          "GitLab",
-          "Redmine",
-          "Excel"
-        ],
+        "tools": ["Figma", "Git", "GitLab", "Redmine", "Excel"],
         "phases": [
           "要件定義",
           "基本設計",
@@ -567,14 +480,7 @@
         ],
         "team": "6名（PdM 1、エンジニア 5）",
         "methodology": "アジャイル（カンバン）",
-        "tools": [
-          "Figma",
-          "Git",
-          "GitHub",
-          "GitHub Actions",
-          "Linear",
-          "Cursor"
-        ],
+        "tools": ["Figma", "Git", "GitHub", "GitHub Actions", "Linear", "Cursor"],
         "phases": [
           "要件定義",
           "基本設計",

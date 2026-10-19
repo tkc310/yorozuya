@@ -67,7 +67,10 @@ describe("改ページ", () => {
       ],
       (page) => (page === 0 ? 100 : 80),
     );
-    expect(pages).toEqual([["a", "b"], ["c", "d"]]);
+    expect(pages).toEqual([
+      ["a", "b"],
+      ["c", "d"],
+    ]);
   });
 
   it("2 ページ目以降はランニングヘッダーの分だけ本文が低い", () => {

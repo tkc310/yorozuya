@@ -542,9 +542,7 @@ export class SkillSheetRepository {
       }
       const others = rows.filter((row) => row.featured && row.name.trim() !== name).length;
       if (featured && others >= MAX_FEATURED_SKILLS) {
-        return err(
-          new ServerFunctionError(`主要スキルは${MAX_FEATURED_SKILLS}件まで選べます`),
-        );
+        return err(new ServerFunctionError(`主要スキルは${MAX_FEATURED_SKILLS}件まで選べます`));
       }
       this.db.transaction((tx) => {
         for (const match of matches) {

@@ -80,9 +80,7 @@ export function lengthHint(text: string, guide: number): { text: string; over: b
   const length = [...text.trim()].length;
   const over = length > guide;
   return {
-    text: over
-      ? `${length} / ${guide}字（目安を超えています）`
-      : `${length} / ${guide}字`,
+    text: over ? `${length} / ${guide}字（目安を超えています）` : `${length} / ${guide}字`,
     over,
   };
 }

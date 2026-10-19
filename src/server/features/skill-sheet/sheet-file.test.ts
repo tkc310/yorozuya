@@ -1,7 +1,11 @@
 import { readFileSync } from "node:fs";
 import * as v from "valibot";
 import { describe, expect, it } from "vitest";
-import { SHEET_FILE_VERSION, createFixtureSheet, toSheetFile } from "@/shared/features/skill-sheet/sheet";
+import {
+  SHEET_FILE_VERSION,
+  createFixtureSheet,
+  toSheetFile,
+} from "@/shared/features/skill-sheet/sheet";
 import { SheetFileSchema } from "./sheet-file";
 
 function sample(): unknown {

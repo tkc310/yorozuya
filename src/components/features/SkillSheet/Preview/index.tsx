@@ -191,9 +191,7 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
       key: `detail-${item.id}`,
       node: (
         <>
-          {index === 0 ? (
-            <h3 className={cx(sectionTitle, detailsTitle)}>職務経歴詳細</h3>
-          ) : null}
+          {index === 0 ? <h3 className={cx(sectionTitle, detailsTitle)}>職務経歴詳細</h3> : null}
           <DetailCareer no={index + 1} item={item} until={until} />
         </>
       ),

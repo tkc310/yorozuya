@@ -22,7 +22,11 @@ const spacer = css({
 export function RunningHeader({ name, updated }: { name: string; updated: string }) {
   return (
     <>
-      <div className={root} aria-hidden="true" style={{ height: `${RUNNING_HEADER_HEIGHT_MM - 3}mm` }}>
+      <div
+        className={root}
+        aria-hidden="true"
+        style={{ height: `${RUNNING_HEADER_HEIGHT_MM - 3}mm` }}
+      >
         <span>スキルシート｜{name}</span>
         <span>更新日 {updated}</span>
       </div>

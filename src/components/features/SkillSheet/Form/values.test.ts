@@ -45,7 +45,10 @@ describe("入力欄の値", () => {
 
   it("文字数の目安を超えたら注意にする", () => {
     expect(lengthHint("あいう", 3)).toEqual({ text: "3 / 3字", over: false });
-    expect(lengthHint(" あいうえ ", 3)).toEqual({ text: "4 / 3字（目安を超えています）", over: true });
+    expect(lengthHint(" あいうえ ", 3)).toEqual({
+      text: "4 / 3字（目安を超えています）",
+      over: true,
+    });
   });
 
   it("印刷の既定のファイル名に氏名と日付を入れる", () => {

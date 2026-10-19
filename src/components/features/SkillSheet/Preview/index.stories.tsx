@@ -60,7 +60,9 @@ export const Example: Story = {
       "職務経歴サマリー",
       "職務経歴詳細",
     ]) {
-      await expect(canvas.getByRole("heading", { name: new RegExp(`^${name}`), level: 3 })).toBeVisible();
+      await expect(
+        canvas.getByRole("heading", { name: new RegExp(`^${name}`), level: 3 }),
+      ).toBeVisible();
     }
     // 契約形態は希望雇用形態と所属をまとめる。
     const basic = within(canvas.getByRole("region", { name: "基本情報" }));

@@ -364,7 +364,9 @@ function skillYears(input: SheetInput, calculatedOn: YearMonth): SkillYears[] {
 
 // 経験年数の長い順。同じ長さなら元の並びのまま。
 export function byDuration<T extends { duration: Duration }>(items: T[]): T[] {
-  return [...items].sort((left, right) => durationMonths(right.duration) - durationMonths(left.duration));
+  return [...items].sort(
+    (left, right) => durationMonths(right.duration) - durationMonths(left.duration),
+  );
 }
 
 // 主要スキル。選んだものが無ければ、経験年数の長いものから決まった件数を出す。

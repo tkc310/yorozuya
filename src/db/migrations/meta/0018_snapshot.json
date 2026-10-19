@@ -33,10 +33,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "career_environments_career_id_position_pk": {
-          "columns": [
-            "career_id",
-            "position"
-          ],
+          "columns": ["career_id", "position"],
           "name": "career_environments_career_id_position_pk"
         }
       },
@@ -72,10 +69,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "career_phases_career_id_position_pk": {
-          "columns": [
-            "career_id",
-            "position"
-          ],
+          "columns": ["career_id", "position"],
           "name": "career_phases_career_id_position_pk"
         }
       },
@@ -111,10 +105,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "career_tools_career_id_position_pk": {
-          "columns": [
-            "career_id",
-            "position"
-          ],
+          "columns": ["career_id", "position"],
           "name": "career_tools_career_id_position_pk"
         }
       },

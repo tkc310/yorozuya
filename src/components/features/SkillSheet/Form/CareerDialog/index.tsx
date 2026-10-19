@@ -500,10 +500,7 @@ function CareerForm({
           />
         </Field>
       </div>
-      <Field
-        label="職務経歴の一覧用の概要"
-        hint={<SummaryLength text={draft.summary} />}
-      >
+      <Field label="職務経歴の一覧用の概要" hint={<SummaryLength text={draft.summary} />}>
         <Textarea
           placeholder="例: 会員管理システムのクラウド移行"
           value={draft.summary}
