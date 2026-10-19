@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import * as v from "valibot";
 import { describe, expect, it } from "vitest";
 import {
@@ -10,7 +11,8 @@ import { SheetFileSchema } from "./sheet-file";
 
 function sample(): unknown {
   return JSON.parse(
-    readFileSync(new URL("../../../../sample/dummy-skill-sheet.json", import.meta.url), "utf8"),
+    // 画面のテストと同じ環境（happy-dom）で動くので、import.meta.url ではなく作業ディレクトリから読む。
+    readFileSync(join(process.cwd(), "sample/dummy-skill-sheet.json"), "utf8"),
   );
 }
 

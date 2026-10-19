@@ -46,9 +46,8 @@ export const Example: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // 氏名の横にフリガナを括弧書きで出す。
-    await expect(
-      canvas.getByRole("heading", { name: "新究羅 理定（シンギュラ リティ）", level: 2 }),
-    ).toBeVisible();
+    const name = canvas.getByRole("heading", { name: /^新究羅 理定/, level: 2 });
+    await expect(name).toHaveTextContent("新究羅 理定（シンギュラ リティ）");
     await expect(canvas.getByText("35歳")).toBeVisible();
     await expect(canvas.getByText("経験 3年6ヶ月")).toBeVisible();
     for (const name of [

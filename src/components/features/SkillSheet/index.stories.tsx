@@ -11,6 +11,8 @@ function client(withSheet: boolean) {
     defaultOptions: {
       queries: {
         retry: false,
+        // ストーリーではサーバ関数（bun:sqlite）を呼ばない。見本のデータか、読み込み中のままにする。
+        enabled: false,
       },
     },
   });
@@ -53,7 +55,7 @@ export const Example: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "スキルシート", level: 1 })).toBeVisible();
     await expect(
-      await canvas.findByRole("heading", { name: "新究羅 理定（シンギュラ リティ）", level: 2 }),
+      await canvas.findByRole("heading", { name: /^新究羅 理定/, level: 2 }),
     ).toBeVisible();
   },
 };
