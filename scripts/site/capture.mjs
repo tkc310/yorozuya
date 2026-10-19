@@ -192,7 +192,11 @@ async function launch() {
   const errors = [];
   for (const channel of [undefined, "chrome", "msedge"]) {
     try {
-      const browser = await chromium.launch(channel ? { channel } : {});
+      const browser = await chromium.launch({
+        ...(channel ? { channel } : {}),
+        // 撮影はふつう画面に出さずに行う。様子を見たいときは SITE_CAPTURE_HEADED=1 を付ける。
+        headless: process.env.SITE_CAPTURE_HEADED !== "1",
+      });
       console.log(`撮影に使うブラウザ: ${channel ?? "Playwright の Chromium"}`);
       return browser;
     } catch (error) {

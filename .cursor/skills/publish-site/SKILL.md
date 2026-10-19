@@ -60,8 +60,10 @@ gh api -X POST repos/tkc310/yorozuya/pages -f "source[branch]=gh-pages" -f "sour
 
 ## うまくいかないとき
 
-- Storybook の組み立てで `multiple entries detected` と出る: TanStack Start のマニフェストのプラグインが残っている。`.storybook/main.ts` の `viteFinal` で外している名前（`start-manifest`）が、TanStack Start の更新で変わっていないか確かめる。
+- Storybook の組み立てで `multiple entries detected` と出る: TanStack Start のプラグインが残っている。下の iframe.html の項目と同じく `.storybook/main.ts` を確かめる。
 - 「撮影に使えるブラウザがありません」と出る: Playwright の Chromium も Google Chrome・Microsoft Edge も起動できなかった。Google Chrome を入れるか、対応している OS なら `pnpm exec playwright install chromium` を実行してから組み立て直す。
+- 撮影中に Chrome のウィンドウは開かない（画面に出さずに撮る）。撮影の様子を見たいときは `SITE_CAPTURE_HEADED=1 pnpm site:build` で実行する。
+- `Storybook の出力に iframe.html がありません` と出る: アプリの Vite 設定のプラグインが Storybook の静的ビルドの出力を変えている。`.storybook/main.ts` の `viteFinal` で、静的ビルドのときに外しているプラグイン（名前が `tanstack` で始まるもの）を確かめる。
 - 撮影で要素が見つからない: 画面のラベルやボタン名が変わっている。`scripts/site/capture.mjs` を直す。
 
 ## してはいけないこと
