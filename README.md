@@ -55,6 +55,7 @@
 - Node.js 24
 - pnpm 10
 - Bun 1.4
+- make（macOS には標準で入っています）
 
 [mise](https://mise.jdx.dev/) か [asdf](https://asdf-vm.com/) を使っているなら、次のコマンドでまとめて入ります。
 
@@ -67,8 +68,8 @@ mise install   # または asdf install
 ```bash
 git clone https://github.com/tkc310/yorozuya.git
 cd yorozuya
-pnpm install
-pnpm dev
+make install
+make dev
 ```
 
 <http://127.0.0.1:46280> を開きます。初回起動時に `data/yorozuya.db` が作られ、見本のデータが入ります。
@@ -76,7 +77,7 @@ pnpm dev
 ### macOS アプリを自分で作る
 
 ```bash
-pnpm build:app
+make build-app
 ```
 
 `dist/Yorozuya.app` ができます。起動するとサーバが裏で立ち上がり、ブラウザで <http://127.0.0.1:4628> が開きます。Dock から終了するとサーバも止まります。
@@ -85,7 +86,7 @@ pnpm build:app
 
 | 起動方法     | 保存先                                                    |
 | ------------ | --------------------------------------------------------- |
-| `pnpm dev`   | `data/yorozuya.db`                                        |
+| `make dev`   | `data/yorozuya.db`                                        |
 | macOS アプリ | `~/Library/Application Support/Yorozuya/data/yorozuya.db` |
 
 データは外部に送られません。バックアップを取るには、このファイルを複製するか、スキルシートの「JSONを書き出す」を使ってください。`data/yorozuya.db` はコミットしないでください。
@@ -94,18 +95,28 @@ pnpm build:app
 
 ### コマンド
 
-| コマンド             | 内容                                             |
-| -------------------- | ------------------------------------------------ |
-| `pnpm dev`           | 開発サーバを起動する                             |
-| `pnpm build:app`     | macOS アプリを作る                               |
-| `pnpm storybook`     | Storybook を起動する（<http://127.0.0.1:6006>）  |
-| `pnpm prepare`       | Panda CSS のスタイルを生成し、Git フックを入れる |
-| `pnpm test`          | ユニットテストと Storybook の play を実行する    |
-| `pnpm test:e2e`      | Playwright で e2e テストを実行する               |
-| `pnpm typecheck`     | 型を検査する                                     |
-| `pnpm lint`          | 静的検査と境界検査を実行する                     |
-| `pnpm lint:boundary` | import の境界とデータベース操作の場所を検査する  |
-| `pnpm fmt`           | フォーマットを検査する                           |
+コマンドは `make` で実行します。`make`（または `make help`）で一覧が出ます。中身は `package.json` のスクリプトや `pnpm exec` を呼ぶだけなので、`pnpm` で直接実行してもかまいません。追加の引数は `ARGS` で渡します（例: `make site-build ARGS=--skip-capture`）。
+
+| コマンド             | 内容                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| `make install`       | 依存パッケージを入れる                                       |
+| `make dev`           | 開発サーバを起動する                                         |
+| `make build-app`     | macOS アプリを作る                                           |
+| `make storybook`     | Storybook を起動する（<http://127.0.0.1:6006>）              |
+| `make prepare`       | Panda CSS のスタイルを生成し、Git フックを入れる             |
+| `make browsers`      | e2e と撮影に使う Playwright の Chromium を入れる             |
+| `make db-generate`   | スキーマの変更からマイグレーションを生成する                 |
+| `make check`         | 型検査・静的検査・フォーマット検査・テストをまとめて実行する |
+| `make test`          | ユニットテストと Storybook の play を実行する                |
+| `make test-e2e`      | Playwright で e2e テストを実行する                           |
+| `make typecheck`     | 型を検査する                                                 |
+| `make lint`          | 静的検査と境界検査を実行する                                 |
+| `make lint-boundary` | import の境界とデータベース操作の場所を検査する              |
+| `make fmt`           | フォーマットを検査する                                       |
+| `make fmt-fix`       | フォーマットを直す                                           |
+| `make site-build`    | GitHub Pages の LP と Storybook を `.site/` に組み立てる     |
+| `make site-preview`  | 組み立てた `.site/` を手元で確かめる                         |
+| `make site-publish`  | `.site/` を GitHub Pages（`gh-pages`）に公開する             |
 
 `git push` の前に、[lefthook](https://github.com/evilmartians/lefthook) が typecheck・lint・fmt を実行します。
 
@@ -133,7 +144,7 @@ pnpm build:app
 
 ### 設計のルール
 
-次のルールは `pnpm lint:boundary` で機械的に検査します。詳しくは [`rules/security.md`](./rules/security.md) を参照してください。
+次のルールは `make lint-boundary` で機械的に検査します。詳しくは [`rules/security.md`](./rules/security.md) を参照してください。
 
 - データベースはローカルファイルだけです。ホストされたデータベースや公開 HTTP API は置きません。
 - 画面はサーバ関数を直接 import します。`src/db` の import と `fetch` の呼び出しはしません。

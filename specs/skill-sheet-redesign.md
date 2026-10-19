@@ -324,7 +324,7 @@
 3. §5（項目追加とマイグレーション・JSON v2）→ §2（ヘッダー・基本情報の表・強み・保有技術・資格・語学 / リンク・自己 PR）
 4. §7（印刷まわり・チェック表示）
 
-各段階で `pnpm test` / `pnpm typecheck` / `pnpm lint` を通し、Storybook の `Preview/index.stories.tsx` にサンプル（8 案件・案件 0 件・案件 15 件・項目すべて非表示）のストーリーを用意して見た目を確認する。
+各段階で `make test` / `make typecheck` / `make lint` を通し、Storybook の `Preview/index.stories.tsx` にサンプル（8 案件・案件 0 件・案件 15 件・項目すべて非表示）のストーリーを用意して見た目を確認する。
 
 ## 9. 確認項目（チェックリスト）
 
