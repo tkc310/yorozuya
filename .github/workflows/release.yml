@@ -35,7 +35,7 @@ jobs:
           fi
 
       - name: Build app
-        run: pnpm build:app
+        run: make build-app
         env:
           YOROZUYA_TARGET: ${{ matrix.target }}
 

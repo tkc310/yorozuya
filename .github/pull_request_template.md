@@ -8,6 +8,6 @@
 
 ## 確認
 
-- [ ] `pnpm typecheck` / `pnpm lint` / `pnpm fmt` / `pnpm test` が通る
+- [ ] `make check`（typecheck・lint・fmt・test）が通る
 - [ ] 画面を変えたときは、ストーリーかテストを足した
 - [ ] スキーマを変えたときは、マイグレーションを生成した

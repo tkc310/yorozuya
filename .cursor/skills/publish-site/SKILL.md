@@ -20,27 +20,27 @@ description: 製品紹介ページ（LP）と Storybook を GitHub Pages に公�
 | `scripts/site/publish.ts`                  | `.site/` を `gh-pages` に 1 コミットで強制プッシュする           |
 | `.site/`                                   | 組み立てた結果。コミットしない（`.gitignore` 済み）              |
 
-撮影はデモのストーリー（`スキルシート/デモ` の `見本`）から行う。アプリ本体（`pnpm dev`）は使わないので、`data/yorozuya.db` の中身は変わらない。
+撮影はデモのストーリー（`スキルシート/デモ` の `見本`）から行う。アプリ本体（`make dev`）は使わないので、`data/yorozuya.db` の中身は変わらない。
 
 ## 手順
 
 1. 準備を確かめる。
-   - `pnpm install` 済みであること。
-   - 撮影するブラウザ: `pnpm site:build` が撮影の前に Playwright の Chromium を入れる。Playwright が対応していない OS（macOS 13 など）では入れられないので、そのときは手元の Google Chrome（無ければ Microsoft Edge）で撮る。どちらも無ければ Google Chrome を入れておく。
+   - `make install` 済みであること。
+   - 撮影するブラウザ: `make site-build` が撮影の前に Playwright の Chromium を入れる。Playwright が対応していない OS（macOS 13 など）では入れられないので、そのときは手元の Google Chrome（無ければ Microsoft Edge）で撮る。どちらも無ければ Google Chrome を入れておく。
    - 操作動画はブラウザの機能（画面の配信と MediaRecorder）で録るので、ffmpeg は要らない。
    - 動画を mp4 にもしたいときは、手元に `ffmpeg` があること（無ければ webm だけで公開する）。
    - `origin`（tkc310/yorozuya）にプッシュできること。
 2. 公開したい内容のブランチ（ふつうは最新の `main`）にいることを確かめる。未コミットの変更があっても組み立てられるが、公開のコミットメッセージに「未コミットの変更」と残る。
-3. 組み立てる: `pnpm site:build`
-   - 文言だけを直したときは `pnpm site:build --skip-capture` で撮影を省ける（前回の `.site/media` を使う）。
-4. 確かめる: `pnpm site:preview` を実行し、表示された URL を開く。
+3. 組み立てる: `make site-build`
+   - 文言だけを直したときは `make site-build ARGS=--skip-capture` で撮影を省ける（前回の `.site/media` を使う）。
+4. 確かめる: `make site-preview` を実行し、表示された URL を開く。
    - LP の画像 5 枚（home / editor / sheet-first / sheet-details / prompt）が出ている
    - 動画が再生でき、肩書・希望単価・主要スキルの変更がプレビューに映っている
    - 「Storybook を開く」から Storybook が開き、ストーリーが表示される
    - スマートフォンの幅でも横にはみ出さない
    - 画像や動画に、実在の人物や個人の経歴が写っていない（見本の「新究羅 理定」だけ）
-5. 公開する: `pnpm site:publish`
-   - 先に送らずに確かめたいときは `pnpm site:publish --dry-run`
+5. 公開する: `make site-publish`
+   - 先に送らずに確かめたいときは `make site-publish ARGS=--dry-run`
 6. 公開先を開いて、4 と同じ点を確かめる。反映まで 1〜2 分かかることがある。
 
 ## 初回だけ
@@ -62,8 +62,8 @@ gh api -X POST repos/tkc310/yorozuya/pages -f "source[branch]=gh-pages" -f "sour
 ## うまくいかないとき
 
 - Storybook の組み立てで `multiple entries detected` と出る: TanStack Start のプラグインが残っている。下の iframe.html の項目と同じく `.storybook/main.ts` を確かめる。
-- 「撮影に使えるブラウザがありません」と出る: Playwright の Chromium も Google Chrome・Microsoft Edge も起動できなかった。Google Chrome を入れるか、対応している OS なら `pnpm exec playwright install chromium` を実行してから組み立て直す。
-- 撮影中に Chrome のウィンドウは開かない（画面に出さずに撮る）。撮影の様子を見たいときは `SITE_CAPTURE_HEADED=1 pnpm site:build` で実行する。
+- 「撮影に使えるブラウザがありません」と出る: Playwright の Chromium も Google Chrome・Microsoft Edge も起動できなかった。Google Chrome を入れるか、対応している OS なら `make browsers` を実行してから組み立て直す。
+- 撮影中に Chrome のウィンドウは開かない（画面に出さずに撮る）。撮影の様子を見たいときは `SITE_CAPTURE_HEADED=1 make site-build` で実行する。
 - `Storybook の出力に iframe.html がありません` と出る: アプリの Vite 設定のプラグインが Storybook の静的ビルドの出力を変えている。`.storybook/main.ts` の `viteFinal` で、静的ビルドのときに外しているプラグイン（名前が `tanstack` で始まるもの）を確かめる。
 - 撮影で要素が見つからない: 画面のラベルやボタン名が変わっている。`scripts/site/capture.mjs` を直す。
 
@@ -71,4 +71,4 @@ gh api -X POST repos/tkc310/yorozuya/pages -f "source[branch]=gh-pages" -f "sour
 
 - `.site/` やスクリーンショット・動画をリポジトリにコミットしない。
 - CI（`.github/workflows`）にサイトの公開を足さない。
-- `pnpm dev` のアプリを操作して撮らない（手元のシートが書き換わる）。
+- `make dev` のアプリを操作して撮らない（手元のシートが書き換わる）。

@@ -2,8 +2,8 @@ pre-push:
   parallel: true
   commands:
     typecheck:
-      run: pnpm typecheck
+      run: make typecheck
     lint:
-      run: pnpm lint
+      run: make lint
     fmt:
-      run: pnpm fmt
+      run: make fmt

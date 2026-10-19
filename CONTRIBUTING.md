@@ -17,11 +17,12 @@
 
 [`.tool-versions`](./.tool-versions) のバージョンに合わせます。CI も同じファイルを読みます。
 
-| ツール  | バージョン |
-| ------- | ---------- |
-| Node.js | 24         |
-| pnpm    | 10         |
-| Bun     | 1.4        |
+| ツール  | バージョン     |
+| ------- | -------------- |
+| Node.js | 24             |
+| pnpm    | 10             |
+| Bun     | 1.4            |
+| make    | （macOS 標準） |
 
 [mise](https://mise.jdx.dev/) か [asdf](https://asdf-vm.com/) を使うと、まとめて入ります。
 
@@ -34,11 +35,15 @@ mise install   # または asdf install
 ```bash
 git clone https://github.com/tkc310/yorozuya.git
 cd yorozuya
-pnpm install   # prepare で Panda CSS のコード生成と Git フックの導入も走る
-pnpm dev       # http://127.0.0.1:46280
+make install   # prepare で Panda CSS のコード生成と Git フックの導入も走る
+make dev       # http://127.0.0.1:46280
 ```
 
 初回起動時に `data/yorozuya.db` が作られ、見本のデータが入ります。まっさらに戻したいときは、開発サーバを止めてこのファイルを消してください。
+
+### コマンド
+
+コマンドは [`Makefile`](./Makefile) にまとめてあり、`make` で一覧が出ます。中身は `package.json` のスクリプトや `pnpm exec` を呼ぶだけです。追加の引数は `ARGS` で渡します（例: `make test ARGS="src/components/features/SkillSheet"`）。コマンドを足すときは、`package.json` のスクリプトと `Makefile` の両方に足し、ドキュメントには `make` の形で書いてください。
 
 ## 開発の流れ
 
@@ -47,10 +52,10 @@ pnpm dev       # http://127.0.0.1:46280
 3. 検査を通す
 
    ```bash
-   pnpm typecheck && pnpm lint && pnpm fmt && pnpm test
+   make check   # typecheck・lint・fmt・test をまとめて実行する
    ```
 
-   `git push` の前に [lefthook](./lefthook.yml) が typecheck・lint・fmt を実行します。フォーマットの崩れは `pnpm exec vp fmt` で直せます。
+   `git push` の前に [lefthook](./lefthook.yml) が typecheck・lint・fmt を実行します。フォーマットの崩れは `make fmt-fix` で直せます。
 
 4. Pull Request を作る。テンプレートのチェックリストを埋めてください
 
@@ -80,7 +85,7 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 
 ### 守ってほしいこと
 
-- 設計のルール（[`rules/security.md`](./rules/security.md)）に従う。主なものは `pnpm lint:boundary` が検査します
+- 設計のルール（[`rules/security.md`](./rules/security.md)）に従う。主なものは `make lint-boundary` が検査します
 - コンポーネントの置き方は [`src/components/COMPONENT_STRUCTURE.md`](./src/components/COMPONENT_STRUCTURE.md) に従う
 - 見本 PDF の本文や、実在する個人の経歴をリポジトリに入れない
 - `data/yorozuya.db` や秘密情報をコミットしない
@@ -89,13 +94,13 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 
 | 種類           | 置き場所                       | 実行            |
 | -------------- | ------------------------------ | --------------- |
-| ユニットテスト | 対象の隣に `*.test.ts(x)`      | `pnpm test`     |
-| ストーリー     | 部品の隣に `index.stories.tsx` | `pnpm test`     |
-| e2e            | `tests/*.spec.ts`              | `pnpm test:e2e` |
+| ユニットテスト | 対象の隣に `*.test.ts(x)`      | `make test`     |
+| ストーリー     | 部品の隣に `index.stories.tsx` | `make test`     |
+| e2e            | `tests/*.spec.ts`              | `make test-e2e` |
 
 - ストーリーの `play` は [`src/components/stories.test.tsx`](./src/components/stories.test.tsx) から Vitest で実行されます。ストーリーを足したら、ここにも登録してください
 - `Link` などルーターを使う部品のストーリーには、[`.storybook/withRouter.tsx`](./.storybook/withRouter.tsx) のデコレーターを付けます
-- e2e は開発サーバを起動して実行します。初回は `pnpm exec playwright install chromium` でブラウザを入れてください
+- e2e は開発サーバを起動して実行します。初回は `make browsers` でブラウザを入れてください
 
 ## よくある作業
 
@@ -112,7 +117,7 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 2. マイグレーションを生成する
 
    ```bash
-   pnpm exec drizzle-kit generate
+   make db-generate
    ```
 
 3. 生成された `src/db/migrations/` のファイルをコミットする
@@ -122,7 +127,7 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 ### 見た目を確かめる
 
 ```bash
-pnpm storybook   # http://127.0.0.1:6006
+make storybook   # http://127.0.0.1:6006
 ```
 
 ### ダミーデータで確かめる
