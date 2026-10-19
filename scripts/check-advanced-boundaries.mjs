@@ -144,6 +144,19 @@ for (const [file, reference] of [
   }
 }
 
+// README の Agent Skills のバッジに書いたスキルの数は、.cursor/skills の数と同じにする。
+{
+  const skills = readdirSync(path.join(root, ".cursor/skills"), { withFileTypes: true }).filter(
+    (entry) => entry.isDirectory(),
+  ).length;
+  const badge = /badge\/Agent_Skills-(\d+)-/.exec(
+    readFileSync(path.join(root, "README.md"), "utf8"),
+  );
+  if (!badge || Number(badge[1]) !== skills) {
+    failures.push(`README.md: Agent Skills のバッジの数を ${skills} にする（.cursor/skills の数）`);
+  }
+}
+
 // Git フックから呼ぶ make は ARGS= で空にする。make のコマンド行の ARGS が MAKEFLAGS を通して
 // フックにまで引き継がれ、`make release-version ARGS=minor` の push で typecheck に minor が渡ったため。
 for (const line of readFileSync(path.join(root, "lefthook.yml"), "utf8").split("\n")) {
