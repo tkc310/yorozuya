@@ -31,9 +31,30 @@ async function demoUrl() {
   return new URL(`iframe.html?id=${entry.id}&viewMode=story`, base).toString();
 }
 
-// プレビューの割り付けとフォントの読み込みを待つ。
+// ページのエラーを集め、撮れなかったときに原因を出す。
+function watch(page) {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      errors.push(`console: ${message.text()}`);
+    }
+  });
+  return errors;
+}
+
+// プレビューの割り付けとフォントの読み込みを待つ。表示されなければ画面とエラーを残して止める。
 async function ready(page) {
-  await page.getByRole("heading", { name: /^新究羅 理定/, level: 2 }).waitFor();
+  const errors = page.errors ?? [];
+  try {
+    await page.getByRole("heading", { name: /^新究羅 理定/, level: 2 }).waitFor({ timeout: 30000 });
+  } catch (error) {
+    await page.screenshot({ path: join(out, "failure.png"), fullPage: true }).catch(() => {});
+    console.error(`デモが表示されませんでした: ${page.url()}`);
+    console.error(`画面: ${join(out, "failure.png")}`);
+    console.error(errors.length > 0 ? errors.join("\n") : "ページのエラーはありません");
+    throw error;
+  }
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(800);
 }
@@ -44,6 +65,7 @@ async function stills(browser, url) {
     deviceScaleFactor: 2,
   });
   const page = await context.newPage();
+  page.errors = watch(page);
   await page.goto(url);
   await ready(page);
   await page.screenshot({ path: join(out, "editor.png") });
@@ -74,6 +96,7 @@ async function video(browser, url) {
     recordVideo: { dir: raw, size: { width: 1280, height: 800 } },
   });
   const page = await context.newPage();
+  page.errors = watch(page);
   await page.goto(url);
   await ready(page);
   await page.screenshot({ path: join(out, "demo-poster.png") });

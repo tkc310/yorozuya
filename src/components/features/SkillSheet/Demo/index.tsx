@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import * as v from "valibot";
 import {
   addCareer,
   addSkill,
@@ -11,10 +10,10 @@ import {
   updateCareer,
   updateSkillExperience,
   type CalendarDate,
+  type Career,
   type SheetInput,
 } from "@/shared/features/skill-sheet/sheet";
 import sampleText from "@/sample/dummy-skill-sheet.json?raw";
-import { SheetFileSchema } from "@/src/server/features/skill-sheet/sheet-file";
 import { Form } from "../Form/index";
 import { SheetLayout } from "../Layout/index";
 import { Preview } from "../Preview/index";
@@ -25,11 +24,18 @@ import { Preview } from "../Preview/index";
 // 撮るたびに経験年数が変わらないよう、基準日を固定する。
 export const DEMO_TODAY: CalendarDate = { year: 2026, month: 10, day: 18 };
 
+// 見本の JSON の sheet。読み込みの検査（SheetFileSchema）を通ることは
+// src/server/features/skill-sheet/sheet-file.test.ts で確かめているので、ここでは検査しない
+// （画面のバンドルにサーバ側のモジュールを入れないため）。
+type SampleSheet = Omit<SheetInput, "careers"> & {
+  careers: (Omit<Career, "id"> & { id?: string })[];
+};
+
 export function loadDemoSheet(): SheetInput {
-  const file = v.parse(SheetFileSchema, JSON.parse(sampleText));
+  const { sheet } = JSON.parse(sampleText) as { sheet: SampleSheet };
   return {
-    ...file.sheet,
-    careers: file.sheet.careers.map((career, index) => ({
+    ...sheet,
+    careers: sheet.careers.map((career, index) => ({
       ...career,
       id: career.id ?? `career-${index + 1}`,
     })),
