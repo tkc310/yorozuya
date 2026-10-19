@@ -38,6 +38,13 @@ await mkdir(out, { recursive: true });
 
 console.log("Storybook を組み立てます");
 await $`pnpm exec storybook build --quiet --output-dir ${storybook}`;
+// 撮影は Storybook の iframe.html を開く。無ければ中身を出して止める（原因を追うため）。
+if (!(await exists(join(storybook, "iframe.html")))) {
+  const { readdir } = await import("node:fs/promises");
+  console.error(`Storybook の出力に iframe.html がありません: ${storybook}`);
+  console.error((await readdir(storybook)).sort().join("\n"));
+  process.exit(1);
+}
 
 if (keepMedia) {
   await cp(kept, media, { recursive: true });
