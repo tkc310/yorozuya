@@ -5,6 +5,7 @@ import { displayNameOf, toSheetFile, type SheetInput } from "@/shared/features/s
 import { Button } from "@/src/components/ui/Button/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";
 import { printTitle } from "../values";
+import { ImportPromptDialog } from "./ImportPromptDialog/index";
 
 const actions = css({
   display: "flex",
@@ -77,6 +78,7 @@ export function SheetActions({
   const input = useRef<HTMLInputElement>(null);
   const [loaded, setLoaded] = useState<{ name: string; file: unknown } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [promptOpen, setPromptOpen] = useState(false);
 
   return (
     <div>
@@ -95,6 +97,9 @@ export function SheetActions({
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={() => download(sheet)}>
           JSONを書き出す
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setPromptOpen(true)}>
+          インポート用のプロンプトを作る
         </Button>
         <input
           ref={input}
@@ -123,6 +128,7 @@ export function SheetActions({
           {message}
         </p>
       ) : null}
+      <ImportPromptDialog open={promptOpen} onOpenChange={setPromptOpen} />
       <Dialog
         open={loaded !== null}
         title="JSONを読み込む"
