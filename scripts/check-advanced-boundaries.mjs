@@ -151,7 +151,9 @@ for (const [file, reference] of [
   ["site/style.css", ".nav[data-menu] nav {"],
 ]) {
   if (!readFileSync(path.join(root, file), "utf8").includes(reference)) {
-    failures.push(`${file}: スマートフォンの幅ではヘッダーのリンクをメニューにまとめる（${reference}）`);
+    failures.push(
+      `${file}: スマートフォンの幅ではヘッダーのリンクをメニューにまとめる（${reference}）`,
+    );
   }
 }
 
