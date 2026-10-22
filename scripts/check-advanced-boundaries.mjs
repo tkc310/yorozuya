@@ -144,6 +144,19 @@ for (const [file, reference] of [
   }
 }
 
+// LP のヘッダーは、スマートフォンの幅ではリンクをメニューにまとめる。リンクが 2 段に折り返し、押しにくかったため。
+for (const [file, reference] of [
+  ["site/index.html", 'class="nav-toggle"'],
+  ["site/index.html", 'aria-controls="site-nav"'],
+  ["site/style.css", ".nav[data-menu] nav {"],
+]) {
+  if (!readFileSync(path.join(root, file), "utf8").includes(reference)) {
+    failures.push(
+      `${file}: スマートフォンの幅ではヘッダーのリンクをメニューにまとめる（${reference}）`,
+    );
+  }
+}
+
 // README の Agent Skills のバッジに書いたスキルの数は、.cursor/skills の数と同じにする。
 {
   const skills = readdirSync(path.join(root, ".cursor/skills"), { withFileTypes: true }).filter(

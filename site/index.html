@@ -28,7 +28,16 @@
     <header class="nav">
       <div class="wrap nav-inner">
         <a class="nav-logo" href="./"><img src="images/logo.svg" alt="よろずや" /></a>
-        <nav aria-label="ページ内">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-controls="site-nav"
+          aria-expanded="false"
+          aria-label="メニュー"
+        >
+          <span class="nav-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" aria-label="ページ内">
           <a href="#about">よろずやとは</a>
           <a href="#skill-sheet">スキルシート</a>
           <a href="storybook/">Storybook</a>
@@ -36,6 +45,38 @@
         </nav>
       </div>
     </header>
+    <script>
+      // スマートフォンの幅では、ヘッダーのリンクをメニューにまとめる（リンクが 2 段になり押しにくかったため）。
+      // スクリプトが動かないときは、メニューにまとめずにリンクを並べたままにする。
+      (() => {
+        const header = document.querySelector(".nav");
+        const toggle = header.querySelector(".nav-toggle");
+        const setOpen = (open) => {
+          header.toggleAttribute("data-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+        };
+        header.setAttribute("data-menu", "");
+        toggle.addEventListener("click", () => setOpen(!header.hasAttribute("data-open")));
+        // リンクを選んだとき・Esc・メニューの外を押したとき・画面が広くなったときに閉じる。
+        header.querySelector("nav").addEventListener("click", (event) => {
+          if (event.target.closest("a")) {
+            setOpen(false);
+          }
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && header.hasAttribute("data-open")) {
+            setOpen(false);
+            toggle.focus();
+          }
+        });
+        document.addEventListener("click", (event) => {
+          if (!header.contains(event.target)) {
+            setOpen(false);
+          }
+        });
+        matchMedia("(max-width: 760px)").addEventListener("change", () => setOpen(false));
+      })();
+    </script>
 
     <main>
       <section class="hero">
