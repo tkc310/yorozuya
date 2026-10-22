@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{a as t,i as n,n as r,o as i,r as a,t as o}from"./repository-bBMScLXe.js";var s;function c(){return(c=e((()=>{i(),n(),r(),s=t({method:`GET`,strict:!1}).handler(()=>new o(a()).read())})))()}c();export{s as getSheetFn};

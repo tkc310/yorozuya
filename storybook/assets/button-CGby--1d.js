@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{r as t,t as n}from"./runtime-BtIAmEmd.js";var r,i;function a(){return(a=e((()=>{t(),r={name:`button`,defaultVariants:{size:`md`,variant:`solid`},variantMap:{size:[`lg`,`md`,`sm`,`xs`],variant:[`outline`,`solid`,`text`]}},i=n(r)})))()}export{a as n,i as t};

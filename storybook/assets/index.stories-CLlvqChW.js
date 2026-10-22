@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{n as t,t as n}from"./Input-DyItKZJJ.js";var r,i,a;function o(){return(o=e((()=>{t(),r={title:`共通部品/入力`,component:n,parameters:{docs:{description:{component:`1行の文字入力。氏名や技術名に使う。`}}}},i={name:`空欄`,args:{"aria-label":`氏名`}},a=[`Example`]})))()}o();export{i as Example,a as __namedExportsOrder,r as default};

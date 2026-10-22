@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{n as t,t as n}from"./Textarea-s1IGVarN.js";var r,i,a;function o(){return(o=e((()=>{t(),r={title:`共通部品/複数行入力`,component:n,parameters:{docs:{description:{component:`自己紹介や案件の文章に使う複数行の入力。`}}}},i={name:`空欄`,args:{"aria-label":`自己紹介`}},a=[`Example`]})))()}o();export{i as Example,a as __namedExportsOrder,r as default};

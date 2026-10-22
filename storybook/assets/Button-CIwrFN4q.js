@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{r as t,t as n}from"./jsx-CPlYfzUm.js";import{n as r,t as i}from"./button-CGby--1d.js";var a;function o(){return(o=e((()=>{n(),r(),a=t(`button`,i)})))()}export{o as n,a as t};
