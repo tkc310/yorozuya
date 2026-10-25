@@ -84,7 +84,8 @@ function scan(file) {
     (spec) => spec === "drizzle-orm" || spec.startsWith("drizzle-orm/"),
   );
   const writesInPlace =
-    filePath === "src/server/features/repository.ts" || filePath === "src/server/db/seed.ts";
+    /^src\/server\/features\/[^/]+\/repository\.ts$/.test(filePath) ||
+    filePath === "src/server/db/seed.ts";
 
   if (
     writes &&
@@ -93,7 +94,10 @@ function scan(file) {
       filePath.startsWith("src/server/features/") ||
       (usesDrizzle && !filePath.startsWith("src/server/lib/")))
   ) {
-    fail(filePath, "insert、update、delete は repository.ts と seed.ts でのみ使用できます");
+    fail(
+      filePath,
+      "insert、update、delete は各 feature の repository.ts と seed.ts でのみ使用できます",
+    );
   }
 }
 

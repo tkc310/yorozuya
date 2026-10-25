@@ -12,7 +12,7 @@
 - データベースはローカルファイル `data/yorozuya.db` だけ。ホストされたデータベースは置かず、`TURSO_DATABASE_URL` は読まない
 - `bun:sqlite` を import できるのは `src/server/lib/db.ts` だけ。`@libsql/client`・`drizzle-orm/libsql`・`better-sqlite3`・`node:sqlite` は使わない
 - 公開サーバと HTTP の API は置かない。データベースが要る処理は TanStack Start のサーバ関数にし、画面はそれを直接 import する（`src/server/db` の import と `fetch` はしない）
-- 書き込み（`insert`・`update`・`delete`）は `src/server/db/seed.ts` と `src/server/features/repository.ts` だけ
+- 書き込み（`insert`・`update`・`delete`）は `src/server/db/seed.ts` と 各 feature の `src/server/features/<feature>/repository.ts` だけ
 - `data/yorozuya.db`、見本 PDF の本文、個人の経歴の本文、秘密情報はリポジトリに置かない
 
 詳細な規則は [`rules/security.md`](../../rules/security.md)。

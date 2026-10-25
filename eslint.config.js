@@ -245,10 +245,10 @@ export default [
     },
   },
 
-  // src/server/features で Drizzle を import できない（repository.ts は除く）
+  // src/server/features で Drizzle を import できない（各 feature の repository.ts は除く）
   {
     files: ["src/server/features/**/*.{ts,tsx}"],
-    ignores: ["src/server/features/repository.ts"],
+    ignores: ["src/server/features/*/repository.ts"],
     languageOptions: {
       parser: tsParser,
     },

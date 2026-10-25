@@ -3,7 +3,7 @@ import { err } from "neverthrow";
 import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
-import { SkillSheetRepository } from "../../repository";
+import { SkillSheetRepository } from "../repository";
 
 const UpdateSkillFeaturedSchema = v.object({
   skillName: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名を入力してください")),
