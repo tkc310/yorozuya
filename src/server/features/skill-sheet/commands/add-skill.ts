@@ -4,7 +4,7 @@ import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../repository";
-import { ExperienceSchema } from "../experience";
+import { ExperienceSchema } from "../experience-schema";
 
 const AddSkillSchema = v.object({
   groupName: v.pipe(v.string(), v.trim(), v.minLength(1, "グループ名を入力してください")),

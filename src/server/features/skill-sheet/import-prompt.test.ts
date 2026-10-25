@@ -7,8 +7,8 @@ import {
   VISIBILITY_GUIDE,
   createImportExample,
 } from "@/shared/features/skill-sheet/import-prompt";
-import { CareerSchema } from "./career";
-import { ProfileSchema } from "./profile";
+import { CareerSchema } from "./career-schema";
+import { ProfileSchema } from "./profile-schema";
 import { ImportJsonSchema, SkillSchema } from "./import-json-schema";
 
 function sorted(values: string[]): string[] {
