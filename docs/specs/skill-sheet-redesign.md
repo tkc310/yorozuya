@@ -6,7 +6,7 @@
 - `src/components/features/SkillSheet/Preview/**`（用紙のレイアウト・改ページ）
 - `src/components/features/SkillSheet/Form/**`（入力項目）
 - `shared/features/skill-sheet/sheet.ts`（型・`present()`）
-- `src/db/schema.ts` / `src/db/migrations` / `src/server/features/skill-sheet/**`（項目追加に伴う保存・読み込み）
+- `src/server/db/schema.ts` / `src/server/db/migrations` / `src/server/features/skill-sheet/**`（項目追加に伴う保存・読み込み）
 - `src/styles/global.css`（`@page`）
 
 参考資料: 検討時に作った現状の再現 PDF と試作（`current.pdf` / `proposed.pdf` / `proposed.html`）はリポジトリに置いていない。本文中の寸法・色の値が試作と同じ。
@@ -276,10 +276,10 @@
 
 ### 5-3. 保存・読み込みの対応
 
-- `src/db/schema.ts` にカラム / テーブル（`profile_highlights`、`profile_qualifications` など）を追加し、`drizzle-kit` でマイグレーションを生成する。
+- `src/server/db/schema.ts` にカラム / テーブル（`profile_highlights`、`profile_qualifications` など）を追加し、`drizzle-kit` でマイグレーションを生成する。
 - `ProfileVisibility` / `PROFILE_ITEMS` / `ALL_VISIBLE` に `availableFrom`・`workStyle`・`desiredRate`・`highlights` を追加する（`desiredRate` は初期 `false`）。
 - JSON の書き出し・読み込み: `SHEET_FILE_VERSION` を 2 に上げ、`sheet-file.ts` で **v1 も受け付けて v2 に変換する**（`strongSkills` / `strongWork` → `highlights`、新項目は空・初期値）。`fixtures/dummy-skill-sheet.json` も v2 に更新する。
-- `src/db/seed.ts` の見本データにも新項目を入れる（`proposed.html` の値を流用してよい）。
+- `src/server/db/seed.ts` の見本データにも新項目を入れる（`proposed.html` の値を流用してよい）。
 - 見本データ（`fixtures/dummy-skill-sheet.json` と `seed.ts`）の人物を次に変える: 氏名 `新究羅 理定`、フリガナ `シンギュラ リティ`、性別 `男性`、`visibility.gender` を `true`。
 
 ---

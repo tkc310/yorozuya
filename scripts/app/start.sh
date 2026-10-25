@@ -14,9 +14,9 @@ if curl -fsS -o /dev/null "$url" 2>/dev/null; then
 fi
 
 # DB は作業ディレクトリの data/yorozuya.db に置く。マイグレーションは毎回入れ替える。
-mkdir -p "$support/src/db"
-rm -rf "$support/src/db/migrations"
-cp -R "$contents/Resources/migrations" "$support/src/db/migrations"
+mkdir -p "$support/src/server/db"
+rm -rf "$support/src/server/db/migrations"
+cp -R "$contents/Resources/migrations" "$support/src/server/db/migrations"
 cd "$support"
 
 YOROZUYA_CLIENT_DIR="$contents/Resources/client" PORT="$port" \

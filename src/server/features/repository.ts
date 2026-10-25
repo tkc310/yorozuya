@@ -32,7 +32,7 @@ import {
   profiles,
   skillGroups,
   skills,
-} from "@/src/db/schema";
+} from "@/src/server/db/schema";
 import type { YorozuyaDatabase } from "@/src/server/lib/db";
 import { ServerFunctionError } from "@/src/error";
 

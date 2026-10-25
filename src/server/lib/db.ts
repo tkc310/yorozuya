@@ -3,11 +3,11 @@ import { dirname } from "node:path";
 import { Database } from "bun:sqlite";
 import { drizzle, type BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { migrate } from "drizzle-orm/bun-sqlite/migrator";
-import { seed } from "../../db/seed";
-import * as schema from "../../db/schema";
+import { seed } from "../db/seed";
+import * as schema from "../db/schema";
 
 const file = "data/yorozuya.db";
-const migrationsFolder = "src/db/migrations";
+const migrationsFolder = "src/server/db/migrations";
 
 export type YorozuyaDatabase = BunSQLiteDatabase<typeof schema>;
 

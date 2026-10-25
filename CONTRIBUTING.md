@@ -120,14 +120,14 @@ scope には `skill-sheet` や `app` など、変更した領域を書きます�
 
 ### データベースのスキーマを変える
 
-1. `src/db/schema.ts` を変える
+1. `src/server/db/schema.ts` を変える
 2. マイグレーションを生成する
 
    ```bash
    make db-generate
    ```
 
-3. 生成された `src/db/migrations/` のファイルをコミットする
+3. 生成された `src/server/db/migrations/` のファイルをコミットする
 
 マイグレーションは開発サーバとアプリの起動時に自動で適用されます。表を作る SQL を手で書かないでください。
 

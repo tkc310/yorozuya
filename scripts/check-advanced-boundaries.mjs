@@ -84,7 +84,7 @@ function scan(file) {
     (spec) => spec === "drizzle-orm" || spec.startsWith("drizzle-orm/"),
   );
   const writesInPlace =
-    filePath === "src/server/features/repository.ts" || filePath === "src/db/seed.ts";
+    filePath === "src/server/features/repository.ts" || filePath === "src/server/db/seed.ts";
 
   if (
     writes &&
