@@ -17,7 +17,7 @@ export const SkillSchema = v.object({
 });
 
 // 書き出した JSON の形。読み込むときにこれで確かめ、古い版は今の形に直す。
-export const SheetFileSchema = v.pipe(
+export const ImportJsonSchema = v.pipe(
   v.object({
     kind: v.literal(SHEET_FILE_KIND, "スキルシートの JSON ではありません"),
     version: v.picklist(SHEET_FILE_VERSIONS, "対応していない版の JSON です"),
@@ -47,4 +47,4 @@ export const SheetFileSchema = v.pipe(
   })),
 );
 
-export type SheetFileOutput = v.InferOutput<typeof SheetFileSchema>;
+export type ImportJsonOutput = v.InferOutput<typeof ImportJsonSchema>;

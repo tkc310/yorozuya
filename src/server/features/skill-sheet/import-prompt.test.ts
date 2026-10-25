@@ -9,7 +9,7 @@ import {
 } from "@/shared/features/skill-sheet/import-prompt";
 import { CareerSchema } from "./career";
 import { ProfileSchema } from "./profile";
-import { SheetFileSchema, SkillSchema } from "./sheet-file";
+import { ImportJsonSchema, SkillSchema } from "./import-json-schema";
 
 function sorted(values: string[]): string[] {
   return [...values].sort();
@@ -19,7 +19,7 @@ function sorted(values: string[]): string[] {
 // 検査に項目を足して説明を書き忘れると、ここで失敗する。
 describe("インポート用のプロンプトと読み込みの検査", () => {
   it("見本の JSON は読み込める", () => {
-    const parsed = v.safeParse(SheetFileSchema, createImportExample());
+    const parsed = v.safeParse(ImportJsonSchema, createImportExample());
     expect(parsed.success).toBe(true);
   });
 

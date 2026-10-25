@@ -79,9 +79,9 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     return callServerFunction(removeCareerFn({ data: { careerId } }));
   }, true);
   const importSheet = useCommand(async (file: unknown) => {
-    const { importSheetFn } =
-      await import("@/src/server/features/skill-sheet/commands/import-sheet");
-    return callServerFunction(importSheetFn({ data: { file } }));
+    const { importJsonSheetFn } =
+      await import("@/src/server/features/skill-sheet/commands/import-json-sheet");
+    return callServerFunction(importJsonSheetFn({ data: { file } }));
   }, true);
 
   const all = [

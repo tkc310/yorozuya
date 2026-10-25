@@ -7,7 +7,7 @@ import {
   createFixtureSheet,
   toSheetFile,
 } from "@/shared/features/skill-sheet/sheet";
-import { SheetFileSchema } from "./sheet-file";
+import { ImportJsonSchema } from "./import-json-schema";
 
 function sample(): unknown {
   return JSON.parse(
@@ -19,7 +19,7 @@ function sample(): unknown {
 describe("書き出した JSON", () => {
   it("今の版で書き出したシートを読み込める", () => {
     const sheet = createFixtureSheet();
-    const parsed = v.safeParse(SheetFileSchema, toSheetFile(sheet, new Date(0)));
+    const parsed = v.safeParse(ImportJsonSchema, toSheetFile(sheet, new Date(0)));
     expect(parsed.success).toBe(true);
     if (parsed.success) {
       expect(parsed.output.version).toBe(SHEET_FILE_VERSION);
@@ -29,7 +29,7 @@ describe("書き出した JSON", () => {
   });
 
   it("見本の JSON は今の版で、読み込める", () => {
-    const parsed = v.safeParse(SheetFileSchema, sample());
+    const parsed = v.safeParse(ImportJsonSchema, sample());
     expect(parsed.success).toBe(true);
     if (parsed.success) {
       expect(parsed.output.version).toBe(SHEET_FILE_VERSION);
@@ -58,7 +58,7 @@ describe("書き出した JSON", () => {
       highlights: _showHighlights,
       ...oldVisibility
     } = visibility;
-    const parsed = v.safeParse(SheetFileSchema, {
+    const parsed = v.safeParse(ImportJsonSchema, {
       kind: "yorozuya-skill-sheet",
       version: 1,
       exportedAt: "2026-01-01T00:00:00.000Z",
@@ -84,7 +84,7 @@ describe("書き出した JSON", () => {
   });
 
   it("対応していない版は読み込まない", () => {
-    const parsed = v.safeParse(SheetFileSchema, {
+    const parsed = v.safeParse(ImportJsonSchema, {
       ...toSheetFile(createFixtureSheet(), new Date(0)),
       version: 99,
     });
@@ -96,6 +96,6 @@ describe("書き出した JSON", () => {
       { ...createFixtureSheet(), highlights: ["a", "b", "c", "d"] },
       new Date(0),
     );
-    expect(v.safeParse(SheetFileSchema, file).success).toBe(false);
+    expect(v.safeParse(ImportJsonSchema, file).success).toBe(false);
   });
 });
