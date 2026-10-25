@@ -34,7 +34,9 @@ await cp(join(root, "scripts/app/start.sh"), join(resources, "start.sh"));
 await $`chmod +x ${join(resources, "start.sh")}`;
 
 await cp(join(root, "dist/client"), join(resources, "client"), { recursive: true });
-await cp(join(root, "src/db/migrations"), join(resources, "migrations"), { recursive: true });
+await cp(join(root, "src/server/db/migrations"), join(resources, "migrations"), {
+  recursive: true,
+});
 
 // icon_apple.png（1024px）から .icns を作る。原画の大きさが違えば、粗いアイコンにならないよう止める。
 const iconInfo = await $`sips -g pixelWidth -g pixelHeight ${icon}`.text();

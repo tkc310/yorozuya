@@ -44,21 +44,21 @@ export default [
       "import-x/resolver-next": [createTypeScriptImportResolver()],
     },
     rules: {
-      // 画面は src/db を直接 import しない
+      // 画面は src/server/db を直接 import しない
       "import-x/no-restricted-paths": [
         "error",
         {
           basePath: ".",
           zones: [
-            // 画面から src/db への import を禁止
+            // 画面から src/server/db への import を禁止
             {
               target: "./src/components",
-              from: "./src/db",
+              from: "./src/server/db",
               message: "画面は表を直接 import できません",
             },
             {
               target: "./src/routes",
-              from: "./src/db",
+              from: "./src/server/db",
               message: "画面は表を直接 import できません",
             },
             // src/components/ui から features, lib, server への import を禁止

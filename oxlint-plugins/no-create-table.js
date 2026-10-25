@@ -9,7 +9,7 @@ function filePath(context) {
 }
 
 function inMigrations(context) {
-  return filePath(context).includes("src/db/migrations/");
+  return filePath(context).includes("src/server/db/migrations/");
 }
 
 function literalHasPhrase(node) {
@@ -27,11 +27,11 @@ const rule = {
   meta: {
     type: "problem",
     docs: {
-      description: "表を作る SQL は src/db/migrations に置く",
+      description: "表を作る SQL は src/server/db/migrations に置く",
     },
     schema: [],
     messages: {
-      forbidden: "表を作る SQL は src/db/migrations に置いてください。",
+      forbidden: "表を作る SQL は src/server/db/migrations に置いてください。",
     },
   },
   create(context) {

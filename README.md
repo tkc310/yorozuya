@@ -140,8 +140,8 @@ make build-app
 │   │   └── features/     # 1 ページ分の機能（Home、SkillSheet）
 │   ├── server/
 │   │   ├── features/     # サーバ関数（queries と commands）とリポジトリ
+│   │   ├── db/           # スキーマ、マイグレーション、見本データ
 │   │   └── lib/db.ts     # データベースを開く唯一の場所
-│   ├── db/               # スキーマ、マイグレーション、見本データ
 │   └── styles/           # デザイントークン
 ├── tests/                # e2e テスト
 └── scripts/app/          # macOS アプリのビルドと起動
@@ -154,7 +154,7 @@ make build-app
 次のルールは `make lint-boundary` で機械的に検査します。詳しくは [`rules/security.md`](./rules/security.md) を参照してください。
 
 - データベースはローカルファイルだけです。ホストされたデータベースや公開 HTTP API は置きません。
-- 画面はサーバ関数を直接 import します。`src/db` の import と `fetch` の呼び出しはしません。
+- 画面はサーバ関数を直接 import します。`src/server/db` の import と `fetch` の呼び出しはしません。
 - 書き込み（`insert` / `update` / `delete`）は、リポジトリと見本データの投入にしか書けません。
 - 機能（`src/components/features/*`）同士は import しません。
 - 想定内の失敗は例外にせず、neverthrow の `Result` で返します。
