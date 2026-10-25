@@ -3,7 +3,7 @@ import { err } from "neverthrow";
 import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
-import { SkillSheetRepository } from "../../repository";
+import { SkillSheetRepository } from "../repository";
 import { ProfileSchema } from "../profile";
 
 export const updateProfileFn = createServerFn({ method: "POST", strict: false })
