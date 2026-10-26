@@ -41,7 +41,7 @@ export default defineConfig({
         test: {
           name: "model",
           environment: "node",
-          include: ["shared/**/*.test.ts", "scripts/**/*.test.ts"],
+          include: ["src/shared/**/*.test.ts", "scripts/**/*.test.ts"],
         },
       },
       {
@@ -50,6 +50,7 @@ export default defineConfig({
           name: "screen",
           environment: "happy-dom",
           include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+          exclude: ["src/shared/**"],
           server: {
             deps: {
               external: ["bun:sqlite"],

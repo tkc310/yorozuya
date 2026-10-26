@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import type { Career, Duration, SheetInput } from "@/shared/features/skill-sheet/sheet";
+import type { Career, Duration, SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
 import { QUERY_KEY, callServerFunction } from "@/src/lib/request";
 
 type CareerWrite = Omit<Career, "id">;

@@ -6,7 +6,7 @@ import {
   SKILL_FIELD_GUIDE,
   VISIBILITY_GUIDE,
   createImportExample,
-} from "@/shared/features/skill-sheet/import-prompt";
+} from "@/src/components/features/SkillSheet/Form/SheetActions/ImportPromptDialog/import-prompt.schema";
 import { CareerSchema } from "./career.schema";
 import { ProfileSchema } from "./profile.schema";
 import { ImportJsonSchema, SkillSchema } from "./import-json.schema";

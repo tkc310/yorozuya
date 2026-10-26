@@ -2,11 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as v from "valibot";
 import { describe, expect, it } from "vitest";
-import {
-  SHEET_FILE_VERSION,
-  createFixtureSheet,
-  toSheetFile,
-} from "@/shared/features/skill-sheet/sheet";
+import { SHEET_FILE_VERSION } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { createFixtureSheet, toSheetFile } from "@/src/shared/features/skill-sheet/skill.service";
 import { ImportJsonSchema } from "./import-json.schema";
 
 function sample(): unknown {

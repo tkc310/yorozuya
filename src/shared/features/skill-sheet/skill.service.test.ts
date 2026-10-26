@@ -4,6 +4,15 @@ import {
   ALL_VISIBLE,
   EMPTY_PROFILE_TEXTS,
   PHASES,
+  MAX_FEATURED_SKILLS,
+  PHASE_SHORT,
+  type Career,
+  type SheetInput,
+  type SheetResult,
+  type SheetView,
+  type YearMonth,
+} from "./sheet.schema";
+import {
   addCareer,
   addSkill,
   createFixtureSheet,
@@ -13,8 +22,6 @@ import {
   formatSkillYears,
   formatSlashDate,
   legacyHighlights,
-  MAX_FEATURED_SKILLS,
-  PHASE_SHORT,
   normalizePhase,
   setSkillFeatured,
   sheetWarnings,
@@ -23,12 +30,7 @@ import {
   removeSkill,
   skillInCareers,
   updateSkillExperience,
-  type Career,
-  type SheetInput,
-  type SheetResult,
-  type SheetView,
-  type YearMonth,
-} from "./sheet.ts";
+} from "./skill.service";
 
 const calculatedOn: YearMonth = { year: 2026, month: 10 };
 
@@ -387,7 +389,9 @@ describe("スキルシート", () => {
   });
 
   it("シートの実装は禁止されたモジュールを import しない", () => {
-    const source = readFileSync(new URL("./sheet.ts", import.meta.url), "utf8");
+    const source = ["./sheet.schema.ts", "./skill.service.ts"]
+      .map((file) => readFileSync(new URL(file, import.meta.url), "utf8"))
+      .join("\n");
     const banned = [
       "react",
       "drizzle-orm",

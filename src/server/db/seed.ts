@@ -1,5 +1,8 @@
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
-import { createFixtureSheet, durationMonths } from "../../../shared/features/skill-sheet/sheet";
+import {
+  createFixtureSheet,
+  durationMonths,
+} from "../../shared/features/skill-sheet/skill.service";
 import * as schema from "./schema";
 
 type SeedDatabase = BaseSQLiteDatabase<"sync", void, typeof schema>;

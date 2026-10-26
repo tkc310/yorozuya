@@ -13,7 +13,7 @@ if (process.env.SHEET_DEMO_STRIP !== "1" && process.features.typescript !== true
 }
 
 const { createFixtureSheet, durationToken, present } =
-  await import("../shared/features/skill-sheet/sheet.ts");
+  await import("../src/shared/features/skill-sheet/skill.service.ts");
 
 const calculatedOn = { year: 2026, month: 10 };
 const arg = process.argv[2];

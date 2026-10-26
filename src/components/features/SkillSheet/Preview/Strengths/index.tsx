@@ -1,9 +1,6 @@
 import { css, cx } from "styled-system/css";
-import {
-  durationMonths,
-  formatSkillYears,
-  type SheetView,
-} from "@/shared/features/skill-sheet/sheet";
+import { type SheetView } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { durationMonths, formatSkillYears } from "@/src/shared/features/skill-sheet/skill.service";
 import { ACCENT, ACCENT_MID, part, plainList, sectionTitle } from "../styles";
 
 // 強み。左にハイライト、右に主要スキル。どちらかしか無ければ全幅にする。

@@ -2,11 +2,10 @@ import { css, cx } from "styled-system/css";
 import {
   PHASES,
   PHASE_SHORT,
-  detailSummaryOf,
-  formatDuration,
   type Career,
   type YearMonth,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { detailSummaryOf, formatDuration } from "@/src/shared/features/skill-sheet/skill.service";
 import { Badge } from "../Badge/index";
 import { endLabel, periodDuration, startLabel } from "../format";
 import { ACCENT, ACCENT_SOFT, EMPHASIS, PANEL, SUB, itemLabel, prose } from "../styles";

@@ -5,7 +5,7 @@ import {
   PHASES,
   type Career,
   type Phase,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
 import { Button } from "@/src/components/ui/Button/index";
 import { Checkbox } from "@/src/components/ui/Checkbox/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";

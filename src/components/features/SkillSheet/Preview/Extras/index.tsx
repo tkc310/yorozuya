@@ -1,5 +1,5 @@
 import { css, cx } from "styled-system/css";
-import type { SheetView } from "@/shared/features/skill-sheet/sheet";
+import type { SheetView } from "@/src/shared/features/skill-sheet/sheet.schema";
 import { SUB, part, plainList, sectionTitle } from "../styles";
 
 // 資格・語学とリンク。片方しか無ければ全幅にする。

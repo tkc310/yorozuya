@@ -1,5 +1,5 @@
 import { css } from "styled-system/css";
-import type { SheetView } from "@/shared/features/skill-sheet/sheet";
+import type { SheetView } from "@/src/shared/features/skill-sheet/sheet.schema";
 import { SUB, part, sectionTitle } from "../styles";
 
 // 基本情報は、契約できるかと経歴の前提を、担当者が確認する順に並べる。

@@ -8,12 +8,11 @@ import {
 } from "react";
 import { css, cx } from "styled-system/css";
 import {
-  formatSlashDate,
-  present,
   type CalculatedOn,
   type SheetInput,
   type SheetView,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { formatSlashDate, present } from "@/src/shared/features/skill-sheet/skill.service";
 import { Button } from "@/src/components/ui/Button/index";
 import { BasicInfo } from "./BasicInfo/index";
 import { CareerListHead, CareerRow, CareerTableHead, EmptyCareerRow } from "./CareerList/index";

@@ -131,8 +131,8 @@ make build-app
 
 ```
 .
-├── shared/features/      # 画面とサーバで共有する純粋な計算（React や DB に依存しない）
 ├── src/
+│   ├── shared/features/  # 画面とサーバで共有する型（*.schema.ts）と純粋な計算（*.service.ts）。React や DB に依存しない
 │   ├── routes/           # TanStack Router のファイルベースルーティング
 │   ├── components/
 │   │   ├── ui/           # どの画面でも使う共通部品

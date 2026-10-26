@@ -18,7 +18,7 @@ import {
   type SheetInput,
   type Skill,
   type SkillGroup,
-} from "./sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
 
 // 手元にある元のスキルシート（Excel・PDF・Web ページなど）から、このアプリに読み込める JSON を
 // 生成 AI に作ってもらうためのプロンプト。

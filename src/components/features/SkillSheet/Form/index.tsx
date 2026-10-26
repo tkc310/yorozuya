@@ -7,15 +7,17 @@ import {
   MAX_HIGHLIGHTS,
   SELF_PR_GUIDE_LENGTH,
   WORK_STYLES,
-  cleanHighlights,
-  isGender,
-  sheetWarnings,
   type CalendarDate,
   type Career,
   type Duration,
   type ProfileItem,
   type SheetInput,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import {
+  cleanHighlights,
+  isGender,
+  sheetWarnings,
+} from "@/src/shared/features/skill-sheet/skill.service";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";
 import { Select } from "@/src/components/ui/Select/index";

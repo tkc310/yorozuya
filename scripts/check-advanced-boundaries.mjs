@@ -94,6 +94,19 @@ function scan(file) {
     );
   }
 
+  // src/shared/features は .schema.ts（形）と .service.ts（計算）に分ける（rules/coding.md）
+  if (filePath.startsWith("src/shared/features/")) {
+    if (!/\.(schema|service)(\.test)?\.ts$/.test(filePath)) {
+      fail(
+        filePath,
+        "src/shared/features のファイルは .schema.ts か .service.ts と名付けてください（rules/coding.md）",
+      );
+    }
+    if (/\.schema\.ts$/.test(filePath) && /^export\s+(async\s+)?function\b/m.test(source)) {
+      fail(filePath, "関数は .schema.ts ではなく .service.ts に置いてください（rules/coding.md）");
+    }
+  }
+
   // insert, update, delete の呼び出しチェック
   const writes = /\.(insert|update|delete)\s*\(/.test(source);
   const usesDrizzle = specs.some(

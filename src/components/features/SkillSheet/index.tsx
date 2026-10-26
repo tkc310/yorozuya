@@ -1,12 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDeferredValue, useState, type ReactNode } from "react";
 import { css } from "styled-system/css";
-import {
-  formatDuration,
-  present,
-  type SheetInput,
-  type CalendarDate,
-} from "@/shared/features/skill-sheet/sheet";
+import { type SheetInput, type CalendarDate } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { formatDuration, present } from "@/src/shared/features/skill-sheet/skill.service";
 import { QUERY_KEY, callServerFunction } from "@/src/lib/request";
 import { Form } from "./Form/index";
 import { SheetLayout } from "./Layout/index";

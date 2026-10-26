@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
-import {
-  createFixtureSheet,
-  type Career,
-  type SheetInput,
-} from "@/shared/features/skill-sheet/sheet";
+import { type Career, type SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { createFixtureSheet } from "@/src/shared/features/skill-sheet/skill.service";
 import { Form } from "./index";
 
 const meta = {

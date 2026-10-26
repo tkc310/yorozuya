@@ -1,5 +1,10 @@
 import { useCallback, useState } from "react";
 import {
+  type CalendarDate,
+  type Career,
+  type SheetInput,
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import {
   addCareer,
   addSkill,
   formatDuration,
@@ -9,10 +14,7 @@ import {
   setSkillFeatured,
   updateCareer,
   updateSkillExperience,
-  type CalendarDate,
-  type Career,
-  type SheetInput,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/skill.service";
 import sampleText from "@/fixtures/dummy-skill-sheet.json?raw";
 import { Form } from "../Form/index";
 import { SheetLayout } from "../Layout/index";

@@ -2,9 +2,8 @@ import * as v from "valibot";
 import {
   SHEET_FILE_KIND,
   SHEET_FILE_VERSIONS,
-  cleanHighlights,
-  legacyHighlights,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { cleanHighlights, legacyHighlights } from "@/src/shared/features/skill-sheet/skill.service";
 import { CareerSchema } from "./career.schema";
 import { ExperienceSchema } from "./experience.schema";
 import { ProfileSchema } from "./profile.schema";
