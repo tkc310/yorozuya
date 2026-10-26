@@ -42,7 +42,7 @@
 
 ## 守ること
 
-- `rules/security.md` に従う。検査を通すために規則を緩めない（緩めるなら ADR に理由を書き、人の承認を得る）
+- `rules/security.md` と `rules/coding.md` に従う。検査を通すために規則を緩めない（緩めるなら ADR に理由を書き、人の承認を得る）
 - コミットメッセージは Conventional Commits（`type(scope): 説明`）で書く。type と書き方は `CONTRIBUTING.md` の「コミットメッセージ」と `.claude/skills/conventional-commits/SKILL.md`。`commit-msg` フックと CI（`make lint-commits`）が検査する
 - 1 PR 1 改善。直したら再発防止（検査・テスト・ルール・スキル）を足す
 - 変更したら `make check` を通し、`docs/improvement/log.md` の表の先頭に 1 行記録する

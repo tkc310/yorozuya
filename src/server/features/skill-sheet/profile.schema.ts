@@ -1,5 +1,9 @@
 import * as v from "valibot";
-import { GENDERS, MAX_HIGHLIGHTS, NAME_DISPLAYS } from "@/shared/features/skill-sheet/sheet";
+import {
+  GENDERS,
+  MAX_HIGHLIGHTS,
+  NAME_DISPLAYS,
+} from "@/src/shared/features/skill-sheet/sheet.schema";
 
 const DateSchema = v.pipe(
   v.object({

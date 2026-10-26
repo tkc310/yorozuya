@@ -4,7 +4,7 @@ import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../repository";
-import { CareerInputSchema } from "../career";
+import { CareerInputSchema } from "../career.schema";
 
 const UpdateCareerSchema = v.object({
   careerId: v.pipe(v.string(), v.minLength(1, "経歴がありません")),

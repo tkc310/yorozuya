@@ -7,8 +7,13 @@ import {
   VISIBILITY_GUIDE,
   buildImportPrompt,
   createImportExample,
-} from "./import-prompt";
-import { PHASES, PROFILE_ITEMS, SHEET_FILE_VERSION, createFixtureSheet } from "./sheet";
+} from "./import-prompt.schema";
+import {
+  PHASES,
+  PROFILE_ITEMS,
+  SHEET_FILE_VERSION,
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { createFixtureSheet } from "@/src/shared/features/skill-sheet/skill.service";
 
 function sorted(values: string[]): string[] {
   return [...values].sort();

@@ -2,12 +2,11 @@ import * as v from "valibot";
 import {
   SHEET_FILE_KIND,
   SHEET_FILE_VERSIONS,
-  cleanHighlights,
-  legacyHighlights,
-} from "@/shared/features/skill-sheet/sheet";
-import { CareerSchema } from "./career";
-import { ExperienceSchema } from "./experience";
-import { ProfileSchema } from "./profile";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { cleanHighlights, legacyHighlights } from "@/src/shared/features/skill-sheet/skill.service";
+import { CareerSchema } from "./career.schema";
+import { ExperienceSchema } from "./experience.schema";
+import { ProfileSchema } from "./profile.schema";
 
 export const SkillSchema = v.object({
   name: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名が空です")),
@@ -17,7 +16,7 @@ export const SkillSchema = v.object({
 });
 
 // 書き出した JSON の形。読み込むときにこれで確かめ、古い版は今の形に直す。
-export const SheetFileSchema = v.pipe(
+export const ImportJsonSchema = v.pipe(
   v.object({
     kind: v.literal(SHEET_FILE_KIND, "スキルシートの JSON ではありません"),
     version: v.picklist(SHEET_FILE_VERSIONS, "対応していない版の JSON です"),
@@ -47,4 +46,4 @@ export const SheetFileSchema = v.pipe(
   })),
 );
 
-export type SheetFileOutput = v.InferOutput<typeof SheetFileSchema>;
+export type ImportJsonOutput = v.InferOutput<typeof ImportJsonSchema>;

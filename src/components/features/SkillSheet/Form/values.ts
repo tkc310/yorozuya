@@ -1,4 +1,4 @@
-import type { CalendarDate, Duration } from "@/shared/features/skill-sheet/sheet";
+import type { CalendarDate, Duration } from "@/src/shared/features/skill-sheet/sheet.schema";
 
 // 入力欄の文字列と、シートの値を行き来する。どれも純粋な関数にしてテストする。
 

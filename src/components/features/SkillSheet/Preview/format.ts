@@ -1,9 +1,9 @@
 import {
-  formatYearMonth,
   type Duration,
   type Period,
   type YearMonth,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { formatYearMonth } from "@/src/shared/features/skill-sheet/skill.service";
 
 // 一覧と詳細で共通に使う、期間の書き方。
 

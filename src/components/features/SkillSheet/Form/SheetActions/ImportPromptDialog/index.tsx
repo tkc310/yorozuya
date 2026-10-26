@@ -6,7 +6,7 @@ import {
   REFERENCE_PLACEHOLDERS,
   buildImportPrompt,
   type ReferenceKind,
-} from "@/shared/features/skill-sheet/import-prompt";
+} from "@/src/components/features/SkillSheet/Form/SheetActions/ImportPromptDialog/import-prompt.schema";
 import { Button } from "@/src/components/ui/Button/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";
 import { Field } from "@/src/components/ui/Field/index";

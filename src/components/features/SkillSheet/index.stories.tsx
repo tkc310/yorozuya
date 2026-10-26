@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { expect, within } from "storybook/test";
-import { createFixtureSheet } from "@/shared/features/skill-sheet/sheet";
+import { createFixtureSheet } from "@/src/shared/features/skill-sheet/skill.service";
 import { QUERY_KEY } from "@/src/lib/request";
 import { SkillSheet } from "./index";
 

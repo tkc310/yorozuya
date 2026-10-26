@@ -2,15 +2,17 @@ import { useId, useMemo, useRef, useState } from "react";
 import { css } from "styled-system/css";
 import {
   MAX_FEATURED_SKILLS,
-  featuredCount,
-  formatDuration,
-  present,
-  skillInCareers,
   type CalendarDate,
   type Duration,
   type SheetInput,
   type Skill,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import {
+  featuredCount,
+  formatDuration,
+  present,
+  skillInCareers,
+} from "@/src/shared/features/skill-sheet/skill.service";
 import { Button } from "@/src/components/ui/Button/index";
 import { Checkbox } from "@/src/components/ui/Checkbox/index";
 import { Field } from "@/src/components/ui/Field/index";

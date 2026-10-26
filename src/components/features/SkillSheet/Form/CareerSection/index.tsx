@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { css } from "styled-system/css";
 import {
-  orderCareers,
   type CalendarDate,
   type Career,
   type SheetInput,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { orderCareers } from "@/src/shared/features/skill-sheet/skill.service";
 import { Button } from "@/src/components/ui/Button/index";
 import { Truncate } from "@/src/components/ui/Truncate/index";
 import { CareerDialog } from "../CareerDialog/index";

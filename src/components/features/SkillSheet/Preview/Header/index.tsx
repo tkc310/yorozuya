@@ -1,5 +1,6 @@
 import { css, cx } from "styled-system/css";
-import { formatSlashDate, type SheetView } from "@/shared/features/skill-sheet/sheet";
+import { type SheetView } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { formatSlashDate } from "@/src/shared/features/skill-sheet/skill.service";
 import { ACCENT, SUB, TEXT } from "../styles";
 
 // ヘッダーは「誰か・どのレベルか」をまとめる。氏名・フリガナ・年齢・性別・肩書・経験年数。

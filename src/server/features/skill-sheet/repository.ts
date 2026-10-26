@@ -3,10 +3,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
 import {
   PHASES,
-  durationMonths,
-  fromMonths,
   type Career,
-  isGender,
   MAX_FEATURED_SKILLS,
   NAME_DISPLAYS,
   type CalendarDate,
@@ -20,7 +17,12 @@ import {
   type SheetInput,
   type Skill,
   type YearMonth,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import {
+  durationMonths,
+  fromMonths,
+  isGender,
+} from "@/src/shared/features/skill-sheet/skill.service";
 import {
   careerEnvironments,
   careerPhases,

@@ -1,10 +1,6 @@
 import { css } from "styled-system/css";
-import {
-  byDuration,
-  formatSkillYears,
-  type SheetInput,
-  type SheetView,
-} from "@/shared/features/skill-sheet/sheet";
+import { type SheetInput, type SheetView } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { byDuration, formatSkillYears } from "@/src/shared/features/skill-sheet/skill.service";
 import { Badge, BadgeNote } from "../Badge/index";
 import { ACCENT_SOFT, part, plainList, prose, sectionNote, sectionTitle } from "../styles";
 

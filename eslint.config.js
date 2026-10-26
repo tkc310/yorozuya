@@ -77,14 +77,14 @@ export default [
               from: "./src/server",
               message: "ui は共通部品のため server を import できません",
             },
-            // shared/features から src への import を禁止
+            // src/shared/features から server と lib への import を禁止
             {
-              target: "./shared/features",
+              target: "./src/shared/features",
               from: "./src/server",
               message: "シートの計算は純粋である必要があります",
             },
             {
-              target: "./shared/features",
+              target: "./src/shared/features",
               from: "./src/lib",
               message: "シートの計算は純粋である必要があります",
             },
@@ -216,9 +216,9 @@ export default [
     },
   },
 
-  // shared/features で特定パッケージを import できない
+  // src/shared/features で特定パッケージを import できない
   {
-    files: ["shared/features/**/*.{ts,tsx}"],
+    files: ["src/shared/features/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,
     },

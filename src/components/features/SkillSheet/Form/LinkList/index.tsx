@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { css } from "styled-system/css";
-import type { ProfileLink } from "@/shared/features/skill-sheet/sheet";
+import type { ProfileLink } from "@/src/shared/features/skill-sheet/sheet.schema";
 import { Button } from "@/src/components/ui/Button/index";
 import { Field } from "@/src/components/ui/Field/index";
 import { Input } from "@/src/components/ui/Input/index";

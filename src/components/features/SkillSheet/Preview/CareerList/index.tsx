@@ -1,10 +1,10 @@
 import { css, cx } from "styled-system/css";
 import {
-  formatDuration,
   type Career,
   type SheetView,
   type YearMonth,
-} from "@/shared/features/skill-sheet/sheet";
+} from "@/src/shared/features/skill-sheet/sheet.schema";
+import { formatDuration } from "@/src/shared/features/skill-sheet/skill.service";
 import { Badge, BadgeNote } from "../Badge/index";
 import { endLabel, periodDuration, startLabel } from "../format";
 import { ACCENT, SUB, sectionNote, sectionTitle } from "../styles";

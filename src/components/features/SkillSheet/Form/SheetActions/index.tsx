@@ -1,7 +1,8 @@
 import { Result } from "neverthrow";
 import { useRef, useState } from "react";
 import { css } from "styled-system/css";
-import { displayNameOf, toSheetFile, type SheetInput } from "@/shared/features/skill-sheet/sheet";
+import { type SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { displayNameOf, toSheetFile } from "@/src/shared/features/skill-sheet/skill.service";
 import { Button } from "@/src/components/ui/Button/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";
 import { printTitle } from "../values";

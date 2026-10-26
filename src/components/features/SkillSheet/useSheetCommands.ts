@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import type { Career, Duration, SheetInput } from "@/shared/features/skill-sheet/sheet";
+import type { Career, Duration, SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
 import { QUERY_KEY, callServerFunction } from "@/src/lib/request";
 
 type CareerWrite = Omit<Career, "id">;
@@ -79,9 +79,9 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     return callServerFunction(removeCareerFn({ data: { careerId } }));
   }, true);
   const importSheet = useCommand(async (file: unknown) => {
-    const { importSheetFn } =
-      await import("@/src/server/features/skill-sheet/commands/import-sheet");
-    return callServerFunction(importSheetFn({ data: { file } }));
+    const { importJsonSheetFn } =
+      await import("@/src/server/features/skill-sheet/commands/import-json-sheet");
+    return callServerFunction(importJsonSheetFn({ data: { file } }));
   }, true);
 
   const all = [

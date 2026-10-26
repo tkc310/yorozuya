@@ -1,5 +1,6 @@
 import * as v from "valibot";
-import { PHASES, normalizePhase } from "@/shared/features/skill-sheet/sheet";
+import { PHASES } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { normalizePhase } from "@/src/shared/features/skill-sheet/skill.service";
 
 const YearMonthSchema = v.object({
   year: v.pipe(v.number(), v.integer(), v.minValue(1)),
