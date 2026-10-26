@@ -4,7 +4,7 @@ import * as v from "valibot";
 import { ServerFunctionError } from "@/src/error";
 import { getDb } from "@/src/server/lib/db";
 import { SkillSheetRepository } from "../repository";
-import { ImportJsonSchema } from "../import-json-schema";
+import { ImportJsonSchema } from "../import-json.schema";
 
 function issueMessage(issues: v.BaseIssue<unknown>[]): string {
   const issue = issues[0];

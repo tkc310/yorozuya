@@ -78,6 +78,22 @@ function scan(file) {
     fail(filePath, "表を作る SQL は書けません。マイグレーションを使用してください");
   }
 
+  // Valibot のスキーマを置くファイルは <名前>.schema.ts（rules/coding.md）
+  if (/-schema(\.test)?\.tsx?$/.test(filePath)) {
+    fail(filePath, "スキーマのファイルは <名前>.schema.ts と名付けてください（rules/coding.md）");
+  }
+  if (
+    filePath.startsWith("src/server/features/") &&
+    !/\/(commands|queries)\//.test(filePath) &&
+    !/\.schema(\.test)?\.ts$/.test(filePath) &&
+    /export\s+const\s+\w+Schema\s*=/.test(source)
+  ) {
+    fail(
+      filePath,
+      "スキーマを export するファイルは <名前>.schema.ts と名付けてください（rules/coding.md）",
+    );
+  }
+
   // insert, update, delete の呼び出しチェック
   const writes = /\.(insert|update|delete)\s*\(/.test(source);
   const usesDrizzle = specs.some(

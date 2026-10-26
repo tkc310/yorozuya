@@ -65,7 +65,7 @@
 | lint で見つけられる書き方の問題                | `vite.config.ts` の `lint` に規則を足すか、`oxlint-plugins/` にプラグインを足す          |
 | 項目の足し忘れ（説明・表示・入出力の対応漏れ） | 対応表を `Record<型, …>` にして型で網羅させる                                            |
 | 振る舞いの不具合                               | 対象の隣に `*.test.ts(x)`、画面ならストーリーの `play`、操作の流れなら `tests/*.spec.ts` |
-| JSON・データベースの互換                       | 古い版を読み込むテスト（例: `import-json-schema.test.ts` の版 1 の読み込み）             |
+| JSON・データベースの互換                       | 古い版を読み込むテスト（例: `import-json.schema.test.ts` の版 1 の読み込み）             |
 | 判断基準のあいまいさ                           | `rules/security.md`・`AGENTS.md`・`COMPONENT_STRUCTURE.md` に追記、または ADR            |
 | 手順の抜け・やり直し                           | `Makefile` のコマンドか `.claude/skills/` のスキルに手順を足す                           |
 

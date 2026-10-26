@@ -7,7 +7,7 @@ import {
   createFixtureSheet,
   toSheetFile,
 } from "@/shared/features/skill-sheet/sheet";
-import { ImportJsonSchema } from "./import-json-schema";
+import { ImportJsonSchema } from "./import-json.schema";
 
 function sample(): unknown {
   return JSON.parse(

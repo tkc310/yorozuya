@@ -5,9 +5,9 @@ import {
   cleanHighlights,
   legacyHighlights,
 } from "@/shared/features/skill-sheet/sheet";
-import { CareerSchema } from "./career-schema";
-import { ExperienceSchema } from "./experience-schema";
-import { ProfileSchema } from "./profile-schema";
+import { CareerSchema } from "./career.schema";
+import { ExperienceSchema } from "./experience.schema";
+import { ProfileSchema } from "./profile.schema";
 
 export const SkillSchema = v.object({
   name: v.pipe(v.string(), v.trim(), v.minLength(1, "技術名が空です")),

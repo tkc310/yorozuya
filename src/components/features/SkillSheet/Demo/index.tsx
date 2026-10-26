@@ -25,7 +25,7 @@ import { Preview } from "../Preview/index";
 export const DEMO_TODAY: CalendarDate = { year: 2026, month: 10, day: 18 };
 
 // 見本の JSON の sheet。読み込みの検査（ImportJsonSchema）を通ることは
-// src/server/features/skill-sheet/import-json-schema.test.ts で確かめているので、ここでは検査しない
+// src/server/features/skill-sheet/import-json.schema.test.ts で確かめているので、ここでは検査しない
 // （画面のバンドルにサーバ側のモジュールを入れないため）。
 type SampleSheet = Omit<SheetInput, "careers"> & {
   careers: (Omit<Career, "id"> & { id?: string })[];
