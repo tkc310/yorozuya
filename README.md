@@ -55,7 +55,7 @@
 
 [`.tool-versions`](./.tool-versions) に書かれたバージョンを使います。
 
-- Node.js 24
+- Node.js 26
 - pnpm 10
 - Bun 1.4
 - make（macOS には標準で入っています）
