@@ -190,6 +190,24 @@ for (const [file, reference] of [
   }
 }
 
+// README と CONTRIBUTING の Node.js の版は、.tool-versions のメジャーと揃える。
+{
+  const node = /^node\s+(\d+)\./m.exec(readFileSync(path.join(root, ".tool-versions"), "utf8"));
+  const major = node?.[1];
+  if (!major) {
+    failures.push(".tool-versions: node の版を書く（例: node 26.13.0）");
+  } else {
+    const readme = readFileSync(path.join(root, "README.md"), "utf8");
+    const contributing = readFileSync(path.join(root, "CONTRIBUTING.md"), "utf8");
+    if (!readme.includes(`Node.js ${major}`)) {
+      failures.push(`README.md: Node.js の版を ${major} にする（.tool-versions）`);
+    }
+    if (!new RegExp(`\\|\\s*Node\\.js\\s*\\|\\s*${major}\\s*\\|`).test(contributing)) {
+      failures.push(`CONTRIBUTING.md: Node.js の版を ${major} にする（.tool-versions）`);
+    }
+  }
+}
+
 // README の Agent Skills のバッジに書いたスキルの数は、.cursor/skills の数と同じにする。
 {
   const skills = readdirSync(path.join(root, ".cursor/skills"), { withFileTypes: true }).filter(
