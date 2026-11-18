@@ -45,10 +45,6 @@ storybook: ## Storybook を起動する（http://127.0.0.1:6006）
 build-app: ## macOS アプリを作る（dist/Yorozuya.app）
 	$(PNPM) build:app $(ARGS)
 
-.PHONY: holidays-update
-holidays-update: ## 内閣府の祝日 CSV を取得し、holidays/ の CSV と JSON を作り直す（手元の CSV からなら ARGS="--from <ファイル>"）
-	$(PNPM) holidays:update $(ARGS)
-
 .PHONY: db-generate
 db-generate: ## スキーマの変更からマイグレーションを生成する
 	$(PNPM) exec drizzle-kit generate $(ARGS)

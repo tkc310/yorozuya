@@ -5,7 +5,7 @@ import { monthHolidays, refreshHolidaysIfNeeded } from "./holidays";
 import type { HolidayCoverage, WorkReportRepository } from "./repository";
 
 const FEED: HolidayFeed = {
-  kind: "yorozuya-holidays",
+  kind: "jp-holidays",
   version: 1,
   source: "test",
   minYear: 1955,
