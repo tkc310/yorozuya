@@ -7,6 +7,7 @@ import { input } from "./src/components/ui/Input/style";
 import { select } from "./src/components/ui/Select/style";
 import { toggle } from "./src/components/ui/Switch/style";
 import { textarea } from "./src/components/ui/Textarea/style";
+import { tooltip } from "./src/components/ui/Tooltip/style";
 import { breakpoints, semanticTokens, textStyles, tokens } from "./src/styles/foundation";
 
 export default defineConfig({
@@ -49,6 +50,7 @@ export default defineConfig({
         checkbox,
         dialog,
         toggle,
+        tooltip,
       },
     },
   },

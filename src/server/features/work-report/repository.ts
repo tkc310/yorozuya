@@ -172,7 +172,7 @@ export class WorkReportRepository {
         .run();
       return ok({ saved: true });
     } catch (error) {
-      return err(failure(error, "稼働日設定を保存できませんでした"));
+      return err(failure(error, "設定を保存できませんでした"));
     }
   }
 
