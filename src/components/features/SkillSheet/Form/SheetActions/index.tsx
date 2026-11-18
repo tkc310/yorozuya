@@ -66,14 +66,9 @@ function markdownOf(sheet: SheetInput, today: CalendarDate) {
 
 // 印刷する。PDF に保存するときの既定のファイル名は document.title なので、
 // 印刷の間だけ氏名と日付の入った名前に変え、終わったら戻す。
-function printSheet(sheet: SheetInput) {
-  const now = new Date();
+function printSheet(sheet: SheetInput, today: CalendarDate) {
   const previous = document.title;
-  document.title = printTitle(displayNameOf(sheet), {
-    year: now.getFullYear(),
-    month: now.getMonth() + 1,
-    day: now.getDate(),
-  });
+  document.title = printTitle(displayNameOf(sheet), today);
   const restore = () => {
     document.title = previous;
     window.removeEventListener("afterprint", restore);
@@ -82,17 +77,22 @@ function printSheet(sheet: SheetInput) {
   window.print();
 }
 
-// 印刷と、Markdown の書き出し、JSON の読み込み・書き出し。読み込みは確認してから今の内容を置き換える。
+// 印刷と PDF・Markdown の書き出し、JSON の読み込み・書き出し。読み込みは確認してから今の内容を置き換える。
+// 「PDF をダウンロード」はサーバの Chrome で保存済みの内容を PDF にする（ブラウザの印刷設定に左右されない）。
 export function SheetActions({
   sheet,
   today,
   pending,
   onImport,
+  onExportPdf,
+  exportingPdf,
 }: {
   sheet: SheetInput;
   today: CalendarDate;
   pending?: boolean;
   onImport: (file: unknown) => void;
+  onExportPdf?: (fileName: string) => void;
+  exportingPdf?: boolean;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [loaded, setLoaded] = useState<{ name: string; file: unknown } | null>(null);
@@ -104,9 +104,20 @@ export function SheetActions({
   return (
     <div>
       <div className={actions}>
-        <Button type="button" variant="outline" size="sm" onClick={() => printSheet(sheet)}>
+        <Button type="button" variant="outline" size="sm" onClick={() => printSheet(sheet, today)}>
           印刷 / PDF 保存
         </Button>
+        {onExportPdf ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={exportingPdf}
+            onClick={() => onExportPdf(`${printTitle(displayNameOf(sheet), today)}.pdf`)}
+          >
+            {exportingPdf ? "PDF を作成中…" : "PDF をダウンロード"}
+          </Button>
+        ) : null}
         <Button type="button" variant="outline" size="sm" onClick={() => setMarkdownOpen(true)}>
           Markdownで書き出す
         </Button>

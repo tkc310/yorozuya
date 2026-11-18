@@ -85,6 +85,8 @@ export function SkillSheet({ breadcrumb }: { breadcrumb?: ReactNode }) {
           onUpdateCareer={(careerId, career) => commands.updateCareer({ careerId, career })}
           onRemoveCareer={commands.removeCareer}
           onImport={commands.importSheet}
+          onExportPdf={(fileName) => commands.exportPdf({ fileName, calculatedOn })}
+          exportingPdf={commands.exportingPdf}
           message={commands.message}
           pending={commands.pending}
         />

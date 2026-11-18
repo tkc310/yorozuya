@@ -122,6 +122,9 @@ export type FormProps = {
   onUpdateCareer: (careerId: string, career: CareerWrite) => void;
   onRemoveCareer: (careerId: string) => void;
   onImport: (file: unknown) => void;
+  // 無ければ「PDF をダウンロード」を出さない（サーバの無いデモなど）。
+  onExportPdf?: (fileName: string) => void;
+  exportingPdf?: boolean;
   message?: string | null;
   pending?: boolean;
 };
@@ -146,6 +149,8 @@ export function Form({
   onUpdateCareer,
   onRemoveCareer,
   onImport,
+  onExportPdf,
+  exportingPdf,
   message,
   pending,
 }: FormProps) {
@@ -227,7 +232,14 @@ export function Form({
           </Spinner>
         ) : null}
       </div>
-      <SheetActions sheet={values} today={today} pending={pending} onImport={onImport} />
+      <SheetActions
+        sheet={values}
+        today={today}
+        pending={pending}
+        onImport={onImport}
+        onExportPdf={onExportPdf}
+        exportingPdf={exportingPdf}
+      />
       {message ? (
         <p role="alert" className={alert}>
           {message}

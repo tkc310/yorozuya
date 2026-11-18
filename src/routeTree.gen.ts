@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SkillSheetRouteImport } from './routes/skill-sheet'
+import { Route as SkillSheetPrintRouteImport } from './routes/skill-sheet_.print'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const SkillSheetRoute = SkillSheetRouteImport.update({
   path: '/skill-sheet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SkillSheetPrintRoute = SkillSheetPrintRouteImport.update({
+  id: '/skill-sheet_/print',
+  path: '/skill-sheet/print',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/skill-sheet': typeof SkillSheetRoute
+  '/skill-sheet/print': typeof SkillSheetPrintRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/skill-sheet': typeof SkillSheetRoute
+  '/skill-sheet/print': typeof SkillSheetPrintRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/skill-sheet': typeof SkillSheetRoute
+  '/skill-sheet_/print': typeof SkillSheetPrintRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/skill-sheet'
+  fullPaths: '/' | '/skill-sheet' | '/skill-sheet/print'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/skill-sheet'
-  id: '__root__' | '/' | '/skill-sheet'
+  to: '/' | '/skill-sheet' | '/skill-sheet/print'
+  id: '__root__' | '/' | '/skill-sheet' | '/skill-sheet_/print'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SkillSheetRoute: typeof SkillSheetRoute
+  SkillSheetPrintRoute: typeof SkillSheetPrintRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SkillSheetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/skill-sheet_/print': {
+      id: '/skill-sheet_/print'
+      path: '/skill-sheet/print'
+      fullPath: '/skill-sheet/print'
+      preLoaderRoute: typeof SkillSheetPrintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SkillSheetRoute: SkillSheetRoute,
+  SkillSheetPrintRoute: SkillSheetPrintRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
