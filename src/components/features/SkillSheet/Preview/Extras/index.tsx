@@ -1,8 +1,10 @@
 import { css, cx } from "styled-system/css";
 import type { SheetView } from "@/src/shared/features/skill-sheet/sheet.schema";
+import { QrCode } from "../QrCode/index";
 import { SUB, part, plainList, sectionTitle } from "../styles";
 
 // 資格・語学とリンク。片方しか無ければ全幅にする。
+// リンクには QR コードを添え、印刷・PDF からもスマートフォンで開けるようにする。
 
 const columns = css({
   columnGap: "6mm",
@@ -14,9 +16,24 @@ const item = css({
   py: "0.3mm",
 });
 
+const linkItem = css({
+  alignItems: "center",
+  breakInside: "avoid",
+  display: "flex",
+  gap: "2.5mm",
+  py: "0.8mm",
+});
+
+const linkText = css({
+  display: "flex",
+  flexDirection: "column",
+  minWidth: "0",
+});
+
 const linkLabel = css({
   color: SUB,
-  mr: "3mm",
+  fontSize: "7.5pt",
+  fontWeight: "bold",
 });
 
 const link = css({
@@ -54,11 +71,14 @@ export function Extras({ view }: { view: SheetView }) {
           </h3>
           <ul className={plainList}>
             {links.map((entry, index) => (
-              <li key={`${index}-${entry.url}`} className={item}>
-                {entry.label ? <span className={linkLabel}>{entry.label}</span> : null}
-                <a className={link} href={entry.url} target="_blank" rel="noreferrer">
-                  {entry.url}
-                </a>
+              <li key={`${index}-${entry.url}`} className={linkItem}>
+                <QrCode url={entry.url} label={entry.label || entry.url} />
+                <span className={linkText}>
+                  {entry.label ? <span className={linkLabel}>{entry.label}</span> : null}
+                  <a className={link} href={entry.url} target="_blank" rel="noreferrer">
+                    {entry.url}
+                  </a>
+                </span>
               </li>
             ))}
           </ul>
