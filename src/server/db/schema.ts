@@ -131,3 +131,44 @@ export const profileQualifications = sqliteTable("profile_qualifications", {
   position: integer("position").primaryKey(),
   name: text("name").notNull(),
 });
+
+// 作業報告書。設定は 1 行だけ持つ（id は "default"）。時間はすべて分。
+export const workReportSettings = sqliteTable("work_report_settings", {
+  id: text("id").primaryKey(),
+  sunMinutes: integer("sun_minutes").notNull().default(0),
+  monMinutes: integer("mon_minutes").notNull().default(480),
+  tueMinutes: integer("tue_minutes").notNull().default(480),
+  wedMinutes: integer("wed_minutes").notNull().default(480),
+  thuMinutes: integer("thu_minutes").notNull().default(480),
+  friMinutes: integer("fri_minutes").notNull().default(480),
+  satMinutes: integer("sat_minutes").notNull().default(0),
+  holidaysOff: integer("holidays_off", { mode: "boolean" }).notNull().default(true),
+  defaultStart: integer("default_start").notNull().default(600),
+  defaultBreak: integer("default_break").notNull().default(60),
+  name: text("name").notNull().default(""),
+  client: text("client").notNull().default(""),
+  project: text("project").notNull().default(""),
+});
+
+// 月ごとの精算幅。
+export const workReportMonths = sqliteTable(
+  "work_report_months",
+  {
+    year: integer("year").notNull(),
+    month: integer("month").notNull(),
+    minMinutes: integer("min_minutes"),
+    maxMinutes: integer("max_minutes"),
+  },
+  (table) => [primaryKey({ columns: [table.year, table.month] })],
+);
+
+// 入力した日だけを持つ。date は 'YYYY-MM-DD'。
+export const workReportDays = sqliteTable("work_report_days", {
+  date: text("date").primaryKey(),
+  start: integer("start"),
+  end: integer("end"),
+  breakMinutes: integer("break_minutes").notNull().default(0),
+  // none / off / work
+  override: text("override").notNull().default("none"),
+  note: text("note").notNull().default(""),
+});

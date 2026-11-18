@@ -3,6 +3,7 @@ import { ServerFunctionError } from "@/src/error";
 
 export const QUERY_KEY = {
   SKILL_SHEET: ["SKILL_SHEET"],
+  WORK_REPORT: ["WORK_REPORT"],
 } as const;
 
 function isResult<T>(value: unknown): value is Result<T, ServerFunctionError> {

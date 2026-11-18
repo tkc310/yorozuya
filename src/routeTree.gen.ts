@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SkillSheetRouteImport } from './routes/skill-sheet'
+import { Route as WorkReportRouteImport } from './routes/work-report'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const SkillSheetRoute = SkillSheetRouteImport.update({
   path: '/skill-sheet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkReportRoute = WorkReportRouteImport.update({
+  id: '/work-report',
+  path: '/work-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/skill-sheet': typeof SkillSheetRoute
+  '/work-report': typeof WorkReportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/skill-sheet': typeof SkillSheetRoute
+  '/work-report': typeof WorkReportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/skill-sheet': typeof SkillSheetRoute
+  '/work-report': typeof WorkReportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/skill-sheet'
+  fullPaths: '/' | '/skill-sheet' | '/work-report'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/skill-sheet'
-  id: '__root__' | '/' | '/skill-sheet'
+  to: '/' | '/skill-sheet' | '/work-report'
+  id: '__root__' | '/' | '/skill-sheet' | '/work-report'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SkillSheetRoute: typeof SkillSheetRoute
+  WorkReportRoute: typeof WorkReportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SkillSheetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/work-report': {
+      id: '/work-report'
+      path: '/work-report'
+      fullPath: '/work-report'
+      preLoaderRoute: typeof WorkReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SkillSheetRoute: SkillSheetRoute,
+  WorkReportRoute: WorkReportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
