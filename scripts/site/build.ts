@@ -4,6 +4,7 @@
 //   .site/images/    … ロゴとアイコン（src/assets/images から写す）
 //   .site/media/     … スクリーンショットと操作動画（Storybook のデモから撮る）
 //   .site/storybook/ … Storybook
+//   .site/holidays.json … アプリが読む祝日データ（holidays/holidays.json を写す）
 //
 // --skip-capture を付けると撮影を省き、前回の .site/media を使う（文言だけ直すとき）。
 import { $ } from "bun";
@@ -81,6 +82,15 @@ if (!(await exists(join(media, "demo.webm")))) {
 await mkdir(join(out, "images"), { recursive: true });
 for (const name of ["logo.svg", "favicon.ico", "icon_apple.png"]) {
   await cp(join(root, "src/assets/images", name), join(out, "images", name));
+}
+// アプリが読む祝日データ。公開し直しても消えないよう、リポジトリの写しを載せる（ADR 0012）。
+const holidays = join(root, "holidays/holidays.json");
+if (await exists(holidays)) {
+  await cp(holidays, join(out, "holidays.json"));
+} else {
+  console.warn(
+    "holidays/holidays.json が無いため、祝日データを載せません（make holidays-update で作れます）",
+  );
 }
 // GitHub Pages の Jekyll を通さない（_ で始まる Storybook のファイルを消されないように）。
 await Bun.write(join(out, ".nojekyll"), "");

@@ -85,7 +85,7 @@ const cardAction = css({
 
 type Tool = {
   name: string;
-  to: "/skill-sheet";
+  to: "/skill-sheet" | "/work-report";
   summary: string;
   points: string[];
   action: string;
@@ -106,6 +106,19 @@ const tools: Tool[] = [
       "内容を JSON で書き出しておけば、バックアップや別の端末への移行に使えます",
     ],
     action: "スキルシートを開く",
+  },
+  {
+    name: "作業報告書",
+    to: "/work-report",
+    summary:
+      "月ごとの稼働時間を記録し、精算幅に届くまでの残り時間と残りの稼働日数を確かめられます。提出用に xlsx で書き出せます。",
+    points: [
+      "月をタブで切り替えて、日ごとの開始・終了・休憩と作業内容を記入できます",
+      "曜日ごとの稼働時間を決めておくと、祝日を除いた稼働日と予定時間を自動で数えます",
+      "月ごとに精算幅（下限・上限）を設定でき、下限まであと何時間か、1 日あたり何時間必要かが分かります",
+      "表示中の月や 1 年分を xlsx に書き出せます。Excel や Google スプレッドシートで開けます",
+    ],
+    action: "作業報告書を開く",
   },
 ];
 

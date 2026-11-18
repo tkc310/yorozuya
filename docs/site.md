@@ -39,6 +39,7 @@ OGP 画像はブラウザで描いて PNG にするので、Playwright の Chrom
 | `scripts/site/build.ts`                    | Storybook の組み立て → 撮影 → LP の写しを `.site/` に作る        |
 | `scripts/site/publish.ts`                  | `.site/` を `gh-pages` に 1 コミットで強制プッシュする           |
 | `.site/`                                   | 組み立てた結果。コミットしない（`.gitignore` 済み）              |
+| `holidays/holidays.json`                   | アプリが読む祝日データ。`.site/holidays.json` に写す（ADR 0012） |
 
 撮影はデモのストーリー（`スキルシート/デモ` の `見本`）から行う。アプリ本体（`make dev`）は使わないので、`data/yorozuya.db` の中身は変わらない。
 
@@ -63,6 +64,10 @@ OGP 画像はブラウザで描いて PNG にするので、Playwright の Chrom
 5. 公開する: `make site-publish`
    - 先に送らずに確かめたいときは `make site-publish ARGS=--dry-run`
 6. 公開先を開いて、4 と同じ点を確かめる。反映まで 1〜2 分かかることがある。
+
+## 祝日データ（holidays.json）
+
+作業報告書が読む祝日データ `https://tkc310.github.io/yorozuya/holidays.json` は、GitHub Actions（`.github/workflows/holidays.yml`）が毎年 3/1 に `gh-pages` へ直接載せる。サイトを公開し直すときも `holidays/holidays.json` を写すので消えない。急いで更新したいときは、Actions の「Holidays」を手で動かす。
 
 ## 初回だけ
 

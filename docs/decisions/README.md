@@ -16,6 +16,7 @@
 | [0009](./0009-release-commands.md)            | リリースを 2 つのコマンド（版を上げる PR・タグ付け）で行う                 | 採用 |
 | [0010](./0010-node-26.md)                     | 開発に使う Node.js を 26.13.0（LTS Lithium）に揃える                       | 採用 |
 | [0011](./0011-server-pdf.md)                  | PDF は手元のサーバが Chrome で作る（ブラウザの印刷は残す）                 | 採用 |
+| [0012](./0012-holidays-from-cao-csv.md)       | 祝日は内閣府の CSV をリポジトリに置き、GitHub Pages の JSON から取り込む   | 採用 |
 
 ## テンプレート
 

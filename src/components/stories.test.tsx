@@ -21,6 +21,7 @@ import * as listInputStories from "./features/SkillSheet/Form/ListInput/index.st
 import * as importPromptStories from "./features/SkillSheet/Form/SheetActions/ImportPromptDialog/index.stories";
 import * as previewStories from "./features/SkillSheet/Preview/index.stories";
 import * as demoStories from "./features/SkillSheet/Demo/index.stories";
+import * as workReportStories from "./features/WorkReport/index.stories";
 
 const groups = [
   breadcrumbStories,
@@ -43,6 +44,7 @@ const groups = [
   importPromptStories,
   previewStories,
   demoStories,
+  workReportStories,
 ];
 
 afterEach(() => {
