@@ -87,9 +87,16 @@ export const Example: Story = {
     );
     // 文化の日は祝日として出し、稼働日に数えない。
     await expect(canvas.getAllByText("文化の日").length).toBeGreaterThan(0);
-    await expect(canvas.getByText("今月の稼働日").nextSibling).toHaveTextContent("19 日");
+    await expect(canvas.getByText("11月の稼働日").nextSibling).toHaveTextContent("19 日");
+    // 稼働日か休みかは、設定どおりの状態をそのまま選択肢に出す（「通常」のような中間の言い方をしない）。
+    await expect(canvas.getByRole("combobox", { name: "11月2日の稼働／休み" })).toHaveValue("work");
+    await expect(canvas.getByRole("combobox", { name: "11月3日の稼働／休み" })).toHaveValue("off");
+    await expect(canvas.getByRole("button", { name: "11月18日に定時を入力" })).toHaveAttribute(
+      "title",
+      "10:00〜19:00（休憩 60 分）を入力します",
+    );
     // 18 日（今日）以降の稼働日のうち未入力の 8 日が残り。
-    await expect(canvas.getByText("残り稼働日").nextSibling).toHaveTextContent("8 日");
+    await expect(canvas.getByText("残りの稼働日").nextSibling).toHaveTextContent("8 日");
   },
 };
 

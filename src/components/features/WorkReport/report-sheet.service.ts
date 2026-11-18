@@ -10,7 +10,7 @@ import {
 } from "@/src/shared/features/work-report/report.service";
 import { columnName, type Cell, type SheetData } from "./xlsx.service";
 
-// 画面と書き出しで同じ言い方にする。
+// 書き出しの「区分」列に入れる言い方。
 export function dayLabel(row: DayRow): string {
   const override = row.entry?.override ?? "none";
   if (override === "off") {

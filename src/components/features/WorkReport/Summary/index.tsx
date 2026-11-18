@@ -7,10 +7,15 @@ import {
   parseHours,
   type MonthSummary,
 } from "@/src/shared/features/work-report/report.service";
+import { Tooltip } from "@/src/components/ui/Tooltip/index";
 
 const root = css({
+  borderColor: "border.divider",
+  borderRadius: "12",
+  borderWidth: "1px",
   display: "grid",
-  gap: "5",
+  gap: "4",
+  p: "4",
 });
 
 const heading = css({
@@ -18,8 +23,18 @@ const heading = css({
   textStyle: "std-18B-160",
 });
 
+const label = css({
+  alignItems: "center",
+  color: "fg.sub",
+  display: "flex",
+  gap: "1",
+  margin: "0",
+  textStyle: "std-14N-170",
+});
+
 const big = css({
   fontVariantNumeric: "tabular-nums",
+  lineHeight: "1.2",
   margin: "0",
   textStyle: "std-32B-150",
 });
@@ -83,13 +98,36 @@ const band = css({
 
 const legend = css({
   color: "fg.sub",
+  display: "flex",
+  flexWrap: "wrap",
+  columnGap: "3",
+  rowGap: "1",
+  listStyle: "none",
   margin: "0",
+  p: "0",
   textStyle: "std-14N-170",
+  "& li": { alignItems: "center", display: "inline-flex", gap: "1" },
+});
+
+const chip = css({
+  borderRadius: "4",
+  display: "inline-block",
+  height: "10px",
+  width: "14px",
+});
+
+const bandChip = css({
+  display: "inline-block",
+  height: "10px",
+  width: "14px",
+  borderColor: "warning",
+  borderLeftWidth: "2px",
+  borderRightWidth: "2px",
 });
 
 const status = css({
-  borderRadius: "8",
-  borderWidth: "2px",
+  borderLeftWidth: "4px",
+  borderRadius: "4",
   margin: "0",
   px: "3",
   py: "2",
@@ -98,11 +136,19 @@ const status = css({
 });
 
 const STATUS_STYLE: Record<MonthSummary["status"], string> = {
-  unset: css({ borderColor: "border.divider", color: "fg.sub" }),
-  below: css({ borderColor: "warning", color: "warning" }),
-  within: css({ borderColor: "success", color: "success" }),
-  over: css({ borderColor: "error", color: "error" }),
+  unset: css({ background: "bg.subtle", borderColor: "border", color: "fg.sub" }),
+  below: css({ background: "yellow.50", borderColor: "warning", color: "warning" }),
+  within: css({ background: "green.50", borderColor: "success", color: "green.800" }),
+  over: css({ background: "red.50", borderColor: "error", color: "error" }),
 };
+
+const rangeBox = css({
+  borderColor: "border.divider",
+  borderTopWidth: "1px",
+  display: "grid",
+  gap: "2",
+  pt: "4",
+});
 
 const rangeRow = css({
   alignItems: "center",
@@ -128,18 +174,23 @@ function statusText(summary: MonthSummary): string {
   const forecast = `${formatHours(summary.forecastMinutes)}h`;
   switch (summary.status) {
     case "unset":
-      return "精算幅を入れると、下限・上限までの残りが出ます";
+      return "精算幅を入力すると、下限・上限までの残り時間が分かります";
     case "below":
-      return `予定どおりでも見込み ${forecast} で、下限に届きません`;
+      return `残りを予定どおり働いても月末は ${forecast} で、下限に届きません`;
     case "over":
-      return `予定どおりだと見込み ${forecast} で、上限を超えます`;
+      return `残りを予定どおり働くと月末は ${forecast} で、上限を超えます`;
     case "within":
-      return `見込み ${forecast} で、精算幅に収まります`;
+      return `残りを予定どおり働くと月末は ${forecast} で、精算幅に収まります`;
   }
 }
 
 function hoursText(minutes: number | null): string {
   return minutes === null ? "—" : `${formatHours(minutes)}h`;
+}
+
+function rangeText(range: MonthRange): string {
+  const show = (minutes: number | null) => (minutes === null ? "" : formatHours(minutes));
+  return `${show(range.minMinutes)}〜${show(range.maxMinutes)}h`;
 }
 
 function percent(minutes: number, scale: number): string {
@@ -187,48 +238,25 @@ export function Summary({
   );
   const toMax = summary.toMaxMinutes;
 
+  const hasRange = range.minMinutes !== null || range.maxMinutes !== null;
+
   return (
     <section className={root} aria-labelledby="work-report-summary">
       <h2 id="work-report-summary" className={heading}>
         {month}月の進み具合
       </h2>
 
-      <div className={rangeRow}>
-        <span>精算幅</span>
-        <input
-          aria-label="精算幅の下限（時間）"
-          inputMode="decimal"
-          placeholder="140"
-          className={cx(input({ size: "sm" }), rangeInput)}
-          value={min}
-          onChange={(event) => setMin(event.target.value)}
-          onBlur={save}
-        />
-        <span>〜</span>
-        <input
-          aria-label="精算幅の上限（時間）"
-          inputMode="decimal"
-          placeholder="180"
-          className={cx(input({ size: "sm" }), rangeInput)}
-          value={max}
-          onChange={(event) => setMax(event.target.value)}
-          onBlur={save}
-        />
-        <span>h</span>
-      </div>
-      {problem ? (
-        <p role="alert" className={error}>
-          {problem}
-        </p>
-      ) : null}
-
       <div>
-        <p className={legend}>実績</p>
+        <p className={label}>実働の合計</p>
         <p className={big}>
           {formatHours(summary.workedMinutes)}
           <span className={unit}>h</span>
         </p>
       </div>
+
+      <p className={cx(status, STATUS_STYLE[summary.status])} role="status">
+        {statusText(summary)}
+      </p>
 
       <div className={meter}>
         <div className={track} aria-hidden="true">
@@ -240,7 +268,7 @@ export function Summary({
             className={cx(bar, workedBar)}
             style={{ width: percent(summary.workedMinutes, scale) }}
           />
-          {range.minMinutes !== null || range.maxMinutes !== null ? (
+          {hasRange ? (
             <div
               className={band}
               style={{
@@ -250,9 +278,20 @@ export function Summary({
             />
           ) : null}
         </div>
-        <p className={legend}>
-          濃い色が実績、薄い色が予定どおりに働いたときの見込み、枠が精算幅です。
-        </p>
+        <ul className={legend}>
+          <li>
+            <span className={cx(chip, workedBar)} aria-hidden="true" />
+            実働
+          </li>
+          <li>
+            <span className={cx(chip, forecastBar)} aria-hidden="true" />
+            月末の見込み
+          </li>
+          <li>
+            <span className={bandChip} aria-hidden="true" />
+            精算幅{hasRange ? `（${rangeText(range)}）` : ""}
+          </li>
+        </ul>
       </div>
 
       <dl className={stats}>
@@ -271,11 +310,11 @@ export function Summary({
           </dd>
         </div>
         <div className={stat}>
-          <dt>残り稼働日</dt>
+          <dt>残りの稼働日</dt>
           <dd>{summary.remainingWorkdays} 日</dd>
         </div>
         <div className={stat}>
-          <dt>下限に必要</dt>
+          <dt>必要なペース</dt>
           <dd>
             {summary.neededPerDayMinutes === null
               ? "—"
@@ -283,18 +322,51 @@ export function Summary({
           </dd>
         </div>
         <div className={stat}>
-          <dt>見込み合計</dt>
+          <dt>月末の見込み</dt>
           <dd>{hoursText(summary.forecastMinutes)}</dd>
         </div>
         <div className={stat}>
-          <dt>今月の稼働日</dt>
+          <dt>{month}月の稼働日</dt>
           <dd>{summary.workdays} 日</dd>
         </div>
       </dl>
 
-      <p className={cx(status, STATUS_STYLE[summary.status])} role="status">
-        {statusText(summary)}
-      </p>
+      <div className={rangeBox}>
+        <p className={label}>
+          精算幅
+          <Tooltip label="精算幅の説明">
+            契約で決めた、月の稼働時間の下限と上限です（例:
+            140〜180h）。入力していない月は、直前に入力した月の値を引き継ぎます。
+          </Tooltip>
+        </p>
+        <div className={rangeRow}>
+          <input
+            aria-label="精算幅の下限（時間）"
+            inputMode="decimal"
+            placeholder="140"
+            className={cx(input({ size: "sm" }), rangeInput)}
+            value={min}
+            onChange={(event) => setMin(event.target.value)}
+            onBlur={save}
+          />
+          <span>〜</span>
+          <input
+            aria-label="精算幅の上限（時間）"
+            inputMode="decimal"
+            placeholder="180"
+            className={cx(input({ size: "sm" }), rangeInput)}
+            value={max}
+            onChange={(event) => setMax(event.target.value)}
+            onBlur={save}
+          />
+          <span>h</span>
+        </div>
+        {problem ? (
+          <p role="alert" className={error}>
+            {problem}
+          </p>
+        ) : null}
+      </div>
     </section>
   );
 }

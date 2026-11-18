@@ -15,7 +15,7 @@ import {
   workedMinutesOf,
   type DayRow,
 } from "@/src/shared/features/work-report/report.service";
-import { dayLabel } from "../report-sheet.service";
+import { Tooltip } from "@/src/components/ui/Tooltip/index";
 
 const wrap = css({
   overflowX: "auto",
@@ -23,7 +23,7 @@ const wrap = css({
 
 const table = css({
   borderCollapse: "collapse",
-  minWidth: "44rem",
+  minWidth: "46rem",
   width: "100%",
   textStyle: "std-14N-170",
   "& th, & td": {
@@ -35,38 +35,88 @@ const table = css({
     verticalAlign: "middle",
     whiteSpace: "nowrap",
   },
-  "& th": {
-    background: "bg.subtle",
+  "& thead th": {
+    borderBottomWidth: "2px",
+    borderColor: "border",
     color: "fg.sub",
-    fontWeight: "normal",
-    position: "sticky",
-    top: "0",
-    zIndex: "1",
+    fontWeight: "bold",
+    py: "2",
+    textStyle: "std-14N-170",
+  },
+  "& tfoot th, & tfoot td": {
+    borderBottomWidth: "0",
+    borderTopWidth: "2px",
+    borderColor: "border",
+    fontWeight: "bold",
+    py: "3",
   },
 });
 
+const headLabel = css({
+  alignItems: "center",
+  display: "inline-flex",
+  gap: "1",
+});
+
+const unit = css({
+  color: "fg.sub",
+  fontWeight: "normal",
+  ml: "0.5",
+});
+
+// 休みの日は入力欄を薄くして、稼働日を目で追いやすくする。
 const offRow = css({
   background: "bg.subtle",
   color: "fg.sub",
-});
-
-const holidayText = css({
-  color: "red.800",
-  fontWeight: "bold",
-});
-
-const dateText = css({
-  display: "inline-block",
-  fontVariantNumeric: "tabular-nums",
-  minWidth: "5.5rem",
-});
-
-const kindText = css({
-  textStyle: "std-14N-170",
+  "& input": {
+    borderColor: "border",
+  },
+  "& input::placeholder": { color: "transparent" },
+  "& input:hover, & input:focus": {
+    borderColor: "border.field",
+  },
 });
 
 const todayRow = css({
+  background: "blue.50",
   boxShadow: "inset 4px 0 0 token(colors.key)",
+});
+
+const dateCell = css({
+  alignItems: "center",
+  display: "flex",
+  gap: "2",
+});
+
+const dateText = css({
+  color: "fg",
+  display: "inline-block",
+  fontVariantNumeric: "tabular-nums",
+  minWidth: "4.75rem",
+});
+
+const saturdayText = css({ color: "blue.900" });
+
+const sundayText = css({ color: "red.800" });
+
+const holidayText = css({ color: "red.800", fontWeight: "bold" });
+
+const tag = css({
+  borderRadius: "4",
+  borderWidth: "1px",
+  lineHeight: "1.4",
+  px: "1",
+  textStyle: "oln-14N-100",
+  fontSize: "12px",
+});
+
+const holidayTag = css({ borderColor: "red.800", color: "red.800" });
+
+const todayTag = css({
+  background: "key",
+  borderColor: "key",
+  color: "fg.inverse",
+  fontWeight: "bold",
 });
 
 const numeric = css({
@@ -90,12 +140,12 @@ const breakInput = css({
 
 const noteInput = css({
   height: "32px!",
-  minWidth: "10rem",
+  minWidth: "8rem",
   px: "2!",
   width: "100%",
 });
 
-const overrideSelect = css({
+const stateSelect = css({
   borderColor: "border.field",
   borderRadius: "8",
   borderWidth: "1px",
@@ -106,6 +156,14 @@ const overrideSelect = css({
   color: "fg",
 });
 
+// 設定（曜日・祝日）と違う扱いにした日は、切り替えたことが分かるようにする。
+const stateChanged = css({
+  borderColor: "key",
+  borderWidth: "2px",
+  color: "key",
+  fontWeight: "bold",
+});
+
 const error = css({
   color: "error",
   fontWeight: "bold",
@@ -114,11 +172,24 @@ const error = css({
   whiteSpace: "normal",
 });
 
-const OVERRIDE_LABELS: Record<DayOverride, string> = {
-  none: "通常",
+// 画面では「稼働日か休みか」だけを選ばせる。設定どおりなら none、違えば off / work として保存する。
+type DayState = "work" | "off";
+
+const STATE_LABELS: Record<DayState, string> = {
+  work: "稼働日",
   off: "休み",
-  work: "稼働",
 };
+
+function stateOf(row: DayRow, override: DayOverride): DayState {
+  if (override === "none") {
+    return row.kind === "workday" ? "work" : "off";
+  }
+  return override;
+}
+
+function overrideOf(row: DayRow, state: DayState): DayOverride {
+  return stateOf(row, "none") === state ? "none" : state;
+}
 
 type Draft = { start: string; end: string; breakMinutes: string; note: string };
 
@@ -219,34 +290,48 @@ function DayLine({
       setDraft((current) => ({ ...current, [key]: event.target.value })),
     onBlur: () => save(draft, override),
   });
-  const kind = dayLabel(row);
+  const state = stateOf(row, override);
+  const isToday = row.date === today;
   const canFill = row.workday && row.plannedMinutes > 0 && draft.start === "" && draft.end === "";
+  const fillStart = formatClock(settings.defaultStart);
+  const fillEnd = formatClock(settings.defaultStart + row.plannedMinutes + settings.defaultBreak);
 
   return (
     <tr
-      className={cx(!row.workday && offRow, row.date === today && todayRow)}
-      aria-current={row.date === today ? "date" : undefined}
+      className={cx(state === "off" && offRow, isToday && todayRow)}
+      aria-current={isToday ? "date" : undefined}
     >
       <td>
-        <span className={cx(dateText, row.holiday && holidayText)}>
-          {row.day}日（{WEEKDAY_LABELS[row.weekday]}）
+        <span className={dateCell}>
+          <span
+            className={cx(
+              dateText,
+              row.weekday === 6 && saturdayText,
+              row.weekday === 0 && sundayText,
+              row.holiday && holidayText,
+            )}
+          >
+            {row.day}日（{WEEKDAY_LABELS[row.weekday]}）
+          </span>
+          {isToday ? <span className={cx(tag, todayTag)}>今日</span> : null}
+          {row.holiday ? <span className={cx(tag, holidayTag)}>{row.holiday}</span> : null}
         </span>
-        {kind ? <span className={cx(kindText, row.holiday && holidayText)}>{kind}</span> : null}
       </td>
       <td>
         <select
-          aria-label={`${label}の区分`}
-          className={overrideSelect}
-          value={override}
+          aria-label={`${label}の稼働／休み`}
+          title={override === "none" ? undefined : "設定（曜日・祝日）から切り替えています"}
+          className={cx(stateSelect, override !== "none" && stateChanged)}
+          value={state}
           onChange={(event) => {
-            const next = event.target.value as DayOverride;
+            const next = overrideOf(row, event.target.value as DayState);
             setOverride(next);
             save(draft, next);
           }}
         >
-          {(Object.keys(OVERRIDE_LABELS) as DayOverride[]).map((value) => (
+          {(Object.keys(STATE_LABELS) as DayState[]).map((value) => (
             <option key={value} value={value}>
-              {OVERRIDE_LABELS[value]}
+              {STATE_LABELS[value]}
             </option>
           ))}
         </select>
@@ -295,11 +380,12 @@ function DayLine({
         {canFill ? (
           <button
             type="button"
-            className={button({ variant: "text", size: "xs" })}
-            aria-label={`${label}を予定どおりで埋める`}
+            className={button({ variant: "outline", size: "xs" })}
+            aria-label={`${label}に定時を入力`}
+            title={`${fillStart}〜${fillEnd}（休憩 ${settings.defaultBreak} 分）を入力します`}
             onClick={fillPlan}
           >
-            予定で埋める
+            定時を入力
           </button>
         ) : null}
       </td>
@@ -320,6 +406,8 @@ export function DayTable({
   settings: WorkReportSettings;
   onSave: (entry: DayEntry) => void;
 }) {
+  const plannedTotal = rows.reduce((sum, row) => sum + row.plannedMinutes, 0);
+  const workedTotal = rows.reduce((sum, row) => sum + (row.workedMinutes ?? 0), 0);
   return (
     <div className={wrap}>
       <table className={table}>
@@ -327,19 +415,34 @@ export function DayTable({
         <thead>
           <tr>
             <th scope="col">日付</th>
-            <th scope="col">区分</th>
+            <th scope="col">
+              <span className={headLabel}>
+                稼働／休み
+                <Tooltip label="稼働／休みの説明">
+                  設定の曜日ごとの予定時間と祝日から自動で決まります。有給や休日出勤など、その日だけ変えたいときに切り替えます。
+                </Tooltip>
+              </span>
+            </th>
             <th scope="col" className={numeric}>
-              予定(h)
+              予定<span className={unit}>(h)</span>
             </th>
             <th scope="col">開始</th>
             <th scope="col">終了</th>
-            <th scope="col">休憩(分)</th>
+            <th scope="col">
+              休憩<span className={unit}>(分)</span>
+            </th>
             <th scope="col" className={numeric}>
-              実働(h)
+              実働<span className={unit}>(h)</span>
             </th>
             <th scope="col">作業内容</th>
             <th scope="col">
-              <span className={css({ srOnly: true })}>操作</span>
+              <span className={headLabel}>
+                定時入力
+                <Tooltip label="定時入力の説明">
+                  定時どおりに働いた日は、ボタン 1
+                  つで開始・終了・休憩を入力できます。入る時刻は、設定の始業時刻と休憩、その日の予定時間から決まります。
+                </Tooltip>
+              </span>
             </th>
           </tr>
         </thead>
@@ -355,6 +458,17 @@ export function DayTable({
             />
           ))}
         </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row" colSpan={2}>
+              合計
+            </th>
+            <td className={numeric}>{formatHours(plannedTotal)}</td>
+            <td colSpan={3} />
+            <td className={numeric}>{formatHours(workedTotal)}</td>
+            <td colSpan={2} />
+          </tr>
+        </tfoot>
       </table>
     </div>
   );
