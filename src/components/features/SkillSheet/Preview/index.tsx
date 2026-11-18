@@ -20,7 +20,7 @@ import { DetailCareer } from "./DetailCareer/index";
 import { Extras } from "./Extras/index";
 import { Header } from "./Header/index";
 import { RunningHeader } from "./RunningHeader/index";
-import { Skills } from "./Skills/index";
+import { SKILL_COLUMN_COUNT, Skills, skillItems } from "./Skills/index";
 import { Strengths } from "./Strengths/index";
 import {
   MM_TO_PX,
@@ -29,6 +29,7 @@ import {
   pageBodyHeightMm,
   paginate,
   samePages,
+  type PagePart,
 } from "./pagination";
 import { SUB, TEXT, part, prose, sectionTitle } from "./styles";
 import { usePaperZoom, type ZoomMode } from "./usePaperZoom";
@@ -130,13 +131,48 @@ const detailsTitle = css({
   mt: "5mm",
 });
 
+// 段組みに流し込み、途中でページを分けられるブロック。
+type Flow = {
+  items: {
+    key: string;
+    keepWithNext?: boolean;
+    // 段の先頭に来たときに繰り返す項目（グループ名）のキー。
+    repeatOf?: string;
+  }[];
+  columnCount: number;
+  // placed は測る前は無い。continued は前のページからの続きのとき。
+  render: (placed: string[][] | undefined, continued: boolean) => ReactNode;
+};
+
 type Block = {
   key: string;
-  node: ReactNode;
+  node?: ReactNode;
+  flow?: Flow;
   keepWithNext?: boolean;
   // ページの先頭に来たら表の見出し行を繰り返す。
   repeatHead?: boolean;
 };
+
+function skillsFlow(input: SheetInput, view: SheetView): Flow | undefined {
+  const items = skillItems(input, view);
+  if (items.length === 0) {
+    return undefined;
+  }
+  const groupKeys = new Map(
+    items.filter((item) => item.kind === "group").map((item) => [item.name, item.key]),
+  );
+  return {
+    items: items.map((item) =>
+      item.kind === "group"
+        ? { key: item.key, keepWithNext: true }
+        : { key: item.key, repeatOf: groupKeys.get(item.group) },
+    ),
+    columnCount: SKILL_COLUMN_COUNT,
+    render: (placed, continued) => (
+      <Skills input={input} view={view} placed={placed} continued={continued} />
+    ),
+  };
+}
 
 // 用紙に並べる単位。ブロックの途中では改ページしない。
 // 並びは面談での説明順（自己紹介 → 経歴紹介）に合わせ、改ページは強制しない。
@@ -154,7 +190,8 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
       ),
     },
     { key: "strengths", node: <Strengths view={view} /> },
-    { key: "skills", node: <Skills input={input} view={view} /> },
+    // 保有技術は長くなりやすいので、ページの残りに入るだけ詰めて続きを次のページへ送る。
+    { key: "skills", node: <Skills input={input} view={view} />, flow: skillsFlow(input, view) },
     { key: "extras", node: <Extras view={view} /> },
   ];
   if (view.visibility.selfPr && view.selfPr.trim()) {
@@ -199,6 +236,9 @@ function sheetBlocks(input: SheetInput, view: SheetView, calculatedOn: Calculate
   return blocks;
 }
 
+// ページに置くブロック。段組みのブロックなら、そのページに置く項目を段ごとに持つ。
+type Placed = { block: Block; placed?: string[][]; continued: boolean };
+
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 // ブロックの高さを測ってページに割り付ける。測るまでは 1 枚にまとめて出す。
@@ -216,7 +256,7 @@ function Pages({
   onCount: (count: number) => void;
 }) {
   const root = useRef<HTMLDivElement>(null);
-  const [pages, setPages] = useState<string[][] | null>(null);
+  const [pages, setPages] = useState<PagePart[][] | null>(null);
   const [tick, setTick] = useState(0);
 
   // フォントの読み込みなどで高さが変わったら測り直す。
@@ -240,6 +280,19 @@ function Pages({
     for (const node of element.querySelectorAll<HTMLElement>("[data-block]")) {
       heights.set(node.dataset.block ?? "", node.getBoundingClientRect().height / scale);
     }
+    const itemHeights = new Map<string, number>();
+    for (const node of element.querySelectorAll<HTMLElement>("[data-flow-item]")) {
+      itemHeights.set(node.dataset.flowItem ?? "", node.getBoundingClientRect().height / scale);
+    }
+    // 段組みの外の高さ（見出しと下の余白）。切れ端ごとに測り、大きい方を使う。
+    const overheads = new Map<string, number>();
+    for (const node of element.querySelectorAll<HTMLElement>("[data-flow]")) {
+      const body = node.querySelector<HTMLElement>("[data-flow-body]");
+      const key = node.dataset.flow ?? "";
+      const overhead =
+        (node.getBoundingClientRect().height - (body?.getBoundingClientRect().height ?? 0)) / scale;
+      overheads.set(key, Math.max(overheads.get(key) ?? 0, overhead));
+    }
     const head = element.querySelector<HTMLElement>("[data-repeat-head]");
     const repeatHeight = head ? head.getBoundingClientRect().height / scale : 0;
     const next = paginate(
@@ -248,22 +301,43 @@ function Pages({
         height: heights.get(block.key) ?? 0,
         keepWithNext: block.keepWithNext,
         repeatHeight: block.repeatHead ? repeatHeight : undefined,
+        flow: block.flow
+          ? {
+              items: block.flow.items.map((item) => ({
+                key: item.key,
+                height: itemHeights.get(item.key) ?? 0,
+                keepWithNext: item.keepWithNext,
+                repeatHeight: item.repeatOf ? itemHeights.get(item.repeatOf) : undefined,
+              })),
+              columnCount: block.flow.columnCount,
+              overhead: overheads.get(block.key) ?? 0,
+            }
+          : undefined,
       })),
       (page) => pageBodyHeightMm(page) * MM_TO_PX,
     );
     setPages((current) => (samePages(current, next) ? current : next));
   }, [blocks, zoom, tick]);
 
-  const assigned = new Map<string, number>();
-  (pages ?? []).forEach((keys, index) => {
-    for (const key of keys) {
-      assigned.set(key, index);
+  // 割り付けに無いブロック（測る前や、足したばかりのもの）は最後のページに置いて測る。
+  const byKey = new Map(blocks.map((block) => [block.key, block]));
+  const count = Math.max(1, pages?.length ?? 1);
+  const grouped: Placed[][] = Array.from({ length: count }, () => []);
+  const seen = new Set<string>();
+  (pages ?? []).forEach((parts, index) => {
+    for (const part of parts) {
+      const block = byKey.get(part.key);
+      if (!block) {
+        continue;
+      }
+      grouped[index]?.push({ block, placed: part.columns, continued: seen.has(part.key) });
+      seen.add(part.key);
     }
   });
-  const count = Math.max(1, pages?.length ?? 1);
-  const grouped: Block[][] = Array.from({ length: count }, () => []);
   for (const block of blocks) {
-    grouped[Math.min(assigned.get(block.key) ?? count - 1, count - 1)]?.push(block);
+    if (!seen.has(block.key)) {
+      grouped[count - 1]?.push({ block, continued: false });
+    }
   }
 
   useEffect(() => {
@@ -277,12 +351,18 @@ function Pages({
           {index > 0 ? <RunningHeader name={name} updated={updated} /> : null}
           <div className={pageBody}>
             {/* 行がページの先頭に来たら、表の見出し行を繰り返す。 */}
-            {index > 0 && pageBlocks[0]?.repeatHead ? <CareerTableHead /> : null}
-            {pageBlocks.map((block) => (
-              <div key={block.key} className={blockBox} data-block={block.key}>
-                {block.node}
-              </div>
-            ))}
+            {index > 0 && pageBlocks[0]?.block.repeatHead ? <CareerTableHead /> : null}
+            {pageBlocks.map(({ block, placed, continued }) =>
+              block.flow ? (
+                <div key={block.key} className={blockBox} data-flow={block.key}>
+                  {block.flow.render(placed, continued)}
+                </div>
+              ) : (
+                <div key={block.key} className={blockBox} data-block={block.key}>
+                  {block.node}
+                </div>
+              ),
+            )}
           </div>
           <p className={pageNumber}>
             {index + 1} / {count}
