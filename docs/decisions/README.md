@@ -3,20 +3,21 @@
 値や方針を決めた・変えたときは、ここに 1 判断 1 ファイルで残します。ファイル名は `NNNN-短い説明.md`（番号は連番）。
 後から方針を変えるときは、古い ADR を消さずに状態を「廃止（→ NNNN）」にし、新しい ADR を足します。
 
-| #                                             | 判断                                                                       | 状態 |
-| --------------------------------------------- | -------------------------------------------------------------------------- | ---- |
-| [0001](./0001-local-only.md)                  | データは手元の SQLite ファイルだけに置き、公開サーバと HTTP API は置かない | 採用 |
-| [0002](./0002-expected-failures-as-result.md) | 想定内の失敗は例外にせず neverthrow の `Result` で返す                     | 採用 |
-| [0003](./0003-skill-sheet-for-screening.md)   | スキルシートを書類選考向けに作り直し、JSON を版 2 にする                   | 採用 |
-| [0004](./0004-import-prompt.md)               | 元のスキルシートから取り込むために、LLM 向けのプロンプトを出す             | 採用 |
-| [0005](./0005-site-on-pages-from-local.md)    | LP と Storybook は手元で組み立てて gh-pages に置く（CI では更新しない）    | 採用 |
-| [0006](./0006-capture-from-storybook.md)      | LP の画像と動画は Storybook のデモから撮り、動画は ffmpeg を使わない       | 採用 |
-| [0007](./0007-makefile.md)                    | コマンドの入口を Makefile にまとめる                                       | 採用 |
-| [0008](./0008-improvement-loop.md)            | AI 駆動開発の改善ループ（バックログ・ログ・ADR・改善スキル）を置く         | 採用 |
-| [0009](./0009-release-commands.md)            | リリースを 2 つのコマンド（版を上げる PR・タグ付け）で行う                 | 採用 |
-| [0010](./0010-node-26.md)                     | 開発に使う Node.js を 26.13.0（LTS Lithium）に揃える                       | 採用 |
-| [0011](./0011-server-pdf.md)                  | PDF は手元のサーバが Chrome で作る（ブラウザの印刷は残す）                 | 採用 |
-| [0012](./0012-holidays-from-cao-csv.md)       | 祝日は内閣府の CSV をリポジトリに置き、GitHub Pages の JSON から取り込む   | 採用 |
+| #                                             | 判断                                                                       | 状態           |
+| --------------------------------------------- | -------------------------------------------------------------------------- | -------------- |
+| [0001](./0001-local-only.md)                  | データは手元の SQLite ファイルだけに置き、公開サーバと HTTP API は置かない | 採用           |
+| [0002](./0002-expected-failures-as-result.md) | 想定内の失敗は例外にせず neverthrow の `Result` で返す                     | 採用           |
+| [0003](./0003-skill-sheet-for-screening.md)   | スキルシートを書類選考向けに作り直し、JSON を版 2 にする                   | 採用           |
+| [0004](./0004-import-prompt.md)               | 元のスキルシートから取り込むために、LLM 向けのプロンプトを出す             | 採用           |
+| [0005](./0005-site-on-pages-from-local.md)    | LP と Storybook は手元で組み立てて gh-pages に置く（CI では更新しない）    | 採用           |
+| [0006](./0006-capture-from-storybook.md)      | LP の画像と動画は Storybook のデモから撮り、動画は ffmpeg を使わない       | 採用           |
+| [0007](./0007-makefile.md)                    | コマンドの入口を Makefile にまとめる                                       | 採用           |
+| [0008](./0008-improvement-loop.md)            | AI 駆動開発の改善ループ（バックログ・ログ・ADR・改善スキル）を置く         | 採用           |
+| [0009](./0009-release-commands.md)            | リリースを 2 つのコマンド（版を上げる PR・タグ付け）で行う                 | 採用           |
+| [0010](./0010-node-26.md)                     | 開発に使う Node.js を 26.13.0（LTS Lithium）に揃える                       | 採用           |
+| [0011](./0011-server-pdf.md)                  | PDF は手元のサーバが Chrome で作る（ブラウザの印刷は残す）                 | 採用           |
+| [0012](./0012-holidays-from-cao-csv.md)       | 祝日は内閣府の CSV をリポジトリに置き、GitHub Pages の JSON から取り込む   | 廃止（→ 0013） |
+| [0013](./0013-holidays-from-jp-holidays.md)   | 祝日データの取得と配信は tkc310/jp-holidays に分ける                       | 採用           |
 
 ## テンプレート
 

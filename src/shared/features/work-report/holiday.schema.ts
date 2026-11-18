@@ -1,12 +1,9 @@
 import * as v from "valibot";
 
-// 祝日の公表元。内閣府「国民の祝日について」の CSV（Shift_JIS）。e-Gov データポータルにも同じ URL で載っている。
-export const HOLIDAY_CSV_URL = "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv";
+// 祝日の配信先。内閣府の祝日 CSV を tkc310/jp-holidays が JSON に直して GitHub Pages で配る（ADR 0013）。
+export const HOLIDAY_FEED_URL = "https://tkc310.github.io/jp-holidays/holidays.json";
 
-// CSV を変換した JSON の配信先（GitHub Pages）。アプリはここから取得する。
-export const HOLIDAY_FEED_URL = "https://tkc310.github.io/yorozuya/holidays.json";
-
-export const HOLIDAY_FEED_KIND = "yorozuya-holidays";
+export const HOLIDAY_FEED_KIND = "jp-holidays";
 
 export const HOLIDAY_FEED_VERSION = 1;
 

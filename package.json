@@ -12,7 +12,6 @@
     "site:preview": "bun scripts/site/serve.ts",
     "brand:images": "node scripts/site/brand-images.mjs",
     "site:publish": "bun scripts/site/publish.ts",
-    "holidays:update": "bun scripts/holidays/update.ts",
     "release:version": "bun scripts/release/version.ts",
     "release:tag": "bun scripts/release/tag.ts",
     "lint:commits": "bun scripts/git/check-commits.ts",

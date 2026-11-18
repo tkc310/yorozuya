@@ -7,7 +7,7 @@ import {
 } from "@/src/shared/features/work-report/holiday.schema";
 import { ServerFunctionError } from "@/src/error";
 
-// 外へ出る通信はここだけ。公開された祝日の JSON を GET するだけで、利用者のデータは送らない（ADR 0012）。
+// 外へ出る通信はここだけ。公開された祝日の JSON を GET するだけで、利用者のデータは送らない（ADR 0013）。
 export async function fetchHolidayFeed(
   url: string = HOLIDAY_FEED_URL,
   timeoutMs = 5000,
