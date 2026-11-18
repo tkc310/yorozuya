@@ -35,12 +35,12 @@ OGP 画像はブラウザで描いて PNG にするので、Playwright の Chrom
 | ------------------------------------------ | ---------------------------------------------------------------- |
 | `site/`                                    | LP の原稿（`index.html`・`style.css`）。文言はここを直す         |
 | `src/components/features/SkillSheet/Demo/` | 撮影用のデモ。見本の JSON を読み、サーバもデータベースも使わない |
-| `scripts/site/capture.mjs`                 | デモから撮る手順（スクリーンショット 5 枚と操作動画）            |
+| `scripts/site/capture.mjs`                 | Storybook から撮る手順（スクリーンショット 9 枚と操作動画）      |
 | `scripts/site/build.ts`                    | Storybook の組み立て → 撮影 → LP の写しを `.site/` に作る        |
 | `scripts/site/publish.ts`                  | `.site/` を `gh-pages` に 1 コミットで強制プッシュする           |
 | `.site/`                                   | 組み立てた結果。コミットしない（`.gitignore` 済み）              |
 
-撮影はデモのストーリー（`スキルシート/デモ` の `見本`）から行う。アプリ本体（`make dev`）は使わないので、`data/yorozuya.db` の中身は変わらない。
+撮影はストーリー（`トップ/画面`、`スキルシート/デモ` の `見本`、`作業報告書/画面` の `見本の内容`）から行う。アプリ本体（`make dev`）は使わないので、`data/yorozuya.db` の中身は変わらない。
 
 ## 手順
 
@@ -54,7 +54,7 @@ OGP 画像はブラウザで描いて PNG にするので、Playwright の Chrom
 3. 組み立てる: `make site-build`
    - 文言だけを直したときは `make site-build ARGS=--skip-capture` で撮影を省ける（前回の `.site/media` を使う）。
 4. 確かめる: `make site-preview` を実行し、表示された URL を開く。
-   - LP の画像 5 枚（home / editor / sheet-first / sheet-details / prompt）が出ている
+   - LP の画像 9 枚（home / editor / sheet-first / sheet-details / prompt / work-report / work-report-summary / work-report-table / work-report-settings）が出ている
    - 動画が再生でき、肩書・希望単価・主要スキルの変更がプレビューに映っている
    - 「Storybook を開く」から Storybook が開き、ストーリーが表示される
    - スマートフォンの幅でも横にはみ出さない

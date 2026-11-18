@@ -6,12 +6,12 @@
     <title>よろずや — フリーランスのための、手元で動く道具箱</title>
     <meta
       name="description"
-      content="よろずやは、フリーランスの仕事のまわりにある細かな作業を片づけるアプリです。書類選考で読みやすいスキルシートを、手元のパソコンだけで作れます。"
+      content="よろずやは、フリーランスの仕事のまわりにある細かな作業を片づけるアプリです。書類選考で読みやすいスキルシートと、精算幅を見ながら付けられる作業報告書を、手元のパソコンだけで作れます。"
     />
     <meta property="og:title" content="よろずや" />
     <meta
       property="og:description"
-      content="書類選考で読みやすいスキルシートを、手元のパソコンだけで作れるアプリ。"
+      content="書類選考で読みやすいスキルシートと、月々の作業報告書を、手元のパソコンだけで作れるアプリ。"
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://tkc310.github.io/yorozuya/" />
@@ -40,6 +40,7 @@
         <nav id="site-nav" aria-label="ページ内">
           <a href="#about">よろずやとは</a>
           <a href="#skill-sheet">スキルシート</a>
+          <a href="#work-report">作業報告書</a>
           <a href="storybook/">Storybook</a>
           <a href="https://github.com/tkc310/yorozuya">GitHub</a>
         </nav>
@@ -261,7 +262,89 @@
         </div>
       </section>
 
-      <section class="band">
+      <section id="work-report" class="band">
+        <div class="wrap">
+          <p class="eyebrow">機能</p>
+          <h2>作業報告書</h2>
+          <p class="lead">
+            日ごとの開始・終了・休憩と作業内容を記録すると、月の実働がその場で集計されます。
+            精算幅（例: 140〜180h）のある契約で、下限まであと何時間かを確かめながら働けます。
+          </p>
+
+          <figure class="shot section-shot">
+            <img
+              src="media/work-report.png"
+              width="1440"
+              height="900"
+              alt="作業報告書の画面。左に日ごとの入力の表、右にその月の進み具合が並ぶ。"
+            />
+          </figure>
+
+          <div class="feature">
+            <div>
+              <h3>精算幅までの残りがひと目で分かる</h3>
+              <p>
+                実働の合計と、残りの稼働日を予定どおり働いたときの月末の見込みを、精算幅と並べて示します。
+                月の途中で「このままで下限に届くか」「上限を超えないか」を確かめられます。
+              </p>
+              <ul class="points">
+                <li>下限・上限までの残り時間と、残りの稼働日を出します</li>
+                <li>下限に届くために必要な 1 日あたりの時間を出します</li>
+                <li>精算幅は月ごとに持ち、入力していない月は前の月を引き継ぎます</li>
+              </ul>
+            </div>
+            <figure class="shot panel">
+              <img
+                src="media/work-report-summary.png"
+                alt="その月の進み具合。実働の合計、月末の見込み、精算幅までの残り時間が並ぶ。"
+              />
+            </figure>
+          </div>
+
+          <div class="feature reverse">
+            <div>
+              <h3>稼働日は曜日と祝日から自動で決まる</h3>
+              <p>
+                曜日ごとの予定時間を決めておくと、祝日を除いた稼働日を自動で数えます。
+                有給や休日出勤の日は、その日だけ稼働日と休みを切り替えられます。
+              </p>
+              <ul class="points">
+                <li>祝日は内閣府の公表データを取り込みます</li>
+                <li>定時どおりの日は、ボタン 1 つで開始・終了・休憩を入力できます</li>
+                <li>入力は欄を離れたときに保存します</li>
+              </ul>
+            </div>
+            <figure class="shot">
+              <img
+                src="media/work-report-settings.png"
+                alt="作業報告書の設定。曜日ごとの予定時間、祝日の扱い、定時、書き出すファイルに載せる項目を決める。"
+              />
+            </figure>
+          </div>
+
+          <div class="feature">
+            <div>
+              <h3>そのまま提出できる Excel ファイル</h3>
+              <p>
+                月末には、氏名・提出先・案件名・精算幅と日ごとの記録を 1 枚にまとめた xlsx
+                を書き出せます。Excel と Google スプレッドシートでそのまま開けます。
+              </p>
+              <ul class="points">
+                <li>表示中の月だけ、または 1 年分をまとめて書き出せます</li>
+                <li>合計と稼働日数は式で入るので、提出先で手直しできます</li>
+              </ul>
+            </div>
+            <figure class="shot">
+              <img
+                src="media/work-report-table.png"
+                alt="日ごとの表。日付、稼働日か休みか、予定、開始、終了、休憩、実働、作業内容が並ぶ。"
+              />
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section>
         <div class="wrap developer">
           <div>
             <h2>開発者の方へ</h2>
