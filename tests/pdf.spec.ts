@@ -4,7 +4,8 @@ import { expect, test } from "@playwright/test";
 // サーバの Chrome で作った PDF が、プレビューと同じ枚数の A4 になること。
 test("スキルシートをサーバで PDF にしてダウンロードする", async ({ page }) => {
   await page.goto("/skill-sheet");
-  await page.waitForLoadState("networkidle");
+  // networkidle の時点ではまだ読み込み中の表示のことがある。用紙が出てから数える。
+  await expect(page.locator("[data-paper]").first()).toBeVisible();
   const papers = await page.locator("[data-paper]").count();
 
   const [download] = await Promise.all([
