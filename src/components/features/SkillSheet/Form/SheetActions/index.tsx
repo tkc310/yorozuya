@@ -1,12 +1,18 @@
 import { Result } from "neverthrow";
 import { useRef, useState } from "react";
 import { css } from "styled-system/css";
-import { type SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
-import { displayNameOf, toSheetFile } from "@/src/shared/features/skill-sheet/skill.service";
+import { type CalendarDate, type SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
+import {
+  displayNameOf,
+  present,
+  toSheetFile,
+} from "@/src/shared/features/skill-sheet/skill.service";
 import { Button } from "@/src/components/ui/Button/index";
 import { Dialog } from "@/src/components/ui/Dialog/index";
 import { printTitle } from "../values";
 import { ImportPromptDialog } from "./ImportPromptDialog/index";
+import { MarkdownDialog } from "./MarkdownDialog/index";
+import { sheetMarkdown } from "./sheet-markdown.service";
 
 const actions = css({
   display: "flex",
@@ -35,17 +41,27 @@ function fileName(now: Date): string {
   return `skill-sheet-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.json`;
 }
 
-function download(sheet: SheetInput) {
-  const now = new Date();
-  const blob = new Blob([JSON.stringify(toSheetFile(sheet, now), null, 2)], {
-    type: "application/json",
-  });
+function saveFile(content: string, type: string, name: string) {
+  const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = fileName(now);
+  link.download = name;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function download(sheet: SheetInput) {
+  const now = new Date();
+  saveFile(JSON.stringify(toSheetFile(sheet, now), null, 2), "application/json", fileName(now));
+}
+
+// プレビューと同じ基準日で Markdown にする。氏名が無いなどで作れなければ理由を返す。
+function markdownOf(sheet: SheetInput, today: CalendarDate) {
+  const presented = present(sheet, today);
+  return presented.ok
+    ? { markdown: sheetMarkdown(sheet, presented.view, today), error: undefined }
+    : { markdown: null, error: `Markdownを作れません: ${presented.error}` };
 }
 
 // 印刷する。PDF に保存するときの既定のファイル名は document.title なので、
@@ -66,13 +82,15 @@ function printSheet(sheet: SheetInput) {
   window.print();
 }
 
-// 印刷と、JSON の読み込み・書き出し。読み込みは確認してから今の内容を置き換える。
+// 印刷と、Markdown の書き出し、JSON の読み込み・書き出し。読み込みは確認してから今の内容を置き換える。
 export function SheetActions({
   sheet,
+  today,
   pending,
   onImport,
 }: {
   sheet: SheetInput;
+  today: CalendarDate;
   pending?: boolean;
   onImport: (file: unknown) => void;
 }) {
@@ -80,12 +98,17 @@ export function SheetActions({
   const [loaded, setLoaded] = useState<{ name: string; file: unknown } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [promptOpen, setPromptOpen] = useState(false);
+  const [markdownOpen, setMarkdownOpen] = useState(false);
+  const markdown = markdownOpen ? markdownOf(sheet, today) : null;
 
   return (
     <div>
       <div className={actions}>
         <Button type="button" variant="outline" size="sm" onClick={() => printSheet(sheet)}>
           印刷 / PDF 保存
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setMarkdownOpen(true)}>
+          Markdownで書き出す
         </Button>
         <Button
           type="button"
@@ -130,6 +153,21 @@ export function SheetActions({
         </p>
       ) : null}
       <ImportPromptDialog open={promptOpen} onOpenChange={setPromptOpen} />
+      <MarkdownDialog
+        open={markdownOpen}
+        markdown={markdown?.markdown ?? null}
+        error={markdown?.error}
+        onOpenChange={setMarkdownOpen}
+        onDownload={() => {
+          if (markdown?.markdown) {
+            saveFile(
+              markdown.markdown,
+              "text/markdown",
+              `${printTitle(displayNameOf(sheet), today)}.md`,
+            );
+          }
+        }}
+      />
       <Dialog
         open={loaded !== null}
         title="JSONを読み込む"

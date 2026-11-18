@@ -227,7 +227,7 @@ export function Form({
           </Spinner>
         ) : null}
       </div>
-      <SheetActions sheet={values} pending={pending} onImport={onImport} />
+      <SheetActions sheet={values} today={today} pending={pending} onImport={onImport} />
       {message ? (
         <p role="alert" className={alert}>
           {message}
