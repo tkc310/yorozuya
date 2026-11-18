@@ -166,7 +166,7 @@ export function WorkReport({ breadcrumb, today }: { breadcrumb?: ReactNode; toda
             disabled={!data}
             onClick={() => setSettingsOpen(true)}
           >
-            稼働日設定
+            設定
           </Button>
           <Button
             type="button"
@@ -180,10 +180,10 @@ export function WorkReport({ breadcrumb, today }: { breadcrumb?: ReactNode; toda
               )
             }
           >
-            {shown.month}月を xlsx で書き出す
+            {shown.month}月分を書き出す（xlsx）
           </Button>
           <Button type="button" variant="outline" size="sm" onClick={() => void exportYear()}>
-            {shown.year}年分を書き出す
+            {shown.year}年分をまとめて書き出す（xlsx）
           </Button>
         </div>
       </div>

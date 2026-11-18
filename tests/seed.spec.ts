@@ -32,9 +32,9 @@ test("トップから作業報告書を開き、入力が保存される", async
   await page.getByRole("textbox", { name: "1月5日の休憩（分）" }).fill("60");
   await page.getByRole("textbox", { name: "1月5日の作業内容" }).click();
   await expect(start).toHaveValue("9:30");
-  await expect(page.getByText("今月の稼働日").locator("xpath=following-sibling::dd")).toHaveText(
-    /日/,
-  );
+  await expect(
+    page.getByText("1月の稼働日", { exact: true }).locator("xpath=following-sibling::dd"),
+  ).toHaveText(/日/);
   await page.reload();
   await page.getByRole("tab", { name: "1月", exact: true }).click();
   await expect(page.getByRole("textbox", { name: "1月5日の終了" })).toHaveValue("18:30");
