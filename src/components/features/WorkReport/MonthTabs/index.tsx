@@ -1,6 +1,6 @@
 import { Tabs } from "@ark-ui/react/tabs";
 import type { ReactNode } from "react";
-import { css } from "styled-system/css";
+import { css, cx } from "styled-system/css";
 import { button } from "styled-system/recipes";
 import { focusRing } from "@/src/styles/foundation";
 
@@ -47,9 +47,23 @@ const trigger = css({
   "&:focus-visible": focusRing,
 });
 
+// 今月のタブには点を添える（選択中の下線と見分ける）。
 const current = css({
-  textDecoration: "underline",
-  textUnderlineOffset: "4px",
+  alignItems: "center",
+  display: "inline-flex",
+  gap: "1",
+  _before: {
+    background: "key",
+    borderRadius: "full",
+    content: '""',
+    height: "6px",
+    width: "6px",
+  },
+});
+
+const arrow = css({
+  minWidth: "32px!",
+  textDecoration: "none!",
 });
 
 const MONTHS = Array.from({ length: 12 }, (_, index) => index + 1);
@@ -80,23 +94,32 @@ export function MonthTabs({
         <div className={year}>
           <button
             type="button"
-            className={button({ variant: "text", size: "xs" })}
+            className={cx(button({ variant: "outline", size: "xs" }), arrow)}
             aria-label="前の年"
             onClick={() => onChange(shownYear - 1, month)}
           >
-            ◀
+            ‹
           </button>
           <span className={yearText} aria-live="polite">
             {shownYear}年
           </span>
           <button
             type="button"
-            className={button({ variant: "text", size: "xs" })}
+            className={cx(button({ variant: "outline", size: "xs" }), arrow)}
             aria-label="次の年"
             onClick={() => onChange(shownYear + 1, month)}
           >
-            ▶
+            ›
           </button>
+          {shownYear !== thisYear || month !== thisMonth ? (
+            <button
+              type="button"
+              className={button({ variant: "text", size: "xs" })}
+              onClick={() => onChange(thisYear, thisMonth)}
+            >
+              今月へ戻る
+            </button>
+          ) : null}
         </div>
         <Tabs.List className={list} aria-label={`${shownYear}年の月`}>
           {MONTHS.map((value) => (

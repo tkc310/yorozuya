@@ -117,11 +117,11 @@ function settingsOf(draft: Draft): WorkReportSettings | string {
   }
   const defaultStart = parseClock(draft.defaultStart);
   if (defaultStart === null || defaultStart >= 24 * 60) {
-    return "既定の開始は 10:00 のように入力してください";
+    return "始業時刻は 10:00 のように入力してください";
   }
   const defaultBreak = Number(draft.defaultBreak.trim() === "" ? "0" : draft.defaultBreak);
   if (!Number.isInteger(defaultBreak) || defaultBreak < 0 || defaultBreak > 24 * 60) {
-    return "既定の休憩は分の整数で入力してください";
+    return "休憩は分の整数で入力してください";
   }
   const [sun, mon, tue, wed, thu, fri, sat] = weekday as number[];
   return {
@@ -133,6 +133,22 @@ function settingsOf(draft: Draft): WorkReportSettings | string {
     client: draft.client.trim(),
     project: draft.project.trim(),
   };
+}
+
+// 入力中の値で「定時を入力」がどう入るかの例。読めない値があれば出さない。
+function fillExample(draft: Draft): string | null {
+  const next = settingsOf(draft);
+  if (typeof next === "string") {
+    return null;
+  }
+  const planned = ORDER.map((index) => next.weekdayMinutes[index] ?? 0).find(
+    (minutes) => minutes > 0,
+  );
+  if (planned === undefined) {
+    return null;
+  }
+  const end = formatClock(next.defaultStart + planned + next.defaultBreak);
+  return `予定 ${formatHours(planned)}h の日は ${formatClock(next.defaultStart)}〜${end}`;
 }
 
 export function SettingsDialog({
@@ -147,7 +163,7 @@ export function SettingsDialog({
   onSave: (settings: WorkReportSettings) => Promise<unknown>;
 }) {
   return (
-    <Dialog open={open} title="稼働日設定" onOpenChange={onOpenChange}>
+    <Dialog open={open} title="作業報告書の設定" onOpenChange={onOpenChange}>
       {/* 開くたびに保存済みの値から作り直す。 */}
       <SettingsForm settings={settings} onCancel={() => onOpenChange(false)} onSave={onSave} />
     </Dialog>
@@ -172,6 +188,8 @@ function SettingsForm({
       setDraft((current) => ({ ...current, [key]: event.target.value })),
   });
 
+  const example = fillExample(draft);
+
   return (
     <form
       className={stack}
@@ -193,8 +211,10 @@ function SettingsForm({
       }}
     >
       <fieldset className={group}>
-        <legend className={legend}>曜日ごとの予定時間（h）</legend>
-        <p className={hint}>0 か空にした曜日は休みとして数えます。</p>
+        <legend className={legend}>稼働日と予定時間</legend>
+        <p className={hint}>
+          曜日ごとに 1 日の予定時間（h）を入力します。0 か空にした曜日は休みになります。
+        </p>
         <div className={week}>
           {ORDER.map((index) => (
             <label key={index} className={day}>
@@ -224,12 +244,17 @@ function SettingsForm({
       </fieldset>
 
       <fieldset className={group}>
-        <legend className={legend}>「予定で埋める」の既定</legend>
+        <legend className={legend}>定時</legend>
+        <p className={hint}>
+          表の「定時を入力」ボタンで入る時刻です。終業時刻は、始業時刻にその日の予定時間と休憩を足して決まります
+          {example ? `（例: ${example}）` : ""}。
+        </p>
         <div className={row}>
           <label className={labeled}>
-            開始
+            始業時刻
             <input
               inputMode="numeric"
+              placeholder="10:00"
               className={input({ size: "sm" })}
               {...text("defaultStart")}
             />
@@ -238,6 +263,7 @@ function SettingsForm({
             休憩（分）
             <input
               inputMode="numeric"
+              placeholder="60"
               className={input({ size: "sm" })}
               {...text("defaultBreak")}
             />
@@ -246,7 +272,7 @@ function SettingsForm({
       </fieldset>
 
       <fieldset className={group}>
-        <legend className={legend}>書き出しに載せる項目</legend>
+        <legend className={legend}>書き出すファイルに載せる項目</legend>
         <div className={row}>
           <label className={labeled}>
             氏名
@@ -270,7 +296,7 @@ function SettingsForm({
       ) : null}
       <div className={footer}>
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
-          やめる
+          キャンセル
         </Button>
         <Button type="submit" size="sm" disabled={saving}>
           保存する
