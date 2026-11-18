@@ -160,3 +160,30 @@ export const HiddenItems: Story = {
     await expect(canvas.getByText("職務経歴はありません")).toBeVisible();
   },
 };
+
+// 保有技術が 1 ページ目の残りに入りきらない量。
+const manySkills: SheetInput = {
+  ...createFixtureSheet(),
+  skillGroups: ["フロントエンド", "サーバサイド", "インフラ・DB", "クラウド"].map(
+    (name, group) => ({
+      name,
+      skills: Array.from({ length: 30 }, (_, index) => ({
+        name: `技術 ${group + 1}-${index + 1}`,
+        experience: { years: 1 + (index % 5), months: 0 },
+      })),
+    }),
+  ),
+};
+
+export const ManySkills: Story = {
+  name: "保有技術が多い",
+  args: { sheet: manySkills, calculatedOn },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 保有技術は丸ごと次のページへ送らず、ページの残りに詰めて続きを次のページに出す。
+    // 割り付けは高さを測って決めるので、ここでは技術が欠けずにすべて並ぶことを確かめる。
+    for (const name of ["技術 1-1", "技術 2-15", "技術 4-30"]) {
+      await expect(canvas.getByText(name)).toBeVisible();
+    }
+  },
+};
