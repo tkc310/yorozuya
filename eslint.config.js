@@ -266,7 +266,7 @@ export default [
       ],
     },
   },
-  // 外へ出る通信は、公開された祝日データを取りに行くこの 2 か所だけに許す（ADR 0011）。
+  // 外へ出る通信は、公開された祝日データを取りに行くこの 2 か所だけに許す（ADR 0012）。
   {
     files: ["src/server/lib/holiday-feed.ts", "scripts/holidays/update.ts"],
     languageOptions: {

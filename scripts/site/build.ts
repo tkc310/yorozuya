@@ -83,7 +83,7 @@ await mkdir(join(out, "images"), { recursive: true });
 for (const name of ["logo.svg", "favicon.ico", "icon_apple.png"]) {
   await cp(join(root, "src/assets/images", name), join(out, "images", name));
 }
-// アプリが読む祝日データ。公開し直しても消えないよう、リポジトリの写しを載せる（ADR 0011）。
+// アプリが読む祝日データ。公開し直しても消えないよう、リポジトリの写しを載せる（ADR 0012）。
 const holidays = join(root, "holidays/holidays.json");
 if (await exists(holidays)) {
   await cp(holidays, join(out, "holidays.json"));

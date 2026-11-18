@@ -39,7 +39,7 @@ OGP 画像はブラウザで描いて PNG にするので、Playwright の Chrom
 | `scripts/site/build.ts`                    | Storybook の組み立て → 撮影 → LP の写しを `.site/` に作る        |
 | `scripts/site/publish.ts`                  | `.site/` を `gh-pages` に 1 コミットで強制プッシュする           |
 | `.site/`                                   | 組み立てた結果。コミットしない（`.gitignore` 済み）              |
-| `holidays/holidays.json`                   | アプリが読む祝日データ。`.site/holidays.json` に写す（ADR 0011） |
+| `holidays/holidays.json`                   | アプリが読む祝日データ。`.site/holidays.json` に写す（ADR 0012） |
 
 撮影はデモのストーリー（`スキルシート/デモ` の `見本`）から行う。アプリ本体（`make dev`）は使わないので、`data/yorozuya.db` の中身は変わらない。
 

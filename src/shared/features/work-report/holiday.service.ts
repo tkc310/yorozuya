@@ -2,7 +2,7 @@ import type { IsoDate } from "./report.schema";
 
 // 国民の祝日に関する法律のルールで、その年の祝日を推定する。
 // 祝日はふつう公表データ（内閣府の CSV を変換した JSON）を使い、これはまだ取り込めていない年
-// （翌年分の公表前や、オフラインで初めて開いたとき）の代わりに使う（ADR 0011）。
+// （翌年分の公表前や、オフラインで初めて開いたとき）の代わりに使う（ADR 0012）。
 // 2000〜2099 年を対象にする。法改正で祝日が変わったら、ここと holiday.service.test.ts を直す。
 
 export function isoDate(year: number, month: number, day: number): IsoDate {

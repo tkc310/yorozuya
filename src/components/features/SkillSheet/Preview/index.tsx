@@ -347,7 +347,7 @@ function Pages({
   return (
     <div ref={root} className={pageStack} style={{ "--paper-zoom": zoom } as CSSProperties}>
       {grouped.map((pageBlocks, index) => (
-        <div key={index} className={paper} aria-label={`${index + 1}ページ目`}>
+        <div key={index} className={paper} aria-label={`${index + 1}ページ目`} data-paper>
           {index > 0 ? <RunningHeader name={name} updated={updated} /> : null}
           <div className={pageBody}>
             {/* 行がページの先頭に来たら、表の見出し行を繰り返す。 */}
