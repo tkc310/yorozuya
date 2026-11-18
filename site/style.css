@@ -286,6 +286,14 @@ main > section {
   width: auto;
 }
 
+/* 画面の一部を切り出した縦長の画像は、幅を抑えて余白を付ける */
+.shot.panel {
+  justify-self: center;
+  max-width: 24rem;
+  padding: 16px;
+  width: 100%;
+}
+
 /* スクリーンショットの上に、動画を開くボタンを重ねる */
 .shot.demo {
   position: relative;

@@ -3,7 +3,9 @@
 //
 //   node scripts/site/capture.mjs <Storybook の URL> <出力先>
 //
-// 出力: home.png / editor.png / sheet-first.png / sheet-details.png / prompt.png / demo-poster.png / demo.webm
+// 出力: home.png / editor.png / sheet-first.png / sheet-details.png / prompt.png /
+//       work-report.png / work-report-summary.png / work-report-table.png / work-report-settings.png /
+//       demo-poster.png / demo.webm
 //       （手元に ffmpeg があれば demo.mp4 も作る。動画の撮影そのものに ffmpeg は要らない）
 import { spawnSync } from "node:child_process";
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
@@ -18,6 +20,7 @@ if (!base || !out) {
 
 const DEMO = { title: "スキルシート/デモ", name: "見本" };
 const HOME = { title: "トップ/画面", name: "トップ" };
+const WORK_REPORT = { title: "作業報告書/画面", name: "見本の内容" };
 
 async function storyUrl({ title, name }) {
   const response = await fetch(new URL("index.json", base));
@@ -44,6 +47,40 @@ async function home(browser) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(500);
   await page.screenshot({ path: join(out, "home.png") });
+  await context.close();
+}
+
+// 作業報告書。見本の内容のストーリー（今日を固定し、サーバを呼ばない）から撮る。
+async function workReport(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 2,
+  });
+  const page = await context.newPage();
+  page.errors = watch(page);
+  await page.goto(await storyUrl(WORK_REPORT));
+  await page.getByRole("heading", { name: "作業報告書", level: 1 }).waitFor({ timeout: 30000 });
+  const summary = page.getByRole("region", { name: /の進み具合$/ });
+  await summary.waitFor({ timeout: 30000 });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: join(out, "work-report.png") });
+  await summary.screenshot({ path: join(out, "work-report-summary.png") });
+  // 表は、入力済みの日と今日以降の日がどちらも入る範囲を切り出す。
+  const table = await page.getByRole("table").boundingBox();
+  if (table) {
+    await page.screenshot({
+      path: join(out, "work-report-table.png"),
+      fullPage: true,
+      clip: { x: table.x, y: table.y + 440, width: table.width, height: 560 },
+    });
+  }
+  // 設定のボタンは名前が変わっても撮れるよう、末尾の「設定」で探す。
+  await page.getByRole("button", { name: /設定$/ }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.waitFor();
+  await page.waitForTimeout(300);
+  await dialog.screenshot({ path: join(out, "work-report-settings.png") });
   await context.close();
 }
 
@@ -337,6 +374,7 @@ const url = await storyUrl(DEMO);
 const browser = await launch();
 try {
   await home(browser);
+  await workReport(browser);
   await stills(browser, url);
   // 動画を撮れなかったときは、スクリーンショットだけで続ける。
   await video(browser, url).catch((error) => {
