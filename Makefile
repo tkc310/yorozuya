@@ -41,6 +41,10 @@ dev: ## 開発サーバを起動する（http://127.0.0.1:46280）
 storybook: ## Storybook を起動する（http://127.0.0.1:6006）
 	$(PNPM) storybook $(ARGS)
 
+.PHONY: storybook-build
+storybook-build: ## Storybook を静的に組み立てられるか確かめる（出力は storybook-static/）
+	$(PNPM) storybook:build $(ARGS)
+
 .PHONY: build-app
 build-app: ## macOS アプリを作る（dist/Yorozuya.app）
 	$(PNPM) build:app $(ARGS)
