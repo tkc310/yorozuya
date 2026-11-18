@@ -6,6 +6,7 @@
 - 開発サーバ起動: `make dev`
 - macOS アプリ作成: `make build-app`
 - Storybook 起動: `make storybook`
+- Storybook の静的ビルドを確かめる: `make storybook-build`
 - GitHub Pages のサイトを組み立てる: `make site-build`（撮影を省くなら `ARGS=--skip-capture`）
 - 組み立てたサイトを確かめる: `make site-preview`
 - ロゴからREADME のバナーと OGP 画像を作り直す: `make brand-images`

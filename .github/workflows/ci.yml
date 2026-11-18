@@ -29,6 +29,8 @@ jobs:
       - run: make lint
       - run: make fmt
       - run: make test
+      # サイトの公開（make site-build）で使う静的ビルドが、手元で初めて壊れていると分かるのを防ぐ。
+      - run: make storybook-build
 
   e2e:
     name: E2E

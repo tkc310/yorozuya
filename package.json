@@ -8,6 +8,7 @@
     "dev": "bun --bun vp dev --host 127.0.0.1 --port 46280",
     "build:app": "bun scripts/app/build.ts",
     "storybook": "storybook dev --host 127.0.0.1 --port 6006 --no-open",
+    "storybook:build": "storybook build --quiet --output-dir storybook-static",
     "site:build": "bun scripts/site/build.ts",
     "site:preview": "bun scripts/site/serve.ts",
     "brand:images": "node scripts/site/brand-images.mjs",
