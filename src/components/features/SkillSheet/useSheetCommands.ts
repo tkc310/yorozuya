@@ -1,9 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import type { Career, Duration, SheetInput } from "@/src/shared/features/skill-sheet/sheet.schema";
+import type {
+  CalendarDate,
+  Career,
+  Duration,
+  SheetInput,
+} from "@/src/shared/features/skill-sheet/sheet.schema";
 import { QUERY_KEY, callServerFunction } from "@/src/lib/request";
 
 type CareerWrite = Omit<Career, "id">;
+
+// シートのコマンドは 1 つずつ順に送る。PDF の書き出しも同じ列に並べ、
+// ボタンを押したとき（入力欄からフォーカスが外れたとき）の保存が済んでから PDF にする。
+const SCOPE = { id: "skill-sheet" };
+
+function downloadPdf(base64: string, fileName: string) {
+  const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  // すぐに消すと、ブラウザがダウンロードを始める前に URL が無くなり、ファイル名が付かないことがある。
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 // プロフィールの保存に送る値。保有技術と職務経歴はそれぞれのコマンドで保存する。
 function profileOf(value: SheetInput) {
@@ -19,6 +39,7 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
 
   function useCommand<T>(run: (input: T) => Promise<unknown>, rebuild: boolean) {
     return useMutation({
+      scope: SCOPE,
       mutationFn: run,
       onSuccess: async () => {
         setMessage(null);
@@ -84,6 +105,17 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     return callServerFunction(importJsonSheetFn({ data: { file } }));
   }, true);
 
+  const exportPdf = useMutation({
+    scope: SCOPE,
+    mutationFn: async (input: { fileName: string; calculatedOn: CalendarDate }) => {
+      const { renderPdfFn } = await import("@/src/server/features/skill-sheet/queries/render-pdf");
+      const { base64 } = await callServerFunction(renderPdfFn({ data: input.calculatedOn }));
+      downloadPdf(base64, input.fileName);
+    },
+    onSuccess: () => setMessage(null),
+    onError: (error: Error) => setMessage(error.message),
+  });
+
   const all = [
     saveProfile,
     addSkill,
@@ -107,5 +139,7 @@ export function useSheetCommands({ onRefresh }: { onRefresh: () => void }) {
     updateCareer: updateCareer.mutate,
     removeCareer: removeCareer.mutate,
     importSheet: importSheet.mutate,
+    exportPdf: exportPdf.mutate,
+    exportingPdf: exportPdf.isPending,
   };
 }
