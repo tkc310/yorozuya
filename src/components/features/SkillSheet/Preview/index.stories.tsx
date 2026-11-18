@@ -99,6 +99,11 @@ export const WithLinks: Story = {
     await expect(canvas.getByText("応用情報技術者試験")).toBeVisible();
     await expect(canvas.getByText("GitHub")).toBeVisible();
     await expect(canvas.getByRole("link", { name: "https://example.com/portfolio" })).toBeVisible();
+    // 印刷しても開けるよう、リンクごとに QR コードを添える
+    await expect(canvas.getByRole("img", { name: "GitHubの QR コード" })).toBeVisible();
+    await expect(
+      canvas.getByRole("img", { name: "https://example.com/portfolioの QR コード" }),
+    ).toBeVisible();
   },
 };
 
