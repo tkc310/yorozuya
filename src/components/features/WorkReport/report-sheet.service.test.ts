@@ -3,9 +3,13 @@ import { DEFAULT_SETTINGS } from "@/src/shared/features/work-report/report.schem
 import { buildMonth, emptyEntry } from "@/src/shared/features/work-report/report.service";
 import { dayLabel, exportFileName, monthSheet } from "./report-sheet.service";
 
+const NOV = { "2026-11-03": "文化の日", "2026-11-23": "勤労感謝の日" };
+
 const data = {
   settings: { ...DEFAULT_SETTINGS, name: "見本 太郎", client: "株式会社見本", project: "EC" },
   range: { year: 2026, month: 11, minMinutes: 140 * 60, maxMinutes: 180 * 60 },
+  holidays: NOV,
+  holidaySource: "official" as const,
   entries: [
     { ...emptyEntry("2026-11-02"), start: 600, end: 1140, breakMinutes: 60, note: "設計" },
     { ...emptyEntry("2026-11-04"), start: 600, end: 1170, breakMinutes: 60, note: "実装" },
@@ -49,9 +53,13 @@ describe("monthSheet", () => {
 
 describe("dayLabel", () => {
   it("祝日に稼働へ切り替えた日は祝日名を添える", () => {
-    const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, [
-      { ...emptyEntry("2026-11-03"), override: "work" },
-    ]);
+    const rows = buildMonth(
+      2026,
+      11,
+      DEFAULT_SETTINGS,
+      [{ ...emptyEntry("2026-11-03"), override: "work" }],
+      NOV,
+    );
     expect(dayLabel(rows[2]!)).toBe("稼働（文化の日）");
     expect(dayLabel(rows[0]!)).toBe("休み");
     expect(dayLabel(rows[1]!)).toBe("");

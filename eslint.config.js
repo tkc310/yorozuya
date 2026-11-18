@@ -266,4 +266,20 @@ export default [
       ],
     },
   },
+  // 外へ出る通信は、公開された祝日データを取りに行くこの 2 か所だけに許す（ADR 0011）。
+  {
+    files: ["src/server/lib/holiday-feed.ts", "scripts/holidays/update.ts"],
+    languageOptions: {
+      parser: tsParser,
+    },
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "MemberExpression[property.name='TURSO_DATABASE_URL']",
+          message: "TURSO_DATABASE_URL は使用できません。ローカルファイルを使用してください",
+        },
+      ],
+    },
+  },
 ];

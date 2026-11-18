@@ -45,7 +45,7 @@ const HEADER = ["日付", "曜日", "区分", "開始", "終了", "休憩(h)", "
 
 // 1 か月分の作業報告書を表にする。
 export function monthSheet(year: number, month: number, data: WorkReportMonth): SheetData {
-  const rows = buildMonth(year, month, data.settings, data.entries);
+  const rows = buildMonth(year, month, data.settings, data.entries, data.holidays);
   const summary = summarize(rows, data.range, "9999-12-31");
   const bold = (value: string): Cell => ({ value, style: "bold" });
   const head: Cell[][] = [

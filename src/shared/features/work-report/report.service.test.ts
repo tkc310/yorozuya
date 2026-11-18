@@ -12,6 +12,8 @@ import {
   workedMinutesOf,
 } from "./report.service";
 
+const NOV = { "2026-11-03": "文化の日", "2026-11-23": "勤労感謝の日" };
+
 function worked(date: string, start: string, end: string, breakMinutes = 60): DayEntry {
   return {
     ...emptyEntry(date),
@@ -23,7 +25,7 @@ function worked(date: string, start: string, end: string, breakMinutes = 60): Da
 
 describe("buildMonth", () => {
   it("平日・土日・祝日を分け、2026 年 11 月の稼働日は 19 日になる", () => {
-    const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, []);
+    const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, [], NOV);
     expect(rows).toHaveLength(30);
     expect(rows[0]).toMatchObject({ date: "2026-11-01", weekday: 0, kind: "weekend" });
     expect(rows[2]).toMatchObject({ date: "2026-11-03", kind: "holiday", holiday: "文化の日" });
@@ -33,7 +35,7 @@ describe("buildMonth", () => {
   });
 
   it("祝日を休みにしない設定なら、祝日も曜日の予定どおり稼働日にする", () => {
-    const rows = buildMonth(2026, 11, { ...DEFAULT_SETTINGS, holidaysOff: false }, []);
+    const rows = buildMonth(2026, 11, { ...DEFAULT_SETTINGS, holidaysOff: false }, [], NOV);
     expect(rows[2]).toMatchObject({ kind: "workday", workday: true, holiday: "文化の日" });
     expect(rows.filter((row) => row.workday)).toHaveLength(21);
   });
@@ -43,18 +45,24 @@ describe("buildMonth", () => {
       ...DEFAULT_SETTINGS,
       weekdayMinutes: [0, 480, 0, 360, 480, 480, 240] as typeof DEFAULT_SETTINGS.weekdayMinutes,
     };
-    const rows = buildMonth(2026, 11, settings, []);
+    const rows = buildMonth(2026, 11, settings, [], NOV);
     expect(rows.find((row) => row.date === "2026-11-10")).toMatchObject({ workday: false });
     expect(rows.find((row) => row.date === "2026-11-04")?.plannedMinutes).toBe(360);
     expect(rows.find((row) => row.date === "2026-11-07")?.plannedMinutes).toBe(240);
   });
 
   it("日ごとの切り替えで休みにも稼働にもできる", () => {
-    const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, [
-      { ...emptyEntry("2026-11-02"), override: "off" },
-      { ...emptyEntry("2026-11-07"), override: "work" },
-      { ...emptyEntry("2026-11-03"), override: "work" },
-    ]);
+    const rows = buildMonth(
+      2026,
+      11,
+      DEFAULT_SETTINGS,
+      [
+        { ...emptyEntry("2026-11-02"), override: "off" },
+        { ...emptyEntry("2026-11-07"), override: "work" },
+        { ...emptyEntry("2026-11-03"), override: "work" },
+      ],
+      NOV,
+    );
     expect(rows[1]).toMatchObject({ workday: false, plannedMinutes: 0 });
     // 休みの曜日を稼働にしたら、曜日の予定のうち最も長いものを予定にする。
     expect(rows[6]).toMatchObject({ workday: true, plannedMinutes: 480 });
@@ -62,7 +70,13 @@ describe("buildMonth", () => {
   });
 
   it("開始・終了・休憩から実働を出す", () => {
-    const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, [worked("2026-11-02", "10:00", "19:30")]);
+    const rows = buildMonth(
+      2026,
+      11,
+      DEFAULT_SETTINGS,
+      [worked("2026-11-02", "10:00", "19:30")],
+      NOV,
+    );
     expect(rows[1]?.workedMinutes).toBe(510);
     expect(rows[3]?.workedMinutes).toBeNull();
   });
@@ -74,7 +88,7 @@ describe("summarize", () => {
     worked("2026-11-04", "10:00", "19:30"),
     worked("2026-11-05", "10:00", "19:00"),
   ];
-  const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, entries);
+  const rows = buildMonth(2026, 11, DEFAULT_SETTINGS, entries, NOV);
 
   it("実績・残り稼働日・下限と上限までの時間・見込みを出す", () => {
     const summary = summarize(rows, { minMinutes: 140 * 60, maxMinutes: 180 * 60 }, "2026-11-05");

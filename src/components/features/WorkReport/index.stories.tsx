@@ -31,17 +31,19 @@ const SAMPLE: WorkReportMonth = {
   settings: { ...DEFAULT_SETTINGS, name: "見本 太郎", client: "株式会社見本", project: "EC 刷新" },
   range: { year: 2026, month: 11, minMinutes: 140 * 60, maxMinutes: 180 * 60 },
   entries: sampleEntries(),
+  holidays: { "2026-11-03": "文化の日", "2026-11-23": "勤労感謝の日" },
+  holidaySource: "official",
 };
 
-function client(withData: boolean) {
+function client(data: WorkReportMonth | null) {
   const queryClient = new QueryClient({
     defaultOptions: {
       // ストーリーではサーバ関数（bun:sqlite）を呼ばない。見本のデータか、読み込み中のままにする。
       queries: { retry: false, enabled: false },
     },
   });
-  if (withData) {
-    queryClient.setQueryData([...QUERY_KEY.WORK_REPORT, 2026, 11], SAMPLE);
+  if (data) {
+    queryClient.setQueryData([...QUERY_KEY.WORK_REPORT, 2026, 11], data);
   }
   return queryClient;
 }
@@ -68,7 +70,7 @@ export const Example: Story = {
   name: "見本の内容",
   decorators: [
     (Story) => {
-      const [queryClient] = useState(() => client(true));
+      const [queryClient] = useState(() => client(SAMPLE));
       return (
         <QueryClientProvider client={queryClient}>
           <Story />
@@ -91,11 +93,29 @@ export const Example: Story = {
   },
 };
 
+export const Estimated: Story = {
+  name: "祝日が推定のとき",
+  decorators: [
+    (Story) => {
+      const [queryClient] = useState(() => client({ ...SAMPLE, holidaySource: "estimated" }));
+      return (
+        <QueryClientProvider client={queryClient}>
+          <Story />
+        </QueryClientProvider>
+      );
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText(/祝日法のルールから推定しています/)).toBeVisible();
+  },
+};
+
 export const Loading: Story = {
   name: "読み込み中",
   decorators: [
     (Story) => {
-      const [queryClient] = useState(() => client(false));
+      const [queryClient] = useState(() => client(null));
       return (
         <QueryClientProvider client={queryClient}>
           <Story />

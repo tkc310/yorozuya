@@ -1,4 +1,4 @@
-import { daysInMonth, holidaysOf, isoDate, weekdayOf } from "./holiday.service";
+import { daysInMonth, isoDate, weekdayOf } from "./holiday.service";
 import type { DayEntry, IsoDate, MonthRange, WorkReportSettings } from "./report.schema";
 
 export type DayKind = "workday" | "weekend" | "holiday";
@@ -64,14 +64,15 @@ export function buildMonth(
   month: number,
   settings: WorkReportSettings,
   entries: readonly DayEntry[],
+  // その月の祝日（日付 → 名称）。
+  holidays: Readonly<Record<IsoDate, string>>,
 ): DayRow[] {
-  const holidays = holidaysOf(year);
   const byDate = new Map(entries.map((entry) => [entry.date, entry]));
   const rows: DayRow[] = [];
   for (let day = 1; day <= daysInMonth(year, month); day += 1) {
     const date = isoDate(year, month, day);
     const weekday = weekdayOf(year, month, day);
-    const holiday = holidays.get(date) ?? null;
+    const holiday = holidays[date] ?? null;
     const weekdayMinutes = settings.weekdayMinutes[weekday] ?? 0;
     const kind: DayKind =
       holiday && settings.holidaysOff ? "holiday" : weekdayMinutes > 0 ? "workday" : "weekend";

@@ -6,15 +6,31 @@ import {
   type DayEntry,
   type DayOverride,
   type MonthRange,
-  type WorkReportMonth,
   type WorkReportSettings,
 } from "@/src/shared/features/work-report/report.schema";
 import { isEmptyEntry } from "@/src/shared/features/work-report/report.service";
-import { workReportDays, workReportMonths, workReportSettings } from "@/src/server/db/schema";
+import type { HolidayFeed } from "@/src/shared/features/work-report/holiday.schema";
+import {
+  holidayFeeds,
+  holidays,
+  workReportDays,
+  workReportMonths,
+  workReportSettings,
+} from "@/src/server/db/schema";
 import type { YorozuyaDatabase } from "@/src/server/lib/db";
 import { ServerFunctionError } from "@/src/error";
 
 const SETTINGS_ID = "default";
+
+const FEED_ID = "default";
+
+export type MonthRecord = {
+  settings: WorkReportSettings;
+  range: MonthRange;
+  entries: DayEntry[];
+};
+
+export type HolidayCoverage = { minYear: number; maxYear: number; fetchedAt: string };
 
 function failure(error: unknown, fallback: string): ServerFunctionError {
   return new ServerFunctionError(error instanceof Error ? error.message : fallback);
@@ -104,7 +120,7 @@ export class WorkReportRepository {
       }));
   }
 
-  readMonth(year: number, month: number): Result<WorkReportMonth, ServerFunctionError> {
+  readMonth(year: number, month: number): Result<MonthRecord, ServerFunctionError> {
     try {
       return ok({
         settings: this.settings(),
@@ -116,7 +132,7 @@ export class WorkReportRepository {
     }
   }
 
-  readYear(year: number): Result<WorkReportMonth[], ServerFunctionError> {
+  readYear(year: number): Result<MonthRecord[], ServerFunctionError> {
     try {
       const settings = this.settings();
       return ok(
@@ -199,6 +215,61 @@ export class WorkReportRepository {
       return ok({ saved: true });
     } catch (error) {
       return err(failure(error, "入力を保存できませんでした"));
+    }
+  }
+
+  holidayCoverage(): Result<HolidayCoverage | null, ServerFunctionError> {
+    try {
+      const row = this.db.select().from(holidayFeeds).where(eq(holidayFeeds.id, FEED_ID)).get();
+      return ok(
+        row ? { minYear: row.minYear, maxYear: row.maxYear, fetchedAt: row.fetchedAt } : null,
+      );
+    } catch (error) {
+      return err(failure(error, "祝日データを読めませんでした"));
+    }
+  }
+
+  // その月の公表済みの祝日（日付 → 名称）。
+  holidaysInMonth(
+    year: number,
+    month: number,
+  ): Result<Record<string, string>, ServerFunctionError> {
+    try {
+      const rows = this.db
+        .select()
+        .from(holidays)
+        .where(like(holidays.date, `${monthPrefix(year, month)}%`))
+        .orderBy(holidays.date)
+        .all();
+      return ok(Object.fromEntries(rows.map((row) => [row.date, row.name])));
+    } catch (error) {
+      return err(failure(error, "祝日データを読めませんでした"));
+    }
+  }
+
+  // 取得した祝日で丸ごと置き換える。
+  replaceHolidays(
+    feed: HolidayFeed,
+    fetchedAt: string,
+  ): Result<{ saved: true }, ServerFunctionError> {
+    try {
+      this.db.transaction((tx) => {
+        tx.delete(holidays).run();
+        const rows = Object.entries(feed.holidays).map(([date, name]) => ({ date, name }));
+        for (let index = 0; index < rows.length; index += 500) {
+          tx.insert(holidays)
+            .values(rows.slice(index, index + 500))
+            .run();
+        }
+        const values = { minYear: feed.minYear, maxYear: feed.maxYear, fetchedAt };
+        tx.insert(holidayFeeds)
+          .values({ id: FEED_ID, ...values })
+          .onConflictDoUpdate({ target: holidayFeeds.id, set: values })
+          .run();
+      });
+      return ok({ saved: true });
+    } catch (error) {
+      return err(failure(error, "祝日データを保存できませんでした"));
     }
   }
 }

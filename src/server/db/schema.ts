@@ -172,3 +172,17 @@ export const workReportDays = sqliteTable("work_report_days", {
   override: text("override").notNull().default("none"),
   note: text("note").notNull().default(""),
 });
+
+// 公表された祝日の写し。GitHub Pages の JSON から取り込む。
+export const holidays = sqliteTable("holidays", {
+  date: text("date").primaryKey(),
+  name: text("name").notNull(),
+});
+
+// 取り込んだ祝日の範囲と取り込んだ日時。1 行だけ（id は "default"）。
+export const holidayFeeds = sqliteTable("holiday_feeds", {
+  id: text("id").primaryKey(),
+  minYear: integer("min_year").notNull(),
+  maxYear: integer("max_year").notNull(),
+  fetchedAt: text("fetched_at").notNull(),
+});

@@ -1,4 +1,16 @@
--- 作業報告書: 稼働日設定・月ごとの精算幅・日ごとの入力。
+-- 作業報告書: 稼働日設定・月ごとの精算幅・日ごとの入力と、公表された祝日の写し。
+CREATE TABLE `holiday_feeds` (
+	`id` text PRIMARY KEY NOT NULL,
+	`min_year` integer NOT NULL,
+	`max_year` integer NOT NULL,
+	`fetched_at` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `holidays` (
+	`date` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `work_report_days` (
 	`date` text PRIMARY KEY NOT NULL,
 	`start` integer,

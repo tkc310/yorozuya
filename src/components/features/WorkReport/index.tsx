@@ -75,6 +75,16 @@ const alert = css({
   textStyle: "std-16B-170",
 });
 
+const notice = css({
+  background: "bg.subtle",
+  borderRadius: "8",
+  margin: "0",
+  mt: "4",
+  px: "4",
+  py: "2",
+  textStyle: "std-14N-170",
+});
+
 const status = css({
   margin: "0",
   py: "8",
@@ -120,7 +130,9 @@ export function WorkReport({ breadcrumb, today }: { breadcrumb?: ReactNode; toda
   });
 
   const data = query.data;
-  const rows = data ? buildMonth(shown.year, shown.month, data.settings, data.entries) : [];
+  const rows = data
+    ? buildMonth(shown.year, shown.month, data.settings, data.entries, data.holidays)
+    : [];
   const summary = data ? summarize(rows, data.range, now) : null;
   const ready = data && !query.isPlaceholderData;
 
@@ -198,25 +210,33 @@ export function WorkReport({ breadcrumb, today }: { breadcrumb?: ReactNode; toda
             <Spinner label="読み込んでいます">読み込んでいます</Spinner>
           </div>
         ) : (
-          <div className={body}>
-            <DayTable
-              key={`${shown.year}-${shown.month}`}
-              rows={rows}
-              month={shown.month}
-              today={now}
-              settings={data.settings}
-              onSave={commands.saveDay}
-            />
-            <div className={aside}>
-              <Summary
+          <>
+            {data.holidaySource === "estimated" ? (
+              <p className={notice}>
+                {shown.year}
+                年の祝日はまだ取り込めていないため、祝日法のルールから推定しています。公表されたデータを取り込めると自動で切り替わります。
+              </p>
+            ) : null}
+            <div className={body}>
+              <DayTable
                 key={`${shown.year}-${shown.month}`}
+                rows={rows}
                 month={shown.month}
-                range={data.range}
-                summary={summary}
-                onSaveRange={commands.saveRange}
+                today={now}
+                settings={data.settings}
+                onSave={commands.saveDay}
               />
+              <div className={aside}>
+                <Summary
+                  key={`${shown.year}-${shown.month}`}
+                  month={shown.month}
+                  range={data.range}
+                  summary={summary}
+                  onSaveRange={commands.saveRange}
+                />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </MonthTabs>
 

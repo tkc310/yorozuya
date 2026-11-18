@@ -1,4 +1,5 @@
 import * as v from "valibot";
+import type { HolidaySource } from "./holiday.schema";
 
 // 曜日は Date#getUTCDay と同じ並び（0 が日曜）。
 export const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"] as const;
@@ -52,6 +53,9 @@ export type WorkReportMonth = {
   settings: WorkReportSettings;
   range: MonthRange;
   entries: DayEntry[];
+  // その月の祝日（日付 → 名称）と出どころ。
+  holidays: Record<IsoDate, string>;
+  holidaySource: HolidaySource;
 };
 
 export const DEFAULT_SETTINGS: WorkReportSettings = {
